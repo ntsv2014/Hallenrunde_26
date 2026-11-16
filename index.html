@@ -411,6 +411,8 @@
   .tcard .t-gap .gap-dots{display:inline-block;width:1ch;text-align:center;font-weight:700}
   /* Handy: senkrechtes Scrollen übernimmt der Browser, waagerechtes Wischen bleibt für den Ansichtswechsel */
   @media (max-width: 600px){ html, body, #view-spiele, #matchList{touch-action:pan-y} }
+  /* nichts darf seitlich überstehen – sonst „scrollt“ der Browser beim Wischen nach links, statt die Ansicht zu wechseln */
+  html, body{overflow-x:clip}
 </style>
 </head>
 <body>
@@ -1074,9 +1076,9 @@ function mShow(v){
 const M_ORDER = ["cur", "n4", "n5"];
 let mSel = "cur";
 let mNext = false;   // „Aktuell“ erneut angetippt → „Demnächst“ (nächster Spieltag)
-let mTeamCur = true;  // Team: true = aktueller Spieltag mit Kurztabelle (Standard), false = alle Spieltage
+let mTeamCur = false; // Team-Ansicht: false = Tabelle + alle Spieltage (Start jeder Sitzung), true = nur aktueller Spieltag; bleibt in der Sitzung gemerkt
 function mSet(s, keep){
-  if(!keep){ mNext = false; mTeamCur = true; }   // Team-Knopf zeigt zuerst den aktuellen Spieltag
+  if(!keep) mNext = false;   // Team-Ansicht (mTeamCur) bleibt wie zuletzt gewählt
   mSel = s;
   if(s === "cur"){ selTeams = ["n4", "n5"]; MODE = "cur"; }
   else { selTeams = [s]; MODE = mTeamCur ? "cur" : "all"; }
@@ -1113,7 +1115,6 @@ function mGo(s, dir, force){   // dir: -1 = nach links (nächster), +1 = nach re
 function mSwipe(dir){
   const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, t = M_ORDER[(i - dir + n) % n];
   mNext = false;
-  if(t !== "cur") mTeamCur = mSel === "cur" ? true : mTeamCur;
   mGo(t, dir, true);
 }
 document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => {

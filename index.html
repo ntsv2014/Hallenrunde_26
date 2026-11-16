@@ -1103,6 +1103,13 @@ function mGo(s, dir, force){   // dir: -1 = nach links (nächster), +1 = nach re
     setTimeout(() => { el.style.transition = ""; mBusy = false; }, 240);
   }, 130);
 }
+/* Wischen: Ansicht bleibt gleich – Team aktuell → Team aktuell, Team alles → Team alles; von „Aktuell“ kommend: Team aktuell */
+function mSwipe(dir){
+  const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, t = M_ORDER[(i - dir + n) % n];
+  mNext = false;
+  if(t !== "cur") mTeamCur = mSel === "cur" ? true : mTeamCur;
+  mGo(t, dir, true);
+}
 document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => {
   const s = b.dataset.s;
   if(s === mSel && mCur !== "info"){
@@ -1137,7 +1144,7 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
     if(Math.abs(dx) > 45){
       x0 = null; drag = false;
       const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, dir = dx < 0 ? -1 : 1;
-      mGo(M_ORDER[(i - dir + n) % n], dir);
+      mSwipe(dir);
     }
   }, { passive:true });
   document.addEventListener("touchend", e => {
@@ -1152,7 +1159,7 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
     }
     drag = false;
     const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, dir = dx < 0 ? -1 : 1;
-    mGo(M_ORDER[(i - dir + n) % n], dir);
+    mSwipe(dir);
   }, { passive:true });
 })();
 document.getElementById("mInfo").onclick = e => { e.stopPropagation(); mShow(mCur === "info" ? "spiele" : "info"); };

@@ -900,6 +900,12 @@ function renderMatches(){
      </div>
     </div>`;
   }).join("");
+  /* Team-Übersicht (Handy): vergangene Spieltage (zugeklappt) ans Ende der Liste */
+  if(isMobile && MODE === "all"){
+    [...list.querySelectorAll(":scope > .sp")]
+      .filter(c => /^\d{4}-/.test(c.dataset.d) && c.dataset.d < today && +c.dataset.n !== CUR_MARK)
+      .forEach(c => list.appendChild(c));
+  }
   /* Vollbild + genau ein Team: Tabellenausschnitt (Top 3, …, eigenes Team) vor den Spieltagen */
   if(selTeams.length === 1 && (isMobile || !!(document.fullscreenElement || document.webkitFullscreenElement))){
     list.insertAdjacentHTML("afterbegin", miniTable(selTeams[0], false));

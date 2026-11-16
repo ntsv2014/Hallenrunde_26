@@ -1151,7 +1151,8 @@ function fitTables(){
     if(!MOBILE.matches) return;
     const cells = [...tb.querySelectorAll("tbody td:nth-child(2)")];
     if(!cells.length) return;
-    const tooWide = () => cells.some(td => {
+    const wrap = tb.parentElement;
+    const tooWide = () => tb.scrollWidth > wrap.clientWidth + 1 || cells.some(td => {
       const w = [...td.children].reduce((s, c) => s + c.getBoundingClientRect().width, 0);
       return w + 6 > td.clientWidth;
     });

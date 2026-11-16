@@ -994,7 +994,7 @@ function miniTable(team, defFull){
   /* Handy-Teamansicht: standardmäßig ganze Tabelle, Tipp auf den Kopf verkürzt sie */
   const body = tableRows(tb, team, defFull ? !OPEN_TBL.has(team) : OPEN_TBL.has(team));
   return `<div class="card tcard tc-${team} mini" data-team="${team}">
-    <div class="tbl-head ${team}"><strong>${TEAMS[team].short} · Gruppe ${tb.group}</strong></div>
+    <div class="tbl-head ${team}"><strong>Vorrunde Hallenmeisterschaft U13 – ${tb.group}</strong></div>
     <div class="tablewrap"><table>
       <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
       <tbody>${body}</tbody></table></div></div>`;
@@ -1020,7 +1020,7 @@ function renderTables(){
   document.getElementById("tables").innerHTML = [...shown].sort((a, b) => ORDER.indexOf(a.teams[0]) - ORDER.indexOf(b.teams[0])).map(tb => {
     const links = tb.teams.map(t => TEAMS[t].groupUrl).filter(Boolean);
     return `<div class="card tcard tc-${tb.teams[0]}" data-team="${tb.teams[0]}">
-      <div class="tbl-head ${tb.teams[0]}"><strong>${tb.teams.map(t => TEAMS[t].short).join(", ")} · Gruppe ${tb.group}</strong></div>
+      <div class="tbl-head ${tb.teams[0]}"><strong>Vorrunde Hallenmeisterschaft U13 – ${tb.group}</strong></div>
       <div class="tablewrap"><table>
         <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
         <tbody>${tableRows(tb, tb.teams[0], OPEN_TBL.has(tb.teams[0]))}</tbody>

@@ -811,7 +811,7 @@ function renderMatches(){
     </div>`;
   }).join("");
   /* Vollbild + genau ein Team: Tabellenausschnitt (Top 3, …, eigenes Team) vor den Spieltagen */
-  if(selTeams.length === 1 && (isMobile ? MODE === "all" : !!(document.fullscreenElement || document.webkitFullscreenElement))){
+  if(selTeams.length === 1 && (isMobile || !!(document.fullscreenElement || document.webkitFullscreenElement))){
     list.insertAdjacentHTML("afterbegin", miniTable(selTeams[0], false));
   }
   /* Desktop: Blau links, Weiß rechts; Spieltage mit gleicher Nummer in einer Zeile, oben bündig */
@@ -1039,11 +1039,12 @@ function mShow(v){
 const M_ORDER = ["n4", "n5", "cur"];
 let mSel = "cur";
 let mNext = false;   // „Aktuell“ erneut angetippt → „Demnächst“ (nächster Spieltag)
-function mSet(s, keepNext){
-  if(!keepNext) mNext = false;
+let mTeamCur = false; // Blau/Weiß erneut angetippt → nur aktueller Spieltag des Teams (mit Kurztabelle)
+function mSet(s, keep){
+  if(!keep){ mNext = false; mTeamCur = false; }
   mSel = s;
   if(s === "cur"){ selTeams = ["n4", "n5"]; MODE = "cur"; }
-  else { selTeams = [s]; MODE = "all"; }
+  else { selTeams = [s]; MODE = mTeamCur ? "cur" : "all"; }
   mShow("spiele"); renderMatches();
 }
 function mSync(){
@@ -1075,10 +1076,12 @@ function mGo(s, dir, force){   // dir: -1 = nach links (nächster), +1 = nach re
 }
 document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => {
   const s = b.dataset.s;
-  if(s === "cur" && mSel === "cur" && mCur !== "info"){
+  if(s === mSel && mCur !== "info"){
     if(mBusy) return;
-    mNext = !mNext;                       // Aktuell ⇄ Demnächst
-    mGo("cur", mNext ? -1 : 1, true);
+    let on;
+    if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Demnächst
+    else on = mTeamCur = !mTeamCur;       // Team-Übersicht ⇄ aktueller Spieltag des Teams
+    mGo(s, on ? -1 : 1, true);
     return;
   }
   mGo(s, M_ORDER.indexOf(s) > M_ORDER.indexOf(mSel) ? -1 : 1);

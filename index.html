@@ -1141,7 +1141,27 @@ function fitZoom(){
   if(!content) return;
   const z = Math.min(1.15, window.innerWidth / 360, Math.max(1, avail / content));
   list.style.zoom = z > 1.01 ? z.toFixed(3) : "1";
+  fitTables();
 }
+/* Handy: Tabellenschrift an die tatsächlich verfügbare Breite anpassen – berücksichtigt auch eine
+   vergrößerte Systemschrift (z. B. Samsung): so groß wie möglich, ohne dass ein Vereinsname umbricht */
+function fitTables(){
+  document.querySelectorAll(".tcard table").forEach(tb => {
+    tb.style.removeProperty("font-size");
+    if(!MOBILE.matches) return;
+    const cells = [...tb.querySelectorAll("tbody td:nth-child(2)")];
+    if(!cells.length) return;
+    const tooWide = () => cells.some(td => {
+      const w = [...td.children].reduce((s, c) => s + c.getBoundingClientRect().width, 0);
+      return w + 6 > td.clientWidth;
+    });
+    let fs = parseFloat(getComputedStyle(tb).fontSize) || 15;
+    cells.forEach(td => td.style.whiteSpace = "nowrap");
+    while(tooWide() && fs > 11){ fs -= 0.5; tb.style.setProperty("font-size", fs + "px", "important"); }
+    cells.forEach(td => td.style.whiteSpace = "");
+  });
+}
+window.addEventListener("resize", () => requestAnimationFrame(fitTables));
 window.addEventListener("resize", () => requestAnimationFrame(fitZoom));
 /* Spieltag-Nummer je Team: Reihenfolge aller Termine dieses Teams (unabhängig vom Filter) */
 function spieltagNr(d, team){

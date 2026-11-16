@@ -453,6 +453,8 @@
   @media (max-width: 600px){ .tcard tbody td, .tcard td{height:30px !important} }
   /* Tabelle: Vereinsname und Klammerzusatz vertikal mittig */
   .tcard td:nth-child(2) .t-name, .tcard td:nth-child(2) .t-sub{vertical-align:middle}
+  /* Tabelle: Zahlenspalten mittig */
+  .tcard th:nth-child(n+3), .tcard td:nth-child(n+3){text-align:center !important}
 </style>
 </head>
 <body>
@@ -1136,6 +1138,9 @@ function isPastN(n){
 function fitZoom(){
   const list = document.getElementById("matchList"); if(!list) return;
   if(!MOBILE.matches){ list.style.zoom = ""; return; }
+  /* gleiche Ansicht (z. B. nur Tabelle kurz/lang umgeschaltet): Vergrößerung beibehalten, damit nichts springt */
+  const zkey = [typeof mSel !== "undefined" ? mSel : "", typeof mTeamCur !== "undefined" ? mTeamCur : "", typeof mNext !== "undefined" ? mNext : "", window.innerWidth, window.innerHeight].join("|");
+  if(zkey === fitZoom.key){ list.style.zoom = fitZoom.val; fitTables(); return; }
   list.style.zoom = "1";
   const hd = document.querySelector("header"), nw = document.querySelector(".navwrap");
   const avail = window.innerHeight - (hd ? hd.offsetHeight : 0) - (nw ? nw.offsetHeight : 0) - 12;
@@ -1143,6 +1148,7 @@ function fitZoom(){
   if(!content) return;
   const z = Math.min(1.15, window.innerWidth / 360, Math.max(1, avail / content));
   list.style.zoom = z > 1.01 ? z.toFixed(3) : "1";
+  fitZoom.key = zkey; fitZoom.val = list.style.zoom;
   fitTables();
 }
 /* Handy: Tabellenschrift an die tatsächlich verfügbare Breite anpassen – berücksichtigt auch eine

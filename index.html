@@ -384,6 +384,24 @@
   }
   @media (max-width: 600px){ .tcard{padding:0} }
   @media (max-width: 600px){ .score, .score[disabled]{width:46px} }
+  /* Handy kompakt: Banner bis an den oberen Rand, niedrigere Zeilen – Tabelle + Spieltag bzw. zwei Spieltage ohne Scrollen */
+  @media (max-width: 600px){
+    header{padding-top:max(4px, env(safe-area-inset-top)) !important;padding-bottom:6px !important}
+    header h1{line-height:1.25 !important}
+    header p{line-height:1.3 !important}
+    .badge img{height:calc(20px * 1.25 + 2 * 12px * 1.3 + 2px) !important}
+    .navwrap{padding-top:6px !important;padding-bottom:6px !important}
+    .navwrap .mnav .chip{padding-top:6px !important;padding-bottom:6px !important}
+    .tcard .tbl-head{padding-top:7px !important;padding-bottom:2px !important}
+    .tcard thead th{height:22px !important;padding-top:2px !important;padding-bottom:3px !important}
+    .tcard tbody td, .tcard td{height:34px !important;padding-top:2px !important;padding-bottom:2px !important;line-height:1.15 !important}
+    .tcard .t-gap td{height:14px !important;line-height:10px !important;padding:0 !important}
+    .sp{margin:8px 0 !important}
+    #matchList > :first-child, #matchList > :first-child > .sp:first-child{margin-top:0 !important}
+    .sp-head{min-height:0 !important;padding-top:7px !important;padding-bottom:7px !important}
+    .sp-nr{top:7px !important;bottom:7px !important}
+    .sp .m{padding-top:6px !important;padding-bottom:6px !important}
+  }
 </style>
 </head>
 <body>

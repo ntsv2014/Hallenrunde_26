@@ -409,6 +409,8 @@
   .tcard .t-gap td{letter-spacing:0}
   .tcard .t-gap td:first-child{padding-left:12px;text-align:left}
   .tcard .t-gap .gap-dots{display:inline-block;width:1ch;text-align:center;font-weight:700}
+  /* Handy: senkrechtes Scrollen übernimmt der Browser, waagerechtes Wischen bleibt für den Ansichtswechsel */
+  @media (max-width: 600px){ html, body, #view-spiele, #matchList{touch-action:pan-y} }
 </style>
 </head>
 <body>
@@ -1150,6 +1152,11 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
       const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, dir = dx < 0 ? -1 : 1;
       mSwipe(dir);
     }
+  }, { passive:true });
+  document.addEventListener("touchcancel", () => {
+    if(x0 === null && !drag) return;
+    x0 = null; drag = false;
+    const el = mView(); if(el){ el.style.transition = "transform .2s ease, opacity .2s ease"; el.style.transform = ""; el.style.opacity = ""; }
   }, { passive:true });
   document.addEventListener("touchend", e => {
     if(x0 === null) return;

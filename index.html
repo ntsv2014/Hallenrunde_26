@@ -168,7 +168,7 @@
     .navwrap > nav.mnav{display:grid !important;grid-template-columns:1fr 1fr 1fr}
     #mBlau[aria-pressed="true"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
     #mWeiss[aria-pressed="true"]{background:#fff !important;border-color:var(--logo-black) !important;color:var(--logo-black) !important;box-shadow:inset 0 0 0 1px var(--logo-black)}
-    #mCur[aria-pressed="true"]{background:var(--logo-black) !important;border-color:var(--logo-black) !important;color:#fff !important}
+    #mCur[aria-pressed="true"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
     html, body{overscroll-behavior-x:none}
     .wrap{overflow-x:clip}
     #view-spiele{will-change:transform}
@@ -912,6 +912,7 @@ function renderMatches(){
     hs.forEach(x => x.style.minHeight = "");
     const mx = Math.max(0, ...hs.filter(x => !x.closest(".sp-offen")).map(x => x.offsetHeight));
     if(mx) hs.forEach(x => x.style.minHeight = mx + "px");
+    fitZoom();
   });
   /* Desktop: Blau links, Weiß rechts; Spieltage mit gleicher Nummer in einer Zeile, oben bündig */
   if(TWO_COL.matches){
@@ -1118,6 +1119,20 @@ function isPastN(n){
   const end = new Date(ds[ds.length - 1] + "T06:00:00"); end.setDate(end.getDate() + 1);
   return new Date() >= end;
 }
+/* Handy: kurze Ansichten (Aktuell, Team aktuell) vergrößern, bis sie den freien Bildschirm füllen –
+   höchstens 15 % und nie breiter als der Bildschirm erlaubt; lange Listen bleiben unverändert */
+function fitZoom(){
+  const list = document.getElementById("matchList"); if(!list) return;
+  if(!MOBILE.matches){ list.style.zoom = ""; return; }
+  list.style.zoom = "1";
+  const hd = document.querySelector("header"), nw = document.querySelector(".navwrap");
+  const avail = window.innerHeight - (hd ? hd.offsetHeight : 0) - (nw ? nw.offsetHeight : 0) - 12;
+  const content = list.scrollHeight;
+  if(!content) return;
+  const z = Math.min(1.15, window.innerWidth / 360, Math.max(1, avail / content));
+  list.style.zoom = z > 1.01 ? z.toFixed(3) : "1";
+}
+window.addEventListener("resize", () => requestAnimationFrame(fitZoom));
 /* Spieltag-Nummer je Team: Reihenfolge aller Termine dieses Teams (unabhängig vom Filter) */
 function spieltagNr(d, team){
   const days = [...new Set(MATCHES.filter(m => m.d && m.teams.includes(team)).map(m => m.d))].sort();

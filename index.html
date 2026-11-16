@@ -441,6 +441,11 @@
   .cal-pop .cal-acts a.primary{background:var(--logo-blue);color:#fff}
   .cal-pop .cal-acts button{border-color:var(--line);color:var(--ink)}
   @media (prefers-color-scheme: dark){ .cal-pop .cal-acts a:not(.primary){color:#5fb2ea;border-color:#5fb2ea} }
+  /* Handy: Tabellenschrift so groß wie in den Spieltagskarten */
+  @media (max-width: 600px){
+    .tcard table{font-size:15px !important}
+    .tcard thead th{font-size:13px !important}
+  }
 </style>
 </head>
 <body>

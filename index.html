@@ -451,6 +451,8 @@
   .tcard td .t-sub{display:inline !important;font-size:.85em !important;font-weight:400 !important;opacity:.75;white-space:nowrap;margin-left:.3em}
   .tcard td:nth-child(2){white-space:normal}
   @media (max-width: 600px){ .tcard tbody td, .tcard td{height:30px !important} }
+  /* Tabelle: Vereinsname und Klammerzusatz vertikal mittig */
+  .tcard td:nth-child(2) .t-name, .tcard td:nth-child(2) .t-sub{vertical-align:middle}
 </style>
 </head>
 <body>
@@ -1008,7 +1010,7 @@ function miniTable(team, defFull){
   const body = tableRows(tb, team, defFull ? !OPEN_TBL.has(team) : OPEN_TBL.has(team));
   return `<div class="card tcard tc-${team} mini" data-team="${team}">
     <div class="tbl-head ${team}"><strong>Vorrunde – ${tb.group}</strong></div>
-    <div class="tablewrap"><table${MOBILE.matches && FIT_FS[team] ? ` style="font-size:${FIT_FS[team]}px !important"` : ""}>
+    <div class="tablewrap"><table${MOBILE.matches && FIT_FS[team + "@" + window.innerWidth] ? ` style="font-size:${FIT_FS[team + "@" + window.innerWidth]}px !important"` : ""}>
       <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
       <tbody>${body}</tbody></table></div></div>`;
 }
@@ -1144,33 +1146,38 @@ function fitZoom(){
   fitTables();
 }
 /* Handy: Tabellenschrift an die tatsächlich verfügbare Breite anpassen – berücksichtigt auch eine
-   vergrößerte Systemschrift (z. B. Samsung). Gemessen wird immer an ALLEN Vereinen der Gruppe,
-   damit die Schrift beim Umschalten kurz/lang gleich bleibt; das Ergebnis wird je Team gemerkt. */
+   vergrößerte Systemschrift (z. B. Samsung). Gemessen wird an einer unsichtbaren VOLLSTÄNDIGEN Kopie
+   der Tabelle in derselben Breite; das Ergebnis gilt für kurze und lange Tabelle gleich (je Team und
+   Bildschirmbreite gemerkt), damit beim Umschalten nichts springt. */
 const FIT_FS = {};
-let fitCanvas = null;
+function fitSize(team, host){
+  const key = team + "@" + window.innerWidth;
+  if(FIT_FS[key]) return FIT_FS[key];
+  const data = TABLES.find(t => t.teams.includes(team)); if(!data) return null;
+  const probe = document.createElement("div");
+  probe.className = `card tcard tc-${team}`;
+  probe.style.cssText = "position:absolute;left:0;right:0;top:0;visibility:hidden;pointer-events:none;margin:0";
+  probe.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead><tbody>${tableRows(data, team, true)}</tbody></table></div>`;
+  const pos = getComputedStyle(host).position;
+  if(pos === "static") host.style.position = "relative";
+  host.appendChild(probe);
+  probe.style.width = host.clientWidth + "px";
+  const tbl = probe.querySelector("table");
+  const cells = [...probe.querySelectorAll("tbody td:nth-child(2)")];
+  cells.forEach(td => td.style.whiteSpace = "nowrap");
+  let fs = parseFloat(getComputedStyle(tbl).fontSize) || 15;
+  const over = () => cells.some(td => td.scrollWidth > td.clientWidth + 1);
+  while(over() && fs > 11){ fs -= 0.5; tbl.style.setProperty("font-size", fs + "px", "important"); }
+  probe.remove();
+  if(pos === "static") host.style.position = "";
+  return (FIT_FS[key] = fs);
+}
 function fitTables(){
   document.querySelectorAll(".tcard table").forEach(tbl => {
     const card = tbl.closest(".tcard"), team = card && card.dataset.team;
-    tbl.style.removeProperty("font-size");
-    if(!MOBILE.matches || !team) return;
-    const data = TABLES.find(t => t.teams.includes(team));
-    const td = tbl.querySelector("tbody tr:not(.t-gap) td:nth-child(2)");
-    if(!data || !td) return;
-    const cs = getComputedStyle(td);
-    const avail = td.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 4;
-    const fam = cs.fontFamily;
-    const ctx = (fitCanvas ||= document.createElement("canvas")).getContext("2d");
-    const tmp = document.createElement("div");
-    const parts = data.rows.map(r => { tmp.innerHTML = fmtTeam(String(r[1]));
-      return [tmp.querySelector(".t-name")?.textContent || "", tmp.querySelector(".t-sub")?.textContent || ""]; });
-    const width = fs => Math.max(...parts.map(([n, s]) => {
-      ctx.font = `700 ${fs}px ${fam}`; let w = ctx.measureText(n).width;
-      if(s){ ctx.font = `400 ${fs * .85}px ${fam}`; w += ctx.measureText(s).width + fs * .85 * .3; }
-      return w; }));
-    let fs = parseFloat(getComputedStyle(tbl).fontSize) || 15;
-    while(width(fs) > avail && fs > 11) fs -= 0.5;
-    FIT_FS[team] = fs;
-    tbl.style.setProperty("font-size", fs + "px", "important");
+    if(!MOBILE.matches || !team){ tbl.style.removeProperty("font-size"); return; }
+    const fs = fitSize(team, card.parentElement);
+    if(fs) tbl.style.setProperty("font-size", fs + "px", "important");
   });
 }
 window.addEventListener("resize", () => requestAnimationFrame(fitTables));

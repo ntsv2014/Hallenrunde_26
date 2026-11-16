@@ -1150,33 +1150,36 @@ function fitZoom(){
    der Tabelle in derselben Breite; das Ergebnis gilt für kurze und lange Tabelle gleich (je Team und
    Bildschirmbreite gemerkt), damit beim Umschalten nichts springt. */
 const FIT_FS = {};
-function fitSize(team, host){
+function fitSize(team, card){
   const key = team + "@" + window.innerWidth;
   if(FIT_FS[key]) return FIT_FS[key];
   const data = TABLES.find(t => t.teams.includes(team)); if(!data) return null;
-  const probe = document.createElement("div");
-  probe.className = `card tcard tc-${team}`;
-  probe.style.cssText = "position:absolute;left:0;right:0;top:0;visibility:hidden;pointer-events:none;margin:0";
+  /* unsichtbare vollständige Kopie direkt hinter der echten Tabelle (gleiche Breite, gleiche Regeln) */
+  const probe = card.cloneNode(false);
+  probe.style.cssText = "visibility:hidden;pointer-events:none";
   probe.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead><tbody>${tableRows(data, team, true)}</tbody></table></div>`;
-  const pos = getComputedStyle(host).position;
-  if(pos === "static") host.style.position = "relative";
-  host.appendChild(probe);
-  probe.style.width = host.clientWidth + "px";
+  card.after(probe);
   const tbl = probe.querySelector("table");
   const cells = [...probe.querySelectorAll("tbody td:nth-child(2)")];
   cells.forEach(td => td.style.whiteSpace = "nowrap");
+  const over = () => cells.some(td => {
+    const cs = getComputedStyle(td), r = td.getBoundingClientRect();
+    const k = td.offsetWidth ? r.width / td.offsetWidth : 1;            // Zoom berücksichtigen
+    const avail = (td.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)) * k;
+    const used = [...td.children].reduce((s, c) => s + c.getBoundingClientRect().width, 0)
+      + (td.children.length > 1 ? parseFloat(getComputedStyle(td.children[1]).marginLeft) * k : 0);
+    return used > avail - 2;
+  });
   let fs = parseFloat(getComputedStyle(tbl).fontSize) || 15;
-  const over = () => cells.some(td => td.scrollWidth > td.clientWidth + 1);
   while(over() && fs > 11){ fs -= 0.5; tbl.style.setProperty("font-size", fs + "px", "important"); }
   probe.remove();
-  if(pos === "static") host.style.position = "";
   return (FIT_FS[key] = fs);
 }
 function fitTables(){
   document.querySelectorAll(".tcard table").forEach(tbl => {
     const card = tbl.closest(".tcard"), team = card && card.dataset.team;
     if(!MOBILE.matches || !team){ tbl.style.removeProperty("font-size"); return; }
-    const fs = fitSize(team, card.parentElement);
+    const fs = fitSize(team, card);
     if(fs) tbl.style.setProperty("font-size", fs + "px", "important");
   });
 }

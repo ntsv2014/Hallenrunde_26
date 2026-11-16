@@ -193,7 +193,7 @@
   .sp:focus, .sp:focus-within, .sp:focus-visible{outline:none !important}
   /* „Aktuell“ ausgewählt: im dunklen Design weißer Rahmen */
   @media (max-width: 600px) and (prefers-color-scheme: dark){
-    #mCur[aria-pressed="true"]{border-color:#fff !important;box-shadow:inset 0 0 0 1px #fff}
+    #mCur[aria-pressed="true"]{border-color:var(--logo-blue) !important;box-shadow:none}
   }
   @media (max-width: 600px){
     #mTeam[data-t="blau"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}

@@ -873,7 +873,7 @@ function renderMatches(){
     const vsl = d.startsWith("offen");
     const n = tm === "mix" ? 0 : (vsl ? +d.split("-").pop() : spieltagNr(d, tm));
     return `
-    <div class="day sp sp-${tm} ${d === today ? "today" : ""}${n !== NEXT_N ? " past" + (OPEN_PAST.has(d) ? " open" : "") : ""}${vsl ? " sp-offen" : ""}${!vsl && n === CUR_MARK ? " is-cur" : ""}" data-n="${n}" data-d="${d}">
+    <div class="day sp sp-${tm} ${d === today ? "today" : ""}${n !== NEXT_N ? " past" + (OPEN_PAST.has(d) ? " open" : "") : ""}${vsl ? " sp-offen" : ""}" data-n="${n}" data-d="${d}">
      <div class="sp-head">
       ${tm !== "mix" ? (() => {
         return `<span class="sp-nr"><span class="nr-t">${vsl ? "vsl. " : ""}${n}. Spieltag</span><a class="nr-cal${vsl ? " vsl" : ""}" href="${spieltagUrl(tm, vsl ? null : d)}" target="_blank" rel="noopener" title="${vsl ? "voraussichtlich " : ""}${n}. Spieltag – auf fussball.de öffnen"><i>Spieltag</i><b>${n}</b></a></span>`; })() : ""}

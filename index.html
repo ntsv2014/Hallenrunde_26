@@ -844,14 +844,10 @@ function renderMatches(){
   const isMobile = MOBILE.matches;
   let CUR_N = null, CUR_MARK = null;
   if(isMobile){
-    const dated = ms.filter(m => m.d);
-    const diff = d => Math.round((new Date(d + "T12:00:00") - new Date(today + "T12:00:00")) / 864e5);
-    const near = dated.filter(m => Math.abs(diff(m.d)) <= 1).sort((a, b) => Math.abs(diff(a.d)) - Math.abs(diff(b.d)) || diff(b.d) - diff(a.d));
-    const up = dated.filter(m => diff(m.d) > 0).sort((a, b) => a.d.localeCompare(b.d));
-    const last = [...dated].sort((a, b) => b.d.localeCompare(a.d));
-    const pick = near[0] || up[0] || last[0];
-    if(pick){
-      const pn = spieltagNr(pick.d, pick.teams[0]);
+    /* Aktuell = kleinster Spieltag, der noch nicht vergangen ist (sonst der letzte) */
+    const ns = [...new Set(ms.filter(m => m.d).map(m => spieltagNr(m.d, m.teams[0])))].sort((a, b) => a - b);
+    const pn = ns.find(n => !isPastN(n)) ?? ns[ns.length - 1];
+    if(pn !== undefined){
       /* „Demnächst“: der Spieltag nach dem aktuellen (ggf. auch noch nicht angesetzte Karten) */
       if(MODE === "cur"){ CUR_N = pn + (mNext ? 1 : 0); ms = ms.filter(m => (m.d ? spieltagNr(m.d, m.teams[0]) : m.grp) === CUR_N); }
       else CUR_MARK = pn;   // Team-Übersicht: aktuellen Spieltag nur markieren
@@ -859,7 +855,7 @@ function renderMatches(){
   }
   if(!isMobile && !showPast){
     const nOf = m => m.d ? spieltagNr(m.d, m.teams[0]) : (m.grp || 0);
-    const live = new Set(MATCHES.filter(m => !m.d || m.d >= today).map(nOf));
+    const live = new Set(MATCHES.map(nOf).filter(n => !isPastN(n)));
     ms = ms.filter(m => live.has(nOf(m)));
   }
   if(!ms.length){
@@ -867,7 +863,7 @@ function renderMatches(){
     return;
   }
   /* Nächster Spieltag (kleinste Spieltag-Nummer mit Datum ab heute) bleibt aufgeklappt, alle anderen zu */
-  const NEXT_N = CUR_N !== null ? CUR_N : (isMobile && MODE === "all") ? -999 : (() => { const ns = MATCHES.filter(m => m.d && m.d >= today).map(m => spieltagNr(m.d, m.teams[0]));
+  const NEXT_N = CUR_N !== null ? CUR_N : (isMobile && MODE === "all") ? -999 : (() => { const ns = MATCHES.filter(m => m.d).map(m => spieltagNr(m.d, m.teams[0])).filter(n => !isPastN(n));
     return ns.length ? Math.min(...ns) : -1; })();
   list.classList.toggle("team-n5", isMobile && MODE === "all" && selTeams.length === 1 && selTeams[0] === "n5");
   const byDay = {};
@@ -903,7 +899,7 @@ function renderMatches(){
   /* Team-Übersicht (Handy): vergangene Spieltage (zugeklappt) ans Ende der Liste */
   if(isMobile && MODE === "all"){
     [...list.querySelectorAll(":scope > .sp")]
-      .filter(c => /^\d{4}-/.test(c.dataset.d) && c.dataset.d < today && +c.dataset.n !== CUR_MARK)
+      .filter(c => /^\d{4}-/.test(c.dataset.d) && isPastN(+c.dataset.n) && +c.dataset.n !== CUR_MARK)
       .forEach(c => list.appendChild(c));
   }
   /* Vollbild + genau ein Team: Tabellenausschnitt (Top 3, …, eigenes Team) vor den Spieltagen */
@@ -1114,6 +1110,14 @@ function spieltagUrl(team, d){
   return d ? `${base}/-/spieldatum/${d}/${st}` : `${base}/-/${st}`;
 }
 
+/* „Vergangen“: ein Spieltag (Nummer n, beide Teams zusammen) gilt ab 6 Uhr morgens nach dem späteren
+   der beiden Spieltermine als vorbei */
+function isPastN(n){
+  const ds = MATCHES.filter(m => m.d && spieltagNr(m.d, m.teams[0]) === n).map(m => m.d).sort();
+  if(!ds.length) return false;
+  const end = new Date(ds[ds.length - 1] + "T06:00:00"); end.setDate(end.getDate() + 1);
+  return new Date() >= end;
+}
 /* Spieltag-Nummer je Team: Reihenfolge aller Termine dieses Teams (unabhängig vom Filter) */
 function spieltagNr(d, team){
   const days = [...new Set(MATCHES.filter(m => m.d && m.teams.includes(team)).map(m => m.d))].sort();

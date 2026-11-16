@@ -1,0 +1,16 @@
+{
+  "name": "NTSV 7. D · Hallenmeisterschaft 2026/27",
+  "short_name": "NTSV 7. D",
+  "description": "Spieltage und Tabellen der NTSV 7. D (Blau und Weiß) in der Hamburger Hallenmeisterschaft",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0075bf",
+  "theme_color": "#0075bf",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

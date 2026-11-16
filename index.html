@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NTSV 7. D · Hallenmeisterschaft 2026/27</title>
+<meta name="theme-color" content="#0075bf">
+<link rel="icon" type="image/svg+xml" href="ntsv-wappen.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NTSV 7. D">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root{
+    /* Farben aus dem NTSV-Wappen: Blau #0075bf, Rot #e30613, Schwarz #1d1d1b, Weiß */
+    --bg:#f4f6f9; --card:#fff; --ink:#1d1d1b; --muted:#5f6670; --line:#e1e5ea;
+    --brand:#0075bf; --brand-2:#0075bf; --accent:#e30613; --logo-blue:#0075bf; --logo-red:#e30613; --logo-black:#1d1d1b;
+    --win:#1f8a4c; --draw:#8a7a1f; --loss:#b23a3a; --today:rgba(0,117,191,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0d1117; --card:#161b22; --ink:#e6edf3; --muted:#8b98a7; --line:#262d36;
+           --brand:#0075bf; --brand-2:#0075bf; --today:rgba(0,117,191,.18); }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{background:var(--brand);color:#fff;padding:20px 16px 18px;padding-top:max(20px,env(safe-area-inset-top));
+    padding-left:max(12px, calc((100% - 820px) / 2 + 12px));padding-right:max(12px, calc((100% - 820px) / 2 + 12px))}
+  .sub2::before{content:" "}
+  .a-m{display:none}
+  header > div:first-child{flex:1;min-width:0}
+  .fs-btn{flex:0 0 auto;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;
+    border-radius:8px;padding:4px 8px;font-size:16px;line-height:1}
+  /* Handy: möglichst viel Platz für Inhalte */
+  @media (max-width: 600px){
+    header{padding:10px 6px 9px;padding-top:max(10px,env(safe-area-inset-top));gap:8px;
+      padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
+    .sub2{display:block}
+    .sub2::before{content:none}
+    .a-d{display:none}
+    .a-m{display:inline}
+    header h1{font-size:17px}
+    header p{font-size:12px;margin-top:2px}
+    .badge,.badge img{height:40px}
+    .wrap{padding:0 6px 24px;padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
+    nav.tabs{margin:8px 0 6px}
+    .chips{margin:2px 0 8px}
+    .sp{margin:10px 0;border-radius:10px}
+    .m{padding:9px 10px}
+    .card{padding:12px}
+  }
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .badge{flex:0 0 auto;height:62px;color:#fff;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;letter-spacing:.3px}
+  .badge img{height:62px;width:auto;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+  header h1{margin:0;font-size:20px;letter-spacing:.2px}
+  header p{margin:4px 0 0;color:#e3f1fb;font-size:13px}
+  .wrap{max-width:820px;margin:0 auto;padding:0 12px 40px}
+  nav.tabs{display:flex;gap:6px;margin:14px 0 10px;overflow-x:auto}
+  nav.tabs button{flex:1 1 0;min-width:0;text-align:center;padding-left:6px;padding-right:6px}
+  nav.tabs2{margin-top:0}
+  .navwrap{display:flex;gap:6px;margin:0 -12px 10px;padding:10px 12px;position:sticky;top:0;z-index:20;
+    background:var(--bg)}
+  .navwrap .chip[aria-pressed="false"]{border:1.5px solid rgba(0,117,191,.55)}
+  .navwrap nav.tabs{margin:0;flex:1 1 0;overflow:visible;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .navwrap nav.tabs button{overflow:hidden;text-overflow:ellipsis}
+  nav.tabs #togglePast{grid-column:span 2}
+  @media (max-width: 600px){ .navwrap{flex-direction:column;margin:0 -6px 6px;padding:8px 6px} }
+  .tf{display:contents}
+  .chip[data-team="n5"][aria-pressed="true"]{background:#fff;color:var(--logo-black);border-color:var(--logo-black)}
+  .chip[data-team="n4"][aria-pressed="true"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}
+  button{font:inherit;cursor:pointer}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:7px 12px;border-radius:999px;font-size:14px;white-space:nowrap}
+  .chip[aria-pressed="true"]{background:var(--brand-2);border-color:var(--brand-2);color:#fff}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+  .next{border-left:4px solid var(--accent)}
+  .next .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  .next .big{font-size:17px;font-weight:600;margin-top:2px}
+  .day h2{font-size:14px;margin:18px 2px 6px;color:var(--muted);font-weight:600;
+    text-transform:uppercase;letter-spacing:.5px}
+  .day.today h2{color:var(--ink)}
+  .m{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
+  .day.today .m{background:var(--today)}
+  .t{font-variant-numeric:tabular-nums;font-weight:600}
+  .teams{min-width:0}
+  .teams .vs{display:block;overflow:hidden;text-overflow:ellipsis}
+  .ntsv{font-weight:700}
+  .meta{font-size:12px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;
+    background:var(--brand-2);color:#fff;margin-right:6px;vertical-align:1px}
+  .tag-n4{background:#1d4f8c;color:#fff}
+  .tag-n5{background:#fff;color:#14202e;border:1px solid #9aa7b5}
+  .score{min-width:64px;text-align:center;border:1px solid var(--line);border-radius:8px;
+    padding:6px 8px;background:transparent;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+  .score.w{border-color:var(--win);color:var(--win)}
+  .score.d{border-color:var(--draw);color:var(--draw)}
+  .score.l{border-color:var(--loss);color:var(--loss)}
+  .score.empty{color:var(--muted);font-weight:400}
+  .score[disabled]{cursor:default;opacity:1}
+  table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+  th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right}
+  th:nth-child(2),td:nth-child(2){text-align:left}
+  th{font-size:12px;color:var(--muted);font-weight:600}
+  tr:nth-child(even) td{background:rgba(0,117,191,.06)}
+  @media (prefers-color-scheme: dark){ tr:nth-child(even) td{background:rgba(255,255,255,.05)} }
+  tr.hl td{font-weight:700}
+  tr.hl-n4 td{background:var(--logo-blue);color:#fff}
+  tr.hl-n5 td{background:#fff;color:var(--logo-black);border-top:1px solid var(--logo-black);border-bottom:1px solid var(--logo-black)}
+  .tbl-head{margin:-14px -14px 10px;padding:10px 14px;border-radius:12px 12px 0 0}
+  .tbl-head.n4{background:var(--logo-blue);color:#fff}
+  .tbl-head.n5{background:#fff;color:var(--logo-black);border-bottom:1px solid var(--logo-black)}
+  .tbl-head .meta{color:inherit;opacity:.8}
+  .tablewrap{overflow-x:auto}
+  .note{font-size:13px;color:var(--muted)}
+  .stand{font-size:12px;color:var(--muted);margin:2px 0 8px}
+  .venue{font-size:13px;color:var(--muted);margin:-2px 2px 8px;line-height:1.4}
+  .venue b{color:var(--ink);font-weight:600}
+  /* Spieltag-Karte: Kopf in Teamfarbe (Blau = blaue Fläche, Weiß = weiße Fläche mit Rand) */
+  .sp{background:var(--card);border:2px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
+  .sp-n4{border-color:var(--logo-blue)}
+  .sp-n5{border-color:var(--logo-black)}
+  .sp-head{padding:10px 12px 9px;position:relative}
+  .sp-n4 .sp-head{background:var(--logo-blue);color:#fff}
+  .sp-n5 .sp-head{background:#fff;color:var(--logo-black);border-bottom:1px solid var(--logo-black)}
+  .treff{white-space:nowrap}
+  @media (prefers-color-scheme: dark){ .sp-n5{border-color:#fff} }
+  .sp-nr{position:absolute;top:11px;right:12px;font-size:12px;font-weight:700;letter-spacing:.3px;opacity:.9;white-space:nowrap}
+  .day.sp .sp-head h2{margin:0;padding-right:92px;font-size:14px;font-weight:700;color:inherit;letter-spacing:.4px}
+  .sp-head .venue{margin:4px 0 0;color:inherit;opacity:.92;font-size:13px}
+  .sp-head .venue a{color:inherit;text-decoration:underline}
+  .sp-team{position:absolute;top:9px;right:10px;font-size:11px;font-weight:800;letter-spacing:.8px;
+    padding:2px 9px;border-radius:999px}
+  .sp-n4 .sp-team{background:#fff;color:#1d4f8c}
+  .sp-n5 .sp-team{background:#14202e;color:#fff}
+  .sp .m{border:none;border-top:1px solid var(--line);border-radius:0;margin:0}
+  .sp .sp-body .m:first-child{border-top:none}
+  .ico-ball{width:1em;height:1em;vertical-align:-0.15em;margin-right:1px}
+  /* Abstand Knopfleiste → erste Karte = Abstand zwischen den Karten (Desktop 12px, Handy 10px) */
+  .navwrap{margin-bottom:0 !important;padding-bottom:12px !important}
+  #matchList > :first-child, #matchList > :first-child > .sp:first-child, #tables > .card:first-child,
+  #view-info > .card:first-child, #view-teilen > .card:first-child{margin-top:0}
+  @media (max-width: 600px){ .navwrap{padding-bottom:10px !important} }
+  @media (min-width: 601px){ .sp{margin:12px 0} }
+  /* Vergangene Spieltage zugeklappt */
+  .sp.past:not(.open) .sp-body{display:none}
+  .sp.past .sp-head{cursor:pointer;user-select:none}
+  .sp.past:not(.open) .sp-head{border-bottom:none}
+  .sp.past:not(.open){cursor:pointer}
+  /* Handy: nur die eine Knopfzeile (.mnav); Desktop: bisherige Knopfleiste */
+  .mnav{display:none !important}
+  header #mInfo{display:none}
+  /* Banner und Knopfleiste bleiben beim Scrollen oben stehen */
+  header{position:sticky !important;top:0;z-index:30}
+  /* 2px Überlappung unter das Banner, damit keine Lücke (Rundung/Subpixel) entsteht */
+  .navwrap{top:calc(var(--hdr-h, 0px) - 2px) !important;margin-top:-2px !important;padding-top:10px !important}
+  /* Handy: Info-Seite ohne Knopfleiste (zurück über ⓘ im Banner) */
+  @media (max-width: 600px){ body.m-info .navwrap{display:none !important} }
+  @media (max-width: 600px){ header #mInfo{display:block} }
+  @media (max-width: 600px){
+    .navwrap > nav.tabs:not(.mnav){display:none !important}
+    .navwrap > nav.mnav{display:grid !important;grid-template-columns:1fr 1fr 1fr}
+    #mBlau[aria-pressed="true"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
+    #mWeiss[aria-pressed="true"]{background:#fff !important;border-color:var(--logo-black) !important;color:var(--logo-black) !important;box-shadow:inset 0 0 0 1px var(--logo-black)}
+    #mCur[aria-pressed="true"]{background:var(--logo-black) !important;border-color:var(--logo-black) !important;color:#fff !important}
+    html, body{overscroll-behavior-x:none}
+    .wrap{overflow-x:clip}
+    #view-spiele{will-change:transform}
+  }
+  .tcard .tbl-head{cursor:pointer}
+  /* Team-Übersicht (Handy): aktueller Spieltag im zugeklappten Zustand – ganze Karte invertiert */
+  /* Weiß-Ansicht: aktuelle Karte (zugeklappt) mit blauer Schrift – wie die aktuelle Blau-Karte */
+  .sp-n5.is-cur.past:not(.open) .sp-head{color:var(--logo-blue) !important;border-bottom:none !important}
+  .sp.sp-n5.is-cur.past:not(.open){border:4px solid var(--logo-blue) !important}
+  .sp-n5.is-cur.past:not(.open) .sp-nr a.nr-cal{background:#fff !important;color:var(--logo-blue) !important;box-shadow:0 0 0 1px var(--logo-blue) !important}
+  .sp-n5.is-cur.past:not(.open) .sp-nr a.nr-cal b{background:#fff !important;color:var(--logo-blue) !important;border-top:1px solid rgba(0,117,191,.4) !important}
+  .sp-n5.is-cur.past:not(.open) .ico-ball [fill="#1d1d1b"]{fill:var(--logo-blue)}
+  .sp-n5.is-cur.past:not(.open) .ico-ball [stroke="#1d1d1b"]{stroke:var(--logo-blue)}
+  /* Fußball-Symbol auf blauem Grund: invertiert – Weiß statt Schwarz, Blau statt Weiß */
+  .sp-n4 .sp-head .ico-ball circle[fill="#fff"]{fill:var(--logo-blue)}
+  .sp-n4 .sp-head .ico-ball [fill="#1d1d1b"]{fill:#fff}
+  .sp-n4 .sp-head .ico-ball [stroke="#1d1d1b"]{stroke:#fff}
+  /* aktuelle Blau-Karte (zugeklappt): wie die anderen Blau-Karten, zusätzlich weißer Rahmen 2 px */
+  .sp-n4.is-cur.past:not(.open){box-shadow:0 0 0 2px #fff}
+  /* keine Fokus-/Antipp-Umrandung um Karten */
+  .sp, .sp *, .tcard, .tcard *{outline:none !important;-webkit-tap-highlight-color:transparent}
+  .sp:focus, .sp:focus-within, .sp:focus-visible{outline:none !important}
+  /* „Aktuell“ ausgewählt: im dunklen Design weißer Rahmen */
+  @media (max-width: 600px) and (prefers-color-scheme: dark){
+    #mCur[aria-pressed="true"]{border-color:#fff !important;box-shadow:inset 0 0 0 1px #fff}
+  }
+  @media (max-width: 600px){
+    #mTeam[data-t="blau"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}
+    #mTeam[data-t="weiss"]{background:#fff;border-color:var(--logo-black);color:var(--logo-black)}
+    #mTeam[data-t="beide"]{background:linear-gradient(90deg, var(--logo-blue) 0 50%, #fff 50% 100%);
+      border-color:var(--logo-blue);display:grid;grid-template-columns:1fr 1fr;padding-left:0;padding-right:0}
+    #mTeam .bh-l{text-align:right;color:#fff}
+    #mTeam .bh-r{text-align:left;color:var(--logo-black)}
+    header{position:relative}
+    header #mInfo{position:absolute;right:4px;bottom:3px;background:transparent !important;border:none !important;
+      color:#fff;font-size:17px;line-height:1;padding:2px 3px;border-radius:50%;opacity:.9}
+    header #mInfo[aria-pressed="true"]{opacity:1;background:rgba(255,255,255,.25) !important}
+  }
+  .m-only{display:none}
+  @media (max-width: 600px){
+    nav.tabs #togglePast{display:none !important}
+    .m-only{display:block}
+    .m-only.hidden{display:none}
+  }
+  @media (max-width: 600px){ .tcard .tbl-head{cursor:pointer} }
+  .tcard .t-gap td{height:22px;text-align:center;padding:0;opacity:.7;letter-spacing:2px}
+  @media (max-width: 600px){ header.fs-able{cursor:pointer} }
+  /* Noch nicht angesetzte Spieltage: Titel vertikal mittig, Kalenderblatt wie bei den anderen */
+  .sp-offen .sp-head{display:flex;align-items:center}
+  /* höhere Spezifität, damit spätere .vsl-Regeln (blasser, kleinere Ziffer) nicht mehr greifen */
+  .sp .sp-nr a.nr-cal.vsl{opacity:1}
+  .sp .sp-nr a.nr-cal b{font-size:18px}
+  .sp .sp-nr a.nr-cal i{font-size:8px}
+  /* Tabellen: Mannschaft immer zweizeilig, alle Zeilen gleich hoch */
+  .tcard tbody td{height:42px;line-height:1.2}
+  .tcard td:nth-child(2){white-space:normal}
+  .t-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .t-sub{display:block;font-size:.82em;opacity:.75;white-space:nowrap}
+  /* Helles Design: inaktive Knöpfe blassblau hinterlegt */
+  .navwrap .chip[aria-pressed="false"]{background:#e3f0fa}
+  @media (prefers-color-scheme: dark){ .navwrap .chip[aria-pressed="false"]{background:var(--card)} }
+  .fs-ask{position:fixed;left:10px;right:10px;bottom:max(12px, env(safe-area-inset-bottom));z-index:50;
+    display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;
+    background:var(--card);color:var(--ink);border:2px solid var(--logo-blue);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .fs-ask span{flex:1;font-size:14px;font-weight:600}
+  .fs-ask .btn{padding:7px 14px}
+  .v-gap{display:inline-block;width:clamp(6px, 2.6vw, 16px)}
+  .sp-head .venue{white-space:nowrap}
+  .ico-pin{width:.75em;height:1.1em;vertical-align:-0.2em;margin:0 1px 0 2px}
+  .ico-treffen{width:1.05em;height:1.05em;vertical-align:-0.15em;margin:0 1px}
+  .calbtns{display:inline-flex;gap:6px;flex-wrap:wrap;margin:4px 0 0 4px;vertical-align:middle}
+  .calbtns a{font-size:12px;text-decoration:none;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);padding:4px 10px;border-radius:999px}
+  .calbtns a:hover{border-color:var(--brand-2)}
+  a{color:var(--brand-2)}
+  ul.links{padding-left:18px;margin:6px 0}
+  dialog{border:none;border-radius:14px;padding:18px;max-width:320px;width:90%;
+    background:var(--card);color:var(--ink)}
+  dialog::backdrop{background:rgba(0,0,0,.45)}
+  dialog .row{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0}
+  dialog input{width:64px;font-size:22px;text-align:center;padding:6px;border:1px solid var(--line);
+    border-radius:8px;background:var(--bg);color:var(--ink)}
+  dialog .btns{display:flex;gap:8px;justify-content:flex-end}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px}
+  .btn.primary{background:var(--brand-2);border-color:var(--brand-2);color:#fff}
+  .btn.danger{color:var(--loss)}
+  footer{margin-top:28px;font-size:12px;color:var(--muted)}
+  .hidden{display:none}
+  /* Desktop: Vollbild-Knopf aus, Wappen bündig mit Ergebnisfeldern, Spieltage zweispaltig */
+  @media (min-width: 601px){
+    .fs-btn{display:none !important}
+    header{padding-right:max(26px, calc((100% - 820px) / 2 + 26px));padding-left:max(26px, calc((100% - 820px) / 2 + 26px))}
+  }
+  @media (min-width: 760px){
+    #matchList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+    #matchList .sp{margin:0}
+    #matchList .col{display:flex;flex-direction:column;gap:12px;min-width:0}
+    #matchList .col:only-child{grid-column:1 / -1}
+    #matchList > .note{grid-column:1 / -1}
+  }
+  /* Handy-Feinschliff – steht am Ende, damit es die Grundregeln sicher überschreibt.
+     Banner und Karten haben links und rechts denselben Rand. */
+  @media (max-width: 600px){
+    :root{ --edge: max(6px, env(safe-area-inset-left)); --edge-r: max(6px, env(safe-area-inset-right)); }
+    /* Text bündig mit dem Text in den Spieltagskarten (Rand 2px + Innenabstand 12px) */
+    /* Wappen rechtsbündig mit den Ergebnisfeldern (Rand 2px + Innenabstand 10px) */
+    header{padding-left:calc(var(--edge) + 14px);padding-right:calc(var(--edge-r) + 14px);align-items:stretch}
+    .fs-btn{align-self:center}
+    .wrap{padding:0 var(--edge-r) 24px var(--edge)}
+    .navwrap{margin:0 calc(-1 * var(--edge-r)) 6px calc(-1 * var(--edge));padding:8px var(--edge-r) 8px var(--edge)}
+    /* Wappen so hoch wie der Bannertext */
+    header h1{font-size:20px;line-height:1.45}
+    header p{font-size:12px;line-height:1.45;margin-top:2px}
+    /* Höhe Textblock = 1 Zeile Titel + 2 Zeilen Unterzeile */
+    .badge{height:auto;align-self:center}
+    .badge img{height:calc(20px * 1.45 + 2 * 12px * 1.45 + 2px);width:auto}
+    .sp{margin:10px 0;border-radius:10px}
+    .m{padding:9px 10px}
+    .card{padding:12px}
+  }
+  /* Spieltag-Nummer als Kalenderblatt – auf Handy und Desktop */
+  .nr-t{display:none}
+  @media all{
+    /* Kalenderblatt oben/unten bündig mit dem zweizeiligen Text links (= Innenabstand des Kopfes) */
+    .sp-nr{top:10px;bottom:9px;right:10px;opacity:1;display:flex}
+    .nr-cal{display:flex;flex-direction:column;align-items:center;width:46px;height:100%;border-radius:5px;overflow:hidden;
+      background:#fff;color:var(--logo-black);box-shadow:0 0 0 1px rgba(0,0,0,.3)}
+    .nr-cal i{display:block;width:100%;font-style:normal;font-size:8px;font-weight:700;text-transform:uppercase;
+      letter-spacing:.3px;line-height:12px;text-align:center;background:var(--logo-black);color:#fff}
+    .nr-cal b{flex:1;display:flex;align-items:center;font-size:18px;line-height:1;font-weight:800}
+    .nr-cal.vsl{box-shadow:0 0 0 1px rgba(0,0,0,.3);opacity:.8}
+    .nr-cal.vsl b{font-size:14px}
+    .day.sp .sp-head h2{padding-right:54px}
+    .sp-head .venue{padding-right:54px}
+    /* Blaue Karten: Kalenderblatt-Feld blau, Zahl weiß */
+    .sp-n4 .nr-cal{background:var(--logo-blue);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.85)}
+  }
+  /* „Spieltag“ auf transparentem Grund, nur das Zahlenfeld als Kachel */
+  /* Ein Rahmen um das ganze Blatt („Spieltag“ + Zahl) */
+  .nr-cal{background:transparent;color:inherit;border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+  .nr-cal i{background:transparent;color:inherit;opacity:.9;margin:0}
+  .nr-cal b{width:100%;justify-content:center;border-radius:0;background:#fff;color:var(--logo-black);box-shadow:none;border-top:1px solid rgba(0,0,0,.25)}
+  .sp-n4 .nr-cal{background:transparent;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.85)}
+  .sp-n4 .nr-cal b{background:var(--logo-blue);color:#fff;box-shadow:none;border-top:1px solid rgba(255,255,255,.5)}
+  .nr-cal.vsl{opacity:.8}
+  /* Ergebnisse: fett; endgültige (offizielle) ohne Rahmen */
+  .score{font-weight:800;white-space:nowrap}
+  .score.empty{font-weight:400}
+  .score[disabled]{border-color:transparent;min-width:0;padding-left:0;padding-right:0;text-align:right}
+  @media (prefers-color-scheme: dark){ :root{ --win:#5fd38d; --loss:#ff7070; --draw:#e2cd5e; } }
+  /* Kopf immer zweizeilig hoch, damit das Kalenderblatt gleich groß bleibt */
+  .sp-head{min-height:62px}
+  /* Ergebnis: Doppelpunkt genau unter der Mitte des Kalenderblatts
+     (Blatt: 46px breit, 10px vom Rand → Mitte 33px vom Kartenrand) */
+  .score, .score[disabled]{display:inline-grid;grid-template-columns:1fr auto 1fr;column-gap:4px;align-items:center;
+    min-width:0;width:42px;padding:6px 0;text-align:center;justify-self:end}
+  .s-h{text-align:right} .s-a{text-align:left}
+  /* Tabellen wie Spieltagskarten: Rahmen 2px, Text 12px vom Rand, Stand rechts im Kopf */
+  .tcard{padding:0;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+  .tc-n4{border-color:var(--logo-blue)}
+  .tc-n5{border-color:var(--logo-black)}
+  @media (prefers-color-scheme: dark){ .tc-n5{border-color:#fff} }
+  .tcard .tbl-head{margin:0;padding:10px 12px;border-radius:0;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .t-stand{font-size:12px;font-weight:600;white-space:nowrap}
+  .t-stand a{color:inherit;text-decoration:none}
+  .sp-head .venue a{text-decoration:none}
+  .tcard th:first-child, .tcard td:first-child{padding-left:12px;text-align:left}
+  .tcard th:last-child, .tcard td:last-child{padding-right:12px}
+  .tcard tr:last-child td{border-bottom:none}
+  /* Spaltenköpfe gehören zum Kartenkopf */
+  .tcard .tbl-head{padding-bottom:4px;border-bottom:none}
+  .tcard thead th{font-size:12px;font-weight:600;padding-top:4px;padding-bottom:8px;border-bottom:none}
+  .tc-n4 thead th{background:var(--logo-blue);color:#fff}
+  .tc-n5 thead th{background:#fff;color:var(--logo-black);border-bottom:1px solid var(--logo-black)}
+  a.nr-cal{text-decoration:none;cursor:pointer;position:relative;z-index:2}
+  a.nr-cal i, a.nr-cal b{pointer-events:none}
+  /* Klickfläche: ganzes Blatt inkl. „Spieltag“-Feld und etwas Rand drumherum */
+  a.nr-cal::after{content:"";position:absolute;inset:-8px -10px -9px -8px}
+  .sp-nr{z-index:2}
+  a.nr-cal{overflow:visible}
+  a.nr-cal b{border-radius:0 0 5px 5px}
+  /* Wochentag: Desktop ausgeschrieben, Handy abgekürzt (Sa.) */
+  .wd-s{display:none}
+  @media (max-width: 600px){ .wd-l{display:none} .wd-s{display:inline} }
+  /* Handy-Banner: „Alte D-Junioren (U13) · Saison 2026/27“ immer in einer Zeile */
+  @media (max-width: 600px){
+    header p{font-size:clamp(10px, 3vw, 12px)}
+    .sub2{white-space:nowrap}
+    .fs-btn{padding:3px 6px;font-size:14px}
+  }
+  .score.empty{border-color:transparent}
+  /* Tabellen: alle Zeilen gleich hoch (kein Umbruch, lange Namen gekürzt) */
+  .tcard table{table-layout:fixed}
+  .tcard td, .tcard th{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:34px;padding-top:0;padding-bottom:0}
+  .tcard thead th{height:26px;padding-bottom:4px}
+  .tcard th:nth-child(1), .tcard td:nth-child(1){width:38px}
+  .tcard th:nth-child(n+3):nth-child(-n+6), .tcard td:nth-child(n+3):nth-child(-n+6){width:30px}
+  .tcard th:nth-child(7), .tcard td:nth-child(7){width:54px}
+  .tcard th:nth-child(8), .tcard td:nth-child(8){width:42px}
+  .tcard th:nth-child(9), .tcard td:nth-child(9){width:44px}
+  tr.hl-n5 td{border-top:none;border-bottom:none;box-shadow:inset 0 1px 0 var(--logo-black), inset 0 -1px 0 var(--logo-black)}
+  @media (max-width: 600px){
+    .tcard table{font-size:13px}
+    /* Handy: Platz für zweizeilige Vereinsnamen, alle Zeilen gleich hoch */
+    .tcard td{height:42px;line-height:1.2}
+    .tcard td:nth-child(2){white-space:normal;text-overflow:clip}
+    .tcard th:nth-child(1), .tcard td:nth-child(1){width:32px;padding-right:0;text-overflow:clip}
+    .tcard th:nth-child(2), .tcard td:nth-child(2){padding-left:2px;padding-right:4px}
+    .tcard th:nth-child(n+3):nth-child(-n+6), .tcard td:nth-child(n+3):nth-child(-n+6){width:22px;padding-left:1px;padding-right:1px}
+    .tcard th:nth-child(7), .tcard td:nth-child(7){width:42px;padding-left:2px;padding-right:2px}
+    .tcard th:nth-child(8), .tcard td:nth-child(8){width:30px;padding-left:2px;padding-right:2px}
+    .tcard th:nth-child(9), .tcard td:nth-child(9){width:36px;padding-left:2px}
+  }
+  @media (max-width: 600px){ .tcard{padding:0} }
+  @media (max-width: 600px){ .score, .score[disabled]{width:46px} }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>NTSV 7. D · Halle</h1>
+    <p>Hamburger Hallenmeisterschaft<span class="sub2"><span class="a-d">alte</span><span class="a-m">Alte</span> D-Junioren (U13) · Saison 2026/27</span></p>
+  </div>
+  <button class="fs-btn hidden" id="fsBtn" title="Vollbild" aria-label="Vollbild" style="display:none">⛶</button>
+  <div class="badge"><img src="ntsv-wappen.svg" alt="Niendorfer TSV" onerror="this.replaceWith(document.createTextNode('NTSV'))"></div>
+</header>
+
+<div class="wrap">
+  <div class="navwrap">
+  <!-- Handy: eine Zeile, Knöpfe schalten durch wiederholtes Antippen um -->
+  <nav class="tabs mnav">
+    <button class="chip" id="mBlau" data-s="n4" aria-pressed="false">Blau</button>
+    <button class="chip" id="mWeiss" data-s="n5" aria-pressed="false">Weiß</button>
+    <button class="chip" id="mCur" data-s="cur" aria-pressed="true">Aktuell</button>
+    <button class="chip" id="mInfo" aria-pressed="false" aria-label="Info und Teilen" title="Info und Teilen">ⓘ</button>
+  </nav>
+  <nav class="tabs" role="tablist">
+    <button class="chip" data-view="spiele" aria-pressed="true">Spiele</button>
+    <button class="chip" data-view="tabellen" aria-pressed="false">Tabellen</button>
+    <span class="tf" id="teamFilter"></span>
+  </nav>
+  <nav class="tabs tabs2">
+    <button class="chip" data-view="info" aria-pressed="false">Info</button>
+    <button class="chip" data-view="teilen" aria-pressed="false">Teilen</button>
+    <button class="chip" id="togglePast" aria-pressed="true">Vergangene Spiele</button>
+    <button class="chip m-only" id="modeAll" aria-pressed="false">Alles</button>
+    <button class="chip m-only" id="modeCur" aria-pressed="true">Aktuell</button>
+  </nav>
+  </div>
+
+  <!-- SPIELE -->
+  <section id="view-spiele">
+    <div id="matchList"></div>
+  </section>
+
+  <!-- TABELLEN -->
+  <section id="view-tabellen" class="hidden">
+    <div id="tables"></div>
+  </section>
+
+  <!-- INFO -->
+  <section id="view-info" class="hidden">
+    <div class="card">
+      <strong>So funktioniert die Seite</strong>
+      <p class="note">Alle Daten stammen von fussball.de. Der Spielplan ist dort teils noch vorläufig,
+      Zeiten können sich ändern. Hallen und Treffzeiten stammen aus SpielerPlus.</p>
+    </div>
+    <div class="card">
+      <strong>Teams &amp; Links</strong>
+      <ul class="links" id="teamLinks"></ul>
+    </div>
+    <div class="card" id="notesBox"></div>
+  </section>
+
+  <!-- TEILEN -->
+  <section id="view-teilen" class="hidden">
+    <div class="card" style="text-align:center">
+      <strong>Seite teilen</strong>
+      <p class="note">QR-Code mit der Handy-Kamera scannen, um diese Übersicht zu öffnen.</p>
+      <div id="qr" style="display:inline-block;background:#fff;padding:14px;border-radius:12px;margin:6px 0 10px"></div>
+      <div class="note" style="word-break:break-all" id="shareUrlTxt"></div>
+      <div style="margin-top:10px"><button class="btn primary" id="copyLink">Link kopieren</button></div>
+    </div>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<dialog id="scoreDlg">
+  <div id="dlgTitle" style="font-weight:600"></div>
+  <div class="row">
+    <input id="sHome" type="number" min="0" max="30" inputmode="numeric">
+    <span style="font-size:22px">:</span>
+    <input id="sAway" type="number" min="0" max="30" inputmode="numeric">
+  </div>
+  <div class="btns">
+    <button class="btn danger" id="dlgClear">Löschen</button>
+    <button class="btn" id="dlgCancel">Abbrechen</button>
+    <button class="btn primary" id="dlgSave">Speichern</button>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* =====================================================================
+   DATEN – hier pflegen
+   Stand: 15.11.2026 (fussball.de)
+   ===================================================================== */
+const DATA_STAND = "15.11.2026";
+const CLAUDE_URL = "https://claude.ai/artifact/L2oRP9c6x9FXKR2mc4YwCa";
+/* Auf der eigenen Domain (z. B. ingomue.de) zeigt der QR-Code auf diese Adresse, sonst auf claude.ai */
+const SHARE_URL = (/claudeusercontent|claude\.ai/.test(location.hostname) || !/^https?:$/.test(location.protocol))
+  ? CLAUDE_URL : location.origin + location.pathname.replace(/index\.html$/, "");
+
+const TEAMS = {
+  n4:  { name: "NTSV 7. D Blau (4.D-Jun. A2)",  short: "Blau",  group: "JH 05", staffel: "174405",
+         url: "https://www.fussball.de/mannschaft/niendorf-4d-jun-a2-niendorf-hamburg/-/saison/2627/team-id/02JAE3FD60000000VS5489B2VV3G3E4A",
+         groupUrl: "https://www.fussball.de/spieltag/jh-05--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg/-/spieldatum/2026-11-14/staffel/0327PBA1RK00000BVS5489BUVUFHD2VV-G" },
+  n5:  { name: "NTSV 7. D Weiß (10.D-Jun. A5)",  short: "Weiß",  group: "JH 04", staffel: "174404",
+         url: "https://www.fussball.de/mannschaft/niendorf-10d-jun-a5-niendorf-hamburg/-/saison/2627/team-id/02UCRRKAL8000000VS5489BRVTRSB17S",
+         groupUrl: "https://www.fussball.de/spieltag/jh-04--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg/-/staffel/0327PBA1J400000BVS5489BUVUFHD2VV-G" }
+};
+
+/* Teams, die standardmäßig angezeigt werden */
+const DEFAULT_TEAMS = ["n4", "n5"];
+
+/* score: null = noch kein Ergebnis, sonst "Heim:Gast", z. B. "3:1" */
+const MATCHES = [
+  // ---- 4. D (JH 05) – Sa 14.11.
+  { d:"2026-11-14", t:"15:54", nr:"174405013", h:"NTSV 7. D", a:"Eimsbüttel 13.D", teams:["n4"], score:"6:0" },
+  { d:"2026-11-14", t:"16:18", nr:"174405015", h:"HEBC 3.D", a:"NTSV 7. D", teams:["n4"], score:"1:0" },
+  { d:"2026-11-14", t:"16:54", nr:"174405018", h:"Eimsbüttel 6.D", a:"NTSV 7. D", teams:["n4"], score:"1:3" },
+  { d:"2026-11-14", t:"17:18", nr:"174405020", h:"NTSV 7. D", a:"Eimsbüttel 15.D", teams:["n4"], score:"2:4" },
+
+  // ---- 5. D (JH 04) – So 15.11.
+  { d:"2026-11-15", t:"09:12", nr:"174404022", h:"NTSV 7. D", a:"NTSV 5.D", teams:["n5"], score:"2:0" },
+  { d:"2026-11-15", t:"09:36", nr:"174404024", h:"SV Gr. Borstel 6.D", a:"NTSV 7. D", teams:["n5"], score:"0:7" },
+  { d:"2026-11-15", t:"10:00", nr:"174404026", h:"SV Gr. Borstel 4.D", a:"NTSV 7. D", teams:["n5"], score:"0:1" },
+  { d:"2026-11-15", t:"10:24", nr:"174404028", h:"NTSV 7. D", a:"SCALA 9.D", teams:["n5"], score:"1:0" },
+
+  // ---- 4. D (JH 05) – Sa 21.11.
+  { d:"2026-11-21", t:"14:00", nr:"174405081", h:"Glashütte 1.D", a:"NTSV 7. D", teams:["n4"], score:null },
+  { d:"2026-11-21", t:"14:36", nr:"174405084", h:"NTSV 7. D", a:"Paloma 11.D", teams:["n4"], score:null },
+  { d:"2026-11-21", t:"15:12", nr:"174405087", h:"NTSV 7. D", a:"Rahlstedt 2.D", teams:["n4"], score:null },
+  { d:"2026-11-21", t:"15:48", nr:"174405090", h:"HSV 8.D", a:"NTSV 7. D", teams:["n4"], score:null },
+
+  // ---- So 22.11.
+  { d:"2026-11-22", t:"16:42", nr:"174404052", h:"NTSV 7. D", a:"Germania 6.D", teams:["n5"], score:null },
+  { d:"2026-11-22", t:"17:06", nr:"174404054", h:"Harksheide 1.D", a:"NTSV 7. D", teams:["n5"], score:null },
+  { d:"2026-11-22", t:"17:30", nr:"174404056", h:"Altona 93 3.D", a:"NTSV 7. D", teams:["n5"], score:null },
+  { d:"2026-11-22", t:"17:54", nr:"174404058", h:"NTSV 7. D", a:"Germania 7.D", teams:["n5"], score:null },
+
+  // ---- Sa 28.11.
+  { d:"2026-11-28", t:"15:36", nr:"174405104", h:"NTSV 7. D", a:"Wellingsbüttel 2.D", teams:["n4"], score:null },
+  { d:"2026-11-28", t:"16:12", nr:"174405107", h:"NTSV 7. D", a:"Rahlstedt 3.D", teams:["n4"], score:null },
+  { d:"2026-11-28", t:"16:48", nr:"174405110", h:"Urania 1.D", a:"NTSV 7. D", teams:["n4"], score:null },
+
+  // ---- So 29.11.
+  { d:"2026-11-29", t:"14:12", nr:"174404142", h:"NTSV 7. D", a:"VfL Pinneberg 5.D", teams:["n5"], score:null },
+  { d:"2026-11-29", t:"14:36", nr:"174404144", h:"GW Eimsbüttel 1.D", a:"NTSV 7. D", teams:["n5"], score:null },
+  { d:"2026-11-29", t:"15:00", nr:"174404146", h:"Rantzau 1.D", a:"NTSV 7. D", teams:["n5"], score:null },
+  { d:"2026-11-29", t:"15:24", nr:"174404148", h:"NTSV 7. D", a:"Teutonia 10 3.D", teams:["n5"], score:null },
+
+  // ---- Sa 12.12.
+  { d:"2026-12-12", t:"13:12", nr:"174404182", h:"NTSV 7. D", a:"Cosmos Wedel 2.D", teams:["n5"], score:null },
+  { d:"2026-12-12", t:"13:36", nr:"174404184", h:"Eimsbüttel 14.D", a:"NTSV 7. D", teams:["n5"], score:null },
+  { d:"2026-12-12", t:"14:00", nr:"174404186", h:"Rissen 2.D", a:"NTSV 7. D", teams:["n5"], score:null },
+  { d:"2026-12-12", t:"14:24", nr:"174404188", h:"NTSV 7. D", a:"Osdorfer Born 2.D", teams:["n5"], score:null },
+
+  // ---- 7. D Blau (JH 05) – Gegner fest, Termin noch offen (d:null)
+  //      grp = voraussichtlicher Spieltag (Turniergruppen laut fussball.de, je 4 Spiele)
+  { d:null, t:null, grp:4, nr:"JH05-o01", h:"Eintr. Norderstedt 6.D", a:"NTSV 7. D", teams:["n4"], score:null },
+  { d:null, t:null, grp:4, nr:"JH05-o02", h:"NTSV 7. D", a:"Paloma 3.D", teams:["n4"], score:null },
+  { d:null, t:null, grp:4, nr:"JH05-o03", h:"NTSV 7. D", a:"Condor 7.D", teams:["n4"], score:null },
+  { d:null, t:null, grp:4, nr:"JH05-o04", h:"Farmsen 1.D", a:"NTSV 7. D", teams:["n4"], score:null },
+  { d:null, t:null, grp:5, nr:"JH05-o05", h:"SCALA 2.D", a:"NTSV 7. D", teams:["n4"], score:null },
+  { d:null, t:null, grp:5, nr:"JH05-o06", h:"NTSV 7. D", a:"Harksheide 2.D", teams:["n4"], score:null },
+  { d:null, t:null, grp:5, nr:"JH05-o07", h:"NTSV 7. D", a:"Rahlstedt 1.D", teams:["n4"], score:null },
+  { d:null, t:null, grp:5, nr:"JH05-o08", h:"HafenCity 1.D", a:"NTSV 7. D", teams:["n4"], score:null },
+  { d:null, t:null, grp:6, nr:"JH05-o09", h:"Nordlichter im NSV 1.D", a:"NTSV 7. D", teams:["n4"], score:null },
+  { d:null, t:null, grp:6, nr:"JH05-o10", h:"NTSV 7. D", a:"BU 3.D", teams:["n4"], score:null },
+  { d:null, t:null, grp:6, nr:"JH05-o11", h:"NTSV 7. D", a:"DUWO 08 1.D", teams:["n4"], score:null },
+  { d:null, t:null, grp:6, nr:"JH05-o12", h:"tus BERNE 5.D", a:"NTSV 7. D", teams:["n4"], score:null },
+
+  // ---- 7. D Weiß (JH 04) – HYPOTHETISCH: noch nicht angesetzt, abgeleitet aus „jeder gegen jeden“
+  //      (8 verbleibende Gegner, zu je 4 Spielen auf 2 Spieltage verteilt; Zuordnung/Heim-Gast offen)
+  { d:null, t:null, grp:5, hyp:true, nr:"JH04-h01", h:"NTSV 7. D", a:"Hetlingen 1.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:5, hyp:true, nr:"JH04-h02", h:"NTSV 7. D", a:"Nienstedten 3.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:5, hyp:true, nr:"JH04-h03", h:"NTSV 7. D", a:"Altona 93 4.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:5, hyp:true, nr:"JH04-h04", h:"NTSV 7. D", a:"VfL Pinneberg 1.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:6, hyp:true, nr:"JH04-h05", h:"NTSV 7. D", a:"Eimsbüttel 8.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:6, hyp:true, nr:"JH04-h06", h:"NTSV 7. D", a:"Paloma 2.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:6, hyp:true, nr:"JH04-h07", h:"NTSV 7. D", a:"TuS Osdorf 1.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:6, hyp:true, nr:"JH04-h08", h:"NTSV 7. D", a:"Sternschanze 2.D", teams:["n5"], score:null }
+];
+
+/* Turnierbeginn je Spieltag (Beginn des Turniers in der Halle, nicht das erste NTSV-Spiel).
+   Fehlt ein Datum, wird ersatzweise das erste NTSV-Spiel des Tages angezeigt. */
+const TURNIERBEGINN = {
+  "2026-11-14": "15:30",
+  "2026-11-15": "09:00",
+  "2026-11-21": "14:00",
+  "2026-11-22": "16:30",
+  "2026-11-28": "15:15",
+  "2026-11-29": "14:00",
+  "2026-12-12": "13:00"
+};
+
+/* Halle, Treffpunkt-Zeit und Ende je Spieltag (Quelle: SpielerPlus).
+   ort = Stadtteil, fahrt = ca. Minuten mit dem Auto ab NTSV-Platz Bondenwald */
+const SPIELTAGE = {
+  "2026-11-14": { treffen:"14:45", ende:"17:30", ort:"Osdorf",        fahrt:25, halle:"Sporthalle Lise-Meitner-Gymnasium (Eingang Harderweg)", adresse:"Knabeweg 3, 22549 Hamburg" },
+  "2026-11-15": { treffen:"08:15", ende:"11:00", ort:"Eimsbüttel",   fahrt:15, halle:"Sporthalle Rellinger Straße (Eingang Kieler Str. 128)", adresse:"Rellinger Str. 13-15, 20257 Hamburg" },
+  "2026-11-21": { treffen:"13:15", ende:"16:00", ort:"Hummelsbüttel", fahrt:20, halle:"Gymnasium Hummelsbüttel", adresse:"Grützmühlenweg 38, 22339 Hamburg" },
+  "2026-11-22": { treffen:"15:45", ende:"17:45", ort:"Rissen",        fahrt:30, halle:"Sporthalle Vosshagen", adresse:"Voßhagen 15, 22559 Hamburg" },
+  "2026-11-28": { treffen:"14:30", ende:"17:00", ort:"Altona",        fahrt:15, halle:"Sporthalle Eckernförder Straße", adresse:"Eckernförder Str. 70, 22769 Hamburg" },
+  "2026-11-29": { treffen:"13:15", ende:"16:00", ort:"Pinneberg",     fahrt:20, halle:"JCS-Halle", adresse:"Horn 5, 25421 Pinneberg" },
+  "2026-12-12": { treffen:"12:15", ende:"15:00", ort:"Barmstedt",     fahrt:30, halle:"Sporthalle Heederbrook", adresse:"Heederbrook 10A, 25355 Barmstedt" }
+};
+/* Sammelpunkt-Symbol (grünes Quadrat, Pfeile zur Mitte) für den Treffzeitpunkt */
+const ICON_TREFFEN = '<svg class="ico-treffen" role="img" aria-label="Treffen" viewBox="0 0 24 24"><title>Treffen</title><g stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85"><path d="M2.5 2.5L7.5 7.5M7.5 3.8v3.7H3.8"/><path d="M21.5 2.5l-5 5M16.5 3.8v3.7h3.7"/><path d="M2.5 21.5l5-5M3.8 16.5h3.7v3.7"/><path d="M21.5 21.5l-5-5M20.2 16.5h-3.7v3.7"/></g><circle cx="12" cy="12" r="2.3" fill="currentColor" opacity=".85"/></svg>';
+/* Fußball schwarz-weiß (überall gleich, statt Emoji) */
+const ICON_BALL = '<svg class="ico-ball" role="img" aria-label="Spielzeit" viewBox="0 0 24 24"><title>Spielzeit</title><defs><clipPath id="ntsvball"><circle cx="12" cy="12" r="10.4"/></clipPath></defs><circle cx="12" cy="12" r="10.4" fill="#fff"/><g clip-path="url(#ntsvball)"><path d="M12.00 8.30 L15.52 10.86 L14.17 14.99 L9.83 14.99 L8.48 10.86Z M12.00 5.30 L8.48 2.74 L9.83 -1.39 L14.17 -1.39 L15.52 2.74Z M18.37 9.93 L19.72 5.79 L24.07 5.79 L25.41 9.93 L21.89 12.49Z M15.94 17.42 L20.29 17.42 L21.63 21.56 L18.11 24.11 L14.59 21.56Z M8.06 17.42 L9.41 21.56 L5.89 24.11 L2.37 21.56 L3.71 17.42Z M5.63 9.93 L2.11 12.49 L-1.41 9.93 L-0.07 5.79 L4.28 5.79Z" fill="#1d1d1b"/><path d="M12.00 8.30 L12.00 5.30 M15.52 10.86 L18.37 9.93 M14.17 14.99 L15.94 17.42 M9.83 14.99 L8.06 17.42 M8.48 10.86 L5.63 9.93" stroke="#1d1d1b" stroke-width="1.1" fill="none"/></g><circle cx="12" cy="12" r="10.4" fill="none" stroke="#1d1d1b" stroke-width="1.2"/></svg>';
+/* Stecknadel mit schwarzem Kopf */
+const ICON_PIN = '<svg class="ico-pin" role="img" aria-label="Ort" viewBox="0 0 12 18"><title>Ort</title><line x1="6" y1="8.9" x2="6" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="5" r="3.9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+const TEAM_ICON = { n4:"🔵", n5:"⚪" };
+const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
+
+/* Tabellen: [Platz, Team, Sp, G, U, V, Tore, Diff, Pkt] */
+const TABLES = [
+  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"15.11.2026",
+    rows:[
+      [1,"Paloma 11.D (A6)",4,4,0,0,"12:1",11,12],
+      [2,"Eimsbüttel 15.D (A11)",4,3,1,0,"11:6",5,10],
+      [3,"SCALA 2.D (A3)",3,2,1,0,"8:0",8,7],
+      [4,"Paloma 3.D (A3)",4,2,1,1,"6:2",4,7],
+      [5,"HEBC 3.D (A3)",4,2,1,1,"6:3",3,7],
+      [6,"Glashütte 1.D (A1)",3,2,1,0,"3:0",3,7],
+      [7,"NTSV 7. D Blau",4,2,0,2,"11:6",5,6],
+      [8,"Eimsbüttel 13.D (A9)",4,1,1,2,"5:13",-8,4],
+      [9,"Urania 1.D (A1)",2,0,1,1,"0:2",-2,1],
+      [10,"Eimsbüttel 6.D (A6)",4,0,1,3,"5:10",-5,1],
+      [11,"Condor 7.D (A4)",0,0,0,0,"0:0",0,0],
+      [11,"DUWO 08 1.D (A1)",0,0,0,0,"0:0",0,0],
+      [11,"Farmsen 1.D (A1)",0,0,0,0,"0:0",0,0],
+      [11,"HSV 8.D (A4)",0,0,0,0,"0:0",0,0],
+      [11,"HafenCity 1.D (A1)",0,0,0,0,"0:0",0,0],
+      [11,"Rahlstedt 1.D (A1)",0,0,0,0,"0:0",0,0],
+      [11,"Rahlstedt 2.D (A2)",0,0,0,0,"0:0",0,0],
+      [11,"Rahlstedt 3.D (J1)",0,0,0,0,"0:0",0,0],
+      [11,"Wellingsbüttel 2.D (A2)",0,0,0,0,"0:0",0,0],
+      [11,"tus BERNE 5.D (A3)",0,0,0,0,"0:0",0,0],
+      [21,"BU 3.D (A3)",2,0,0,2,"2:6",-4,0],
+      [22,"Eintr. Norderstedt 6.D (A4)",2,0,0,2,"0:5",-5,0],
+      [23,"Nordlichter im NSV 1.D (A1)",2,0,0,2,"0:6",-6,0],
+      [24,"Harksheide 2.D (A2)",2,0,0,2,"0:9",-9,0]
+    ]},
+  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"15.11.2026",
+    rows:[
+      [1,"NTSV 7. D Weiß",4,4,0,0,"11:0",11,12],
+      [2,"Hetlingen 1.D (A1)",4,3,1,0,"6:1",5,10],
+      [3,"Eimsbüttel 14.D (A10)",4,3,0,1,"6:3",3,9],
+      [4,"NTSV 5.D (A3)",4,3,0,1,"5:3",2,9],
+      [5,"Nienstedten 3.D (A2)",4,3,0,1,"4:2",2,9],
+      [6,"Altona 93 4.D (A4)",4,2,2,0,"11:2",9,8],
+      [7,"Altona 93 3.D (A3)",4,2,2,0,"9:2",7,8],
+      [8,"Rissen 2.D (A1)",4,2,1,1,"7:3",4,7],
+      [9,"VfL Pinneberg 1.D (A1)",4,2,1,1,"5:2",3,7],
+      [10,"Harksheide 1.D (A1)",4,2,0,2,"7:5",2,6],
+      [11,"SCALA 9.D (A2)",4,1,1,2,"7:4",3,4],
+      [12,"Rantzau 1.D (A1)",4,1,1,2,"7:5",2,4],
+      [13,"VfL Pinneberg 5.D (A3)",4,1,1,2,"3:6",-3,4],
+      [14,"SV Gr. Borstel 6.D (A3)",4,1,1,2,"2:10",-8,4],
+      [15,"Eimsbüttel 8.D (A6)",4,1,0,3,"5:7",-2,3],
+      [16,"Cosmos Wedel 2.D (A2)",4,0,3,1,"2:5",-3,3],
+      [17,"GW Eimsbüttel 1.D (A1)",4,1,0,3,"5:10",-5,3],
+      [18,"Germania 6.D (A1)",4,0,2,2,"2:4",-2,2],
+      [19,"Germania 7.D (A3)",0,0,0,0,"0:0",0,0],
+      [19,"Osdorfer Born 2.D (A1)",0,0,0,0,"0:0",0,0],
+      [19,"Paloma 2.D (A2)",0,0,0,0,"0:0",0,0],
+      [19,"Teutonia 10 3.D (A2)",0,0,0,0,"0:0",0,0],
+      [19,"TuS Osdorf 1.D (A1)",0,0,0,0,"0:0",0,0],
+      [24,"SV Gr. Borstel 4.D (A2)",4,0,0,4,"0:8",-8,0],
+      [25,"Sternschanze 2.D (A1)",4,0,0,4,"0:22",-22,0]
+    ]}
+];
+
+const NOTES = `
+  <strong>7. D Blau (4. D) – Spieltag 14.11.2026</strong>
+  <p class="note">15:54 NTSV 7. D – Eimsbüttel 13 <b>6:0</b><br>
+  16:18 HEBC 3 – NTSV 7. D <b>1:0</b><br>
+  16:54 Eimsbüttel 6 – NTSV 7. D <b>1:3</b><br>
+  17:18 NTSV 7. D – Eimsbüttel 15 <b>2:4</b><br>
+  Bilanz: 2 Siege, 2 Niederlagen, 11:6 Tore, 6 Punkte.</p>
+  <strong>7. D Weiß (10. D) – Spieltag 15.11.2026</strong>
+  <p class="note">09:12 NTSV 7. D – NTSV 5. D <b>2:0</b><br>
+  09:36 Gr. Borstel 6 – NTSV 7. D <b>0:7</b><br>
+  10:00 Gr. Borstel 4 – NTSV 7. D <b>0:1</b><br>
+  10:24 NTSV 7. D – SCALA 9 <b>1:0</b><br>
+  Bilanz: 4 Siege, 11:0 Tore, 12 Punkte – Tabellenplatz 1.</p>`;
+
+/* =====================================================================
+   AB HIER: Logik (normalerweise nicht ändern)
+   ===================================================================== */
+const LS_SCORES = "ntsv-hallen-scores-v1";
+const LS_TEAMS  = "ntsv-hallen-teams-v1";
+const store = {
+  get(k, def){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+let localScores = store.get(LS_SCORES, {});
+MATCHES.forEach(m => { if(m.score && localScores[m.nr]) delete localScores[m.nr]; });
+store.set(LS_SCORES, localScores);
+let selTeams = store.get(LS_TEAMS, DEFAULT_TEAMS).filter(t => TEAMS[t]);
+/* Handy: Ansicht „Aktuell“ (Standard) oder „Alles“ */
+let MODE = "cur";
+const MOBILE = window.matchMedia("(max-width: 600px)");
+/* Vergangene Spieltage: Desktop standardmäßig an, Handy standardmäßig aus */
+let showPast = !window.matchMedia("(max-width: 600px)").matches;
+document.getElementById("togglePast").setAttribute("aria-pressed", showPast);
+
+const isNtsv = s => /^NTSV\b/.test(s);
+const isOurs = s => /^NTSV 7\. D/.test(s);
+const fmtDay = iso => {
+  const dt = new Date(iso + "T12:00:00");
+  const wl = dt.toLocaleDateString("de-DE", { weekday:"long" });
+  const ws = dt.toLocaleDateString("de-DE", { weekday:"short" }).replace(/\.?$/, ".");
+  const dm = dt.toLocaleDateString("de-DE", { day:"2-digit", month:"2-digit", year:"numeric" });
+  return `<span class="wd-l">${wl}</span><span class="wd-s">${ws}</span>, ${dm}`;
+};
+const todayIso = () => {
+  const n = new Date(); const p = x => String(x).padStart(2,"0");
+  return `${n.getFullYear()}-${p(n.getMonth()+1)}-${p(n.getDate())}`;
+};
+const matchDate = m => new Date(`${m.d}T${m.t}:00`);
+const scoreOf = m => m.score ?? localScores[m.nr] ?? null;  // offizielles Ergebnis ersetzt das vorläufige
+const isVorl = m => !m.score && !!localScores[m.nr];
+
+function outcome(m){
+  const s = scoreOf(m); if(!s) return null;
+  const [h,a] = s.split(":").map(Number);
+  // aus Sicht unserer 7. D (Blau/Weiß), auch bei vereinsinternen Duellen
+  const home = isOurs(m.h);
+  const our = home ? h : a, their = home ? a : h;
+  return our > their ? "w" : our < their ? "l" : "d";
+}
+
+function renderFilter(){
+  const box = document.getElementById("teamFilter");
+  box.innerHTML = "";
+  Object.entries(TEAMS).forEach(([id, t]) => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = t.short;
+    b.dataset.team = id;
+    b.setAttribute("aria-pressed", selTeams.includes(id));
+    b.onclick = () => {
+      selTeams = selTeams.includes(id) ? selTeams.filter(x => x !== id) : [...selTeams, id];
+      store.set(LS_TEAMS, selTeams);
+      renderAll();
+    };
+    box.appendChild(b);
+  });
+}
+
+function filtered(){
+  return MATCHES.filter(m => m.teams.some(t => selTeams.includes(t)))
+                .sort((a,b) => ((a.d || "9999-" + (a.grp || 0)) + (a.t || "")).localeCompare((b.d || "9999-" + (b.grp || 0)) + (b.t || "")));
+}
+
+function teamTags(m){
+  return m.teams.filter(t => selTeams.includes(t))
+    .map(t => `<span class="tag tag-${t}">${TEAMS[t].short}</span>`).join("");
+}
+
+function renderMatches(){
+  const list = document.getElementById("matchList");
+  const today = todayIso();
+  let ms = filtered();
+  /* „Vergangene Spiele“ gilt für ganze Spieltage (Blau + Weiß gleicher Nummer):
+     ausgeblendet wird ein Spieltag erst, wenn er für beide Teams vorbei ist */
+  /* Handy + „Aktuell“: nur der Spieltag, dessen Datum höchstens ±1 Tag von heute liegt (am nächsten);
+     sonst der kommende, sonst der letzte */
+  const isMobile = MOBILE.matches;
+  let CUR_N = null, CUR_MARK = null;
+  if(isMobile){
+    const dated = ms.filter(m => m.d);
+    const diff = d => Math.round((new Date(d + "T12:00:00") - new Date(today + "T12:00:00")) / 864e5);
+    const near = dated.filter(m => Math.abs(diff(m.d)) <= 1).sort((a, b) => Math.abs(diff(a.d)) - Math.abs(diff(b.d)) || diff(b.d) - diff(a.d));
+    const up = dated.filter(m => diff(m.d) > 0).sort((a, b) => a.d.localeCompare(b.d));
+    const last = [...dated].sort((a, b) => b.d.localeCompare(a.d));
+    const pick = near[0] || up[0] || last[0];
+    if(pick){
+      const pn = spieltagNr(pick.d, pick.teams[0]);
+      /* „Demnächst“: der Spieltag nach dem aktuellen (ggf. auch noch nicht angesetzte Karten) */
+      if(MODE === "cur"){ CUR_N = pn + (mNext ? 1 : 0); ms = ms.filter(m => (m.d ? spieltagNr(m.d, m.teams[0]) : m.grp) === CUR_N); }
+      else CUR_MARK = pn;   // Team-Übersicht: aktuellen Spieltag nur markieren
+    }
+  }
+  if(!isMobile && !showPast){
+    const nOf = m => m.d ? spieltagNr(m.d, m.teams[0]) : (m.grp || 0);
+    const live = new Set(MATCHES.filter(m => !m.d || m.d >= today).map(nOf));
+    ms = ms.filter(m => live.has(nOf(m)));
+  }
+  if(!ms.length){
+    list.innerHTML = `<p class="note">${selTeams.length ? "Keine Spiele." : "Bitte oben mindestens ein Team auswählen."}</p>`;
+    return;
+  }
+  /* Nächster Spieltag (kleinste Spieltag-Nummer mit Datum ab heute) bleibt aufgeklappt, alle anderen zu */
+  const NEXT_N = CUR_N !== null ? CUR_N : (isMobile && MODE === "all") ? -999 : (() => { const ns = MATCHES.filter(m => m.d && m.d >= today).map(m => spieltagNr(m.d, m.teams[0]));
+    return ns.length ? Math.min(...ns) : -1; })();
+  list.classList.toggle("team-n5", isMobile && MODE === "all" && selTeams.length === 1 && selTeams[0] === "n5");
+  const byDay = {};
+  ms.forEach(m => (byDay[m.d || ("offen-" + m.teams[0] + "-" + (m.grp || 0))] ||= []).push(m));
+  list.innerHTML = Object.entries(byDay).map(([d, arr]) => {
+    const tm = arr.every(m => m.teams[0] === arr[0].teams[0]) ? arr[0].teams[0] : "mix";
+    const vsl = d.startsWith("offen");
+    const n = tm === "mix" ? 0 : (vsl ? +d.split("-").pop() : spieltagNr(d, tm));
+    return `
+    <div class="day sp sp-${tm} ${d === today ? "today" : ""}${n !== NEXT_N ? " past" + (OPEN_PAST.has(d) ? " open" : "") : ""}${vsl ? " sp-offen" : ""}${!vsl && n === CUR_MARK ? " is-cur" : ""}" data-n="${n}" data-d="${d}">
+     <div class="sp-head">
+      ${tm !== "mix" ? (() => {
+        return `<span class="sp-nr"><span class="nr-t">${vsl ? "vsl. " : ""}${n}. Spieltag</span><a class="nr-cal${vsl ? " vsl" : ""}" href="${spieltagUrl(tm, vsl ? null : d)}" target="_blank" rel="noopener" title="${vsl ? "voraussichtlich " : ""}${n}. Spieltag – auf fussball.de öffnen"><i>Spieltag</i><b>${n}</b></a></span>`; })() : ""}
+      <h2>${vsl ? "Noch nicht angesetzt" : `${fmtDay(d)}${SPIELTAGE[d] ? `, <span class="treff">${ICON_TREFFEN}&nbsp;${SPIELTAGE[d].treffen}&nbsp;Uhr</span>` : ""}`}</h2>
+      ${SPIELTAGE[d] ? `<div class="venue">${ICON_BALL} ${TURNIERBEGINN[d] || arr[0].t} – ${SPIELTAGE[d].ende}<span class="v-gap"></span>${ICON_PIN} <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SPIELTAGE[d].adresse)}&travelmode=driving" target="_blank" rel="noopener">${esc(SPIELTAGE[d].ort)} (${SPIELTAGE[d].fahrt} min)</a></div>` : ""}
+     </div>
+     <div class="sp-body">
+      ${arr.map(m => {
+        const s = scoreOf(m), o = outcome(m);
+        return `<div class="m">
+          <div class="teams">
+            <span class="vs"><span class="${isOurs(m.h) ? "ntsv" : ""}">${esc(m.h)}</span> –
+              <span class="${isOurs(m.a) ? "ntsv" : ""}">${esc(m.a)}</span></span>
+            ${isVorl(m) ? '<span class="meta">vorläufig</span>' : ""}
+          </div>
+          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${m.score ? "disabled" : ""}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
+        </div>`;
+      }).join("")}
+     </div>
+    </div>`;
+  }).join("");
+  /* Vollbild + genau ein Team: Tabellenausschnitt (Top 3, …, eigenes Team) vor den Spieltagen */
+  if(selTeams.length === 1 && (isMobile ? MODE === "all" : !!(document.fullscreenElement || document.webkitFullscreenElement))){
+    list.insertAdjacentHTML("afterbegin", miniTable(selTeams[0], false));
+  }
+  /* Desktop: Blau links, Weiß rechts; Spieltage mit gleicher Nummer in einer Zeile, oben bündig */
+  if(TWO_COL.matches){
+    const cards = [...list.children];
+    const by = { n4:{}, n5:{} }; const ns = new Set();
+    cards.forEach(el => { const t = el.classList.contains("sp-n5") ? "n5" : "n4"; const n = +el.dataset.n || 0;
+      (by[t][n] ||= []).push(el); ns.add(n); });
+    const oneTeam = !Object.keys(by.n4).length || !Object.keys(by.n5).length;
+    list.innerHTML = "";
+    if(oneTeam){
+      cards.forEach(el => { el.style.gridColumn = "1 / -1"; list.appendChild(el); });
+    } else {
+      [...ns].sort((a,b) => a - b).forEach(n => ["n4", "n5"].forEach((t, i) => {
+        const els = by[t][n];
+        if(els) els.forEach(el => { el.style.gridColumn = String(i + 1); list.appendChild(el); });
+        else { const ph = document.createElement("div"); ph.style.gridColumn = String(i + 1); list.appendChild(ph); }
+      }));
+    }
+  }
+  /* Vergangene Spieltage: nur Kopf sichtbar, Klick auf den Kopf klappt die Spiele auf/zu */
+  list.querySelectorAll(".sp.past").forEach(card => card.addEventListener("click", e => {
+    if(e.target.closest(".nr-cal")) return;              // Spieltag-Icon: Link zu fussball.de
+    /* Desktop (zweispaltig): Karte des anderen Teams mit gleicher Spieltag-Nummer mit auf-/zuklappen */
+    const group = TWO_COL.matches ? [...list.querySelectorAll(`.sp.past[data-n="${card.dataset.n}"]`)] : [card];
+    const setOpen = on => group.forEach(c => { c.classList.toggle("open", on); on ? OPEN_PAST.add(c.dataset.d) : OPEN_PAST.delete(c.dataset.d); });
+    if(!card.classList.contains("open")){                // zugeklappt: Klick irgendwo klappt auf
+      e.preventDefault(); setOpen(true);
+    } else if(e.target.closest(".sp-head") && !e.target.closest("a")){   // offen: Klick auf Kopf klappt zu
+      setOpen(false);
+    }
+  }));
+  list.querySelectorAll(".score:not([disabled])").forEach(b => b.onclick = () => openDlg(b.dataset.nr));
+}
+
+/* Kalender-Links (Google / Outlook) je Spieltag */
+function calEvent(d, arr){
+  const team = arr[0].teams[0];
+  const st = SPIELTAGE[d];
+  const sorted = [...arr].sort((a,b) => a.t.localeCompare(b.t));
+  const addMin = (hhmm, min) => { const [h,m] = hhmm.split(":").map(Number); const x = h*60+m+min; return String(Math.floor(x/60)).padStart(2,"0") + ":" + String(x%60).padStart(2,"0"); };
+  const start = st ? st.treffen : sorted[0].t;
+  const end = st ? st.ende : addMin(sorted[sorted.length-1].t, 25);
+  const title = `${TEAM_ICON[team]} ${TEAM_WORD[team]} · NTSV 7. D Hallenturnier`;
+  const lines = [];
+  if(st) lines.push(`Treffen ${st.treffen} · Beginn ${TURNIERBEGINN[d] || sorted[0].t} · Ende ca. ${st.ende}`);
+  sorted.forEach(m => lines.push(`${m.t}  ${m.h} – ${m.a}`));
+  lines.push("", "Übersicht: " + SHARE_URL);
+  const location = st ? `${st.halle}, ${st.adresse}` : "";
+  return { d, start, end, title, details: lines.join("\n"), location };
+}
+function calButtons(d, arr){
+  const e = calEvent(d, arr);
+  const ymd = d.replace(/-/g, "");
+  const hm = t => t.replace(":", "") + "00";
+  const g = "https://calendar.google.com/calendar/render?action=TEMPLATE"
+    + "&text=" + encodeURIComponent(e.title)
+    + "&dates=" + ymd + "T" + hm(e.start) + "/" + ymd + "T" + hm(e.end)
+    + "&ctz=Europe/Berlin"
+    + "&details=" + encodeURIComponent(e.details)
+    + "&location=" + encodeURIComponent(e.location);
+  const o = "https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent"
+    + "&subject=" + encodeURIComponent(e.title)
+    + "&startdt=" + encodeURIComponent(`${d}T${e.start}:00+01:00`)
+    + "&enddt=" + encodeURIComponent(`${d}T${e.end}:00+01:00`)
+    + "&body=" + encodeURIComponent(e.details)
+    + "&location=" + encodeURIComponent(e.location);
+  return `<span class="calbtns"><a href="${g}" target="_blank" rel="noopener">📅 Google</a><a href="${o}" target="_blank" rel="noopener">📅 Outlook</a></span>`;
+}
+
+/* Tabellen-Name: „Hetlingen 1.D (A1)“ → Zeile 1 „Hetlingen“, Zeile 2 „(1. D, A1)“ */
+function fmtTeam(s){
+  const m = s.match(/^(.*?)\s+(\d+)\.\s?D\s*\(([A-Z]\d+)\)$/);
+  const own = s.match(/^NTSV 7\. D (Blau|Weiß)$/);
+  if(own) return `<span class="t-name">${esc(s)}</span><span class="t-sub">${own[1] === "Blau" ? "(4. D, A2)" : "(10. D, A5)"}</span>`;
+  if(!m) return `<span class="t-name">${esc(s)}</span>`;
+  return `<span class="t-name">${esc(m[1])}</span><span class="t-sub">(${m[2]}. D, ${m[3]})</span>`;
+}
+
+/* Tabellenausschnitt für ein Team: Plätze 1–3, „…“, eigene Zeile */
+function miniTable(team, defFull){
+  const tb = TABLES.find(t => t.teams.includes(team)); if(!tb) return "";
+  /* Handy-Teamansicht: standardmäßig ganze Tabelle, Tipp auf den Kopf verkürzt sie */
+  const body = tableRows(tb, team, defFull ? !OPEN_TBL.has(team) : OPEN_TBL.has(team));
+  return `<div class="card tcard tc-${team} mini" data-team="${team}">
+    <div class="tbl-head ${team}"><strong>${TEAMS[team].short} · Gruppe ${tb.group}</strong></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
+      <tbody>${body}</tbody></table></div></div>`;
+}
+/* Tabellenzeilen: verkürzt (Plätze 1–3, …, eigenes Team, …) oder vollständig */
+function tableRows(tb, team, full){
+  const idx = tb.rows.findIndex(r => rowTeam(r[1]) === team);
+  const row = r => `<tr class="${rowTeam(r[1]) ? "hl hl-" + rowTeam(r[1]) : ""}">${r.map((c, i) => `<td>${i === 1 ? fmtTeam(String(c)) : esc(String(c))}</td>`).join("")}</tr>`;
+  let body = tb.rows.slice(0, 3).map(row).join("");
+  if(idx > 3) body += `<tr class="t-gap"><td colspan="9">…</td></tr>`;
+  if(idx >= 3) body += row(tb.rows[idx]);
+  if(Math.max(idx, 2) < tb.rows.length - 1) body += `<tr class="t-gap"><td colspan="9">…</td></tr>`;
+  if(full) body = tb.rows.map(row).join("");
+  return body;
+}
+
+const rowTeam = name => /7\. D Blau/.test(name) ? "n4" : /7\. D Weiß/.test(name) ? "n5" : null;
+
+function renderTables(){
+  const ORDER = ["n5", "n4"];  // Weiß vor Blau
+  const shown = TABLES.filter(tb => tb.teams.some(t => selTeams.includes(t)));
+  if(!shown.length){ document.getElementById("tables").innerHTML = '<p class="note">Bitte oben mindestens ein Team auswählen.</p>'; return; }
+  document.getElementById("tables").innerHTML = [...shown].sort((a, b) => ORDER.indexOf(a.teams[0]) - ORDER.indexOf(b.teams[0])).map(tb => {
+    const links = tb.teams.map(t => TEAMS[t].groupUrl).filter(Boolean);
+    return `<div class="card tcard tc-${tb.teams[0]}" data-team="${tb.teams[0]}">
+      <div class="tbl-head ${tb.teams[0]}"><strong>${tb.teams.map(t => TEAMS[t].short).join(", ")} · Gruppe ${tb.group}</strong></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
+        <tbody>${tableRows(tb, tb.teams[0], OPEN_TBL.has(tb.teams[0]))}</tbody>
+      </table></div>
+    </div>`;
+  }).join("");
+}
+
+function renderInfo(){
+  document.getElementById("teamLinks").innerHTML = Object.values(TEAMS).map(t =>
+    `<li><a href="${t.url}" target="_blank" rel="noopener">${esc(t.name)}</a> – Gruppe ${t.group} (Staffel-ID ${t.staffel})</li>`).join("");
+  const nb = document.getElementById("notesBox"); if(nb) nb.remove();
+  /* Datenstand / Hinweis im Info-Tab statt in der Fußzeile */
+  document.getElementById("view-info").insertAdjacentHTML("beforeend",
+    `<div class="card"><strong>Datenstand</strong><p class="note">Stand: ${DATA_STAND} · Quellen: fussball.de, SpielerPlus<br>Inoffizielle Übersicht, alle Angaben ohne Gewähr.</p></div>`);
+  const ft = document.getElementById("footer"); if(ft) ft.remove();
+}
+
+function esc(s){ return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+/* Ergebnis-Dialog */
+const dlg = document.getElementById("scoreDlg");
+let dlgNr = null;
+function openDlg(nr){
+  const m = MATCHES.find(x => x.nr === nr); if(m.score) return; dlgNr = nr;
+  document.getElementById("dlgTitle").textContent = `${m.h} – ${m.a}`;
+  const s = scoreOf(m);
+  const [h, a] = s ? s.split(":") : ["", ""];
+  document.getElementById("sHome").value = h;
+  document.getElementById("sAway").value = a;
+  if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+}
+function closeDlg(){ if(dlg.close) dlg.close(); else dlg.removeAttribute("open"); }
+document.getElementById("dlgCancel").onclick = closeDlg;
+document.getElementById("dlgSave").onclick = () => {
+  const h = document.getElementById("sHome").value, a = document.getElementById("sAway").value;
+  if(h === "" || a === ""){ return; }
+  localScores[dlgNr] = `${parseInt(h,10)}:${parseInt(a,10)}`;
+  store.set(LS_SCORES, localScores); closeDlg(); renderAll();
+};
+document.getElementById("dlgClear").onclick = () => {
+  delete localScores[dlgNr]; store.set(LS_SCORES, localScores); closeDlg(); renderAll();
+};
+
+/* Tabs */
+document.querySelectorAll("nav.tabs .chip[data-view]").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav.tabs .chip[data-view]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  document.getElementById("togglePast").classList.toggle("hidden", b.dataset.view !== "spiele");
+  ["modeAll", "modeCur"].forEach(id => document.getElementById(id).classList.toggle("hidden", b.dataset.view !== "spiele"));
+  ["spiele","tabellen","info","teilen"].forEach(v =>
+    document.getElementById("view-" + v).classList.toggle("hidden", v !== b.dataset.view));
+});
+document.getElementById("togglePast").onclick = e => {
+  showPast = !showPast; e.target.setAttribute("aria-pressed", showPast); renderMatches();
+};
+
+function renderShare(){
+  document.getElementById("shareUrlTxt").textContent = SHARE_URL;
+  const box = document.getElementById("qr");
+  try{
+    const q = qrcode(0, "M"); q.addData(SHARE_URL); q.make();
+    box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+    const svg = box.querySelector("svg"); if(svg){ svg.style.width = "220px"; svg.style.height = "220px"; }
+  }catch(e){ box.innerHTML = '<span class="note">QR-Code konnte nicht geladen werden.</span>'; }
+  const btn = document.getElementById("copyLink");
+  btn.onclick = async () => {
+    try{ await navigator.clipboard.writeText(SHARE_URL); btn.textContent = "Kopiert ✓"; }
+    catch(e){ btn.textContent = "Bitte Link oben markieren"; }
+    setTimeout(() => btn.textContent = "Link kopieren", 2000);
+  };
+}
+
+/* Link zum Spieltag (bzw. zur Gruppe, wenn noch kein Datum) auf fussball.de */
+function spieltagUrl(team, d){
+  const g = TEAMS[team].groupUrl || "";
+  const base = g.split("/-/")[0];
+  const st = (g.match(/staffel\/[^/?#]+/) || [""])[0];
+  return d ? `${base}/-/spieldatum/${d}/${st}` : `${base}/-/${st}`;
+}
+
+/* Spieltag-Nummer je Team: Reihenfolge aller Termine dieses Teams (unabhängig vom Filter) */
+function spieltagNr(d, team){
+  const days = [...new Set(MATCHES.filter(m => m.d && m.teams.includes(team)).map(m => m.d))].sort();
+  return days.indexOf(d) + 1;
+}
+
+const OPEN_PAST = new Set();
+const OPEN_TBL = new Set();   // Handy: vollständig aufgeklappte Tabellen
+/* Handy: Klick auf Tabellenkopf klappt die ganze Tabelle auf bzw. wieder zu */
+document.addEventListener("click", e => {
+  const h = e.target.closest(".tcard .tbl-head"); if(!h) return;
+  const t = h.closest(".tcard").dataset.team; if(!t) return;
+  OPEN_TBL.has(t) ? OPEN_TBL.delete(t) : OPEN_TBL.add(t);
+  if(h.closest("#matchList")) renderMatches(); else renderTables();
+});
+/* Handy-Knöpfe „Alles“ / „Aktuell“ (schließen sich gegenseitig aus) */
+function setMode(m){
+  MODE = m;
+  document.getElementById("modeAll").setAttribute("aria-pressed", m === "all");
+  document.getElementById("modeCur").setAttribute("aria-pressed", m === "cur");
+  renderMatches(); mSync();
+}
+/* ---- Handy-Knopfzeile ---- */
+let mCur = "spiele";
+function mShow(v){
+  mCur = v;
+  document.body.classList.toggle("m-info", v === "info");
+  ["spiele","tabellen","info","teilen"].forEach(x =>
+    document.getElementById("view-" + x).classList.toggle("hidden", !(x === v || (v === "info" && x === "teilen"))));
+  mSync();
+}
+/* Handy: drei Ansichten – Blau (Tabelle + alle Blau-Spieltage), Weiß (dito), Aktuell (aktueller Spieltag beider Teams) */
+const M_ORDER = ["n4", "n5", "cur"];
+let mSel = "cur";
+let mNext = false;   // „Aktuell“ erneut angetippt → „Demnächst“ (nächster Spieltag)
+function mSet(s, keepNext){
+  if(!keepNext) mNext = false;
+  mSel = s;
+  if(s === "cur"){ selTeams = ["n4", "n5"]; MODE = "cur"; }
+  else { selTeams = [s]; MODE = "all"; }
+  mShow("spiele"); renderMatches();
+}
+function mSync(){
+  const mi = document.getElementById("mInfo");
+  M_ORDER.forEach(s => { const b = document.querySelector(`.mnav .chip[data-s="${s}"]`);
+    if(b) b.setAttribute("aria-pressed", mCur !== "info" && mSel === s); });
+  if(mi) mi.setAttribute("aria-pressed", mCur === "info");
+  const mc = document.getElementById("mCur"); if(mc) mc.textContent = mNext ? "Demnächst" : "Aktuell";
+}
+/* Sanfter Seitenwechsel: alte Ansicht gleitet hinaus, neue gleitet von der anderen Seite herein */
+const mView = () => document.getElementById("view-spiele");
+let mBusy = false;
+function mGo(s, dir, force){   // dir: -1 = nach links (nächster), +1 = nach rechts (vorheriger)
+  const el = mView();
+  if(mBusy || (s === mSel && mCur !== "info" && !force)){ if(el){ el.style.transition = "transform .2s ease, opacity .2s ease"; el.style.transform = ""; el.style.opacity = ""; } return; }
+  if(!el || mCur === "info" || window.matchMedia("(prefers-reduced-motion: reduce)").matches){ mSet(s, force); window.scrollTo(0, 0); return; }
+  mBusy = true;
+  el.style.transition = "transform .13s ease-in, opacity .13s ease-in";
+  el.style.transform = `translateX(${dir * 40}%)`; el.style.opacity = "0";
+  setTimeout(() => {
+    mSet(s, force); window.scrollTo(0, 0);
+    el.style.transition = "none";
+    el.style.transform = `translateX(${-dir * 25}%)`; el.style.opacity = "0";
+    void el.offsetWidth;
+    el.style.transition = "transform .22s cubic-bezier(.2,.8,.2,1), opacity .22s ease-out";
+    el.style.transform = ""; el.style.opacity = "";
+    setTimeout(() => { el.style.transition = ""; mBusy = false; }, 240);
+  }, 130);
+}
+document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => {
+  const s = b.dataset.s;
+  if(s === "cur" && mSel === "cur" && mCur !== "info"){
+    if(mBusy) return;
+    mNext = !mNext;                       // Aktuell ⇄ Demnächst
+    mGo("cur", mNext ? -1 : 1, true);
+    return;
+  }
+  mGo(s, M_ORDER.indexOf(s) > M_ORDER.indexOf(mSel) ? -1 : 1);
+});
+/* Seitwärts wischen: Ansicht folgt dem Finger, danach nächster bzw. vorheriger Knopf (rundum) */
+(function(){
+  let x0 = null, y0 = 0, t0 = 0, drag = false;
+  document.addEventListener("touchstart", e => {
+    drag = false;
+    if(!MOBILE.matches || mCur === "info" || mBusy || e.touches.length !== 1){ x0 = null; return; }
+    const tw = e.target.closest(".tablewrap");
+    if(tw && tw.scrollWidth > tw.clientWidth + 2){ x0 = null; return; }   // horizontal scrollbare Tabelle nicht stören
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+  }, { passive:true });
+  document.addEventListener("touchmove", e => {
+    if(x0 === null) return;
+    const dx = e.touches[0].clientX - x0, dy = e.touches[0].clientY - y0;
+    if(!drag){ if(Math.abs(dx) > 12 && Math.abs(dx) > 1.5 * Math.abs(dy)) drag = true; else if(Math.abs(dy) > 12){ x0 = null; return; } else return; }
+    const el = mView(); if(!el) return;
+    el.style.transition = "none";
+    el.style.transform = `translateX(${dx * 0.4}px)`;
+    el.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 120));
+    /* schon während der Bewegung umschalten, sobald der Wisch eindeutig ist */
+    if(Math.abs(dx) > 45){
+      x0 = null; drag = false;
+      const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, dir = dx < 0 ? -1 : 1;
+      mGo(M_ORDER[(i - dir + n) % n], dir);
+    }
+  }, { passive:true });
+  document.addEventListener("touchend", e => {
+    if(x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    x0 = null;
+    const el = mView();
+    const fast = Date.now() - t0 < 300 && Math.abs(dx) > 20;
+    if(!drag || (Math.abs(dx) < 35 && !fast) || Math.abs(dx) < 1.2 * Math.abs(dy)){
+      if(el && drag){ el.style.transition = "transform .22s ease, opacity .22s ease"; el.style.transform = ""; el.style.opacity = ""; }
+      drag = false; return;
+    }
+    drag = false;
+    const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, dir = dx < 0 ? -1 : 1;
+    mGo(M_ORDER[(i - dir + n) % n], dir);
+  }, { passive:true });
+})();
+document.getElementById("mInfo").onclick = e => { e.stopPropagation(); mShow(mCur === "info" ? "spiele" : "info"); };
+/* ⓘ sitzt auf dem Handy unten rechts im Banner */
+document.querySelector("header").appendChild(document.getElementById("mInfo"));
+/* Höhe des Banners merken, damit die Knopfleiste direkt darunter haftet */
+(function(){
+  const hd = document.querySelector("header");
+  const setH = () => document.documentElement.style.setProperty("--hdr-h", hd.getBoundingClientRect().height + "px");
+  setH();
+  try{ new ResizeObserver(setH).observe(hd); }catch(e){}
+  window.addEventListener("resize", setH);
+  window.addEventListener("load", setH);
+  const img = hd.querySelector("img"); if(img) img.addEventListener("load", setH);
+})();
+document.getElementById("modeAll").onclick = () => setMode("all");
+document.getElementById("modeCur").onclick = () => setMode("cur");
+try{ MOBILE.addEventListener("change", () => renderMatches()); }catch(e){}
+function renderAll(){ renderFilter(); renderMatches(); renderTables(); }
+const TWO_COL = window.matchMedia("(min-width: 760px)");
+try{ TWO_COL.addEventListener("change", () => renderMatches()); }catch(e){ try{ TWO_COL.addListener(() => renderMatches()); }catch(_){} }
+if(MOBILE.matches){ selTeams = ["n4", "n5"]; MODE = "cur"; }
+renderAll(); renderTables(); renderInfo(); renderShare();
+mSync();
+
+/* ---- Als App auf den Startbildschirm: Frage beim 1. und 5. Aufruf ---- */
+(function(){
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if("serviceWorker" in navigator && /^https:$/.test(location.protocol)){
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+  if(standalone) { window.__noFsAsk = true; return; }   // läuft schon als App
+  let n = 0;
+  try{ n = (parseInt(localStorage.getItem("ntsv-visits") || "0", 10) || 0) + 1; localStorage.setItem("ntsv-visits", String(n)); }catch(e){}
+  if(n !== 1 && n !== 5) return;
+  window.__noFsAsk = true;                               // nicht zusätzlich nach Vollbild fragen
+  const ua = navigator.userAgent;
+  const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const firefox = /Firefox|FxiOS/.test(ua);
+  const samsung = /SamsungBrowser/.test(ua);
+  let deferred = null;
+  const show = (text, withBtn) => {
+    if(document.querySelector(".fs-ask.inst")) return;
+    const p = document.createElement("div");
+    p.className = "fs-ask inst";
+    p.innerHTML = `<img src="icon-192.png" alt="" style="width:40px;height:40px;border-radius:9px;flex:none">
+      <span>${text}</span>
+      ${withBtn ? '<button class="btn primary" data-a="y">Ja</button>' : ""}
+      <button class="btn" data-a="n">${withBtn ? "Nein" : "OK"}</button>`;
+    p.querySelector('[data-a="n"]').onclick = () => p.remove();
+    const y = p.querySelector('[data-a="y"]');
+    if(y) y.onclick = async () => { p.remove(); try{ deferred.prompt(); await deferred.userChoice; }catch(e){} deferred = null; };
+    document.body.appendChild(p);
+  };
+  /* Chrome/Edge/Samsung: echte Installationsfrage des Browsers */
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); deferred = e;
+    show("Übersicht als App mit NTSV-Wappen auf den Startbildschirm legen?", true);
+  });
+  /* Browser ohne eigene Installationsfrage: kurze Anleitung */
+  setTimeout(() => {
+    if(deferred || document.querySelector(".fs-ask.inst")) return;
+    if(!window.matchMedia("(max-width: 900px)").matches && !ios) return;   // am PC nicht nötig
+    const how = ios ? "Teilen-Symbol <b>⎋</b> antippen, dann <b>„Zum Home-Bildschirm“</b>."
+      : firefox ? "Menü <b>⋮</b> antippen, dann <b>„Installieren“</b> bzw. <b>„Zum Startbildschirm hinzufügen“</b>."
+      : samsung ? "Menü <b>≡</b> antippen, dann <b>„Seite hinzufügen zu“ → „Startbildschirm“</b>."
+      : "Browser-Menü <b>⋮</b> antippen, dann <b>„Zum Startbildschirm hinzufügen“</b>.";
+    show(`Als App mit NTSV-Wappen auf den Startbildschirm: ${how}`, false);
+  }, 2500);
+})();
+/* Vollbild-Knopf (nur wo der Browser es erlaubt, z. B. Android/Chrome) */
+(function(){
+  const b = document.getElementById("fsBtn");
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen;
+  try{ if(!req || !(document.fullscreenEnabled || document.webkitFullscreenEnabled)) return; }catch(e){ return; }
+  b.classList.remove("hidden");
+
+  /* Automatisch ins Vollbild darf der Browser nicht – deshalb auf dem Handy einmal kurz nachfragen */
+  const isPhone = window.matchMedia("(max-width: 600px)").matches;
+  let asked = false; try{ asked = sessionStorage.getItem("ntsv-fs-asked") === "1"; }catch(e){}
+  if(isPhone && !asked && !window.__noFsAsk && !(document.fullscreenElement || document.webkitFullscreenElement)){
+    const p = document.createElement("div");
+    p.className = "fs-ask";
+    p.innerHTML = '<span>Seite im Vollbild anzeigen?</span><button class="btn primary" data-a="y">Ja</button><button class="btn" data-a="n">Nein</button>';
+    const close = () => { p.remove(); try{ sessionStorage.setItem("ntsv-fs-asked", "1"); }catch(e){} };
+    p.querySelector('[data-a="y"]').onclick = async () => { close(); try{ await req.call(el); }catch(e){} };
+    p.querySelector('[data-a="n"]').onclick = close;
+    document.body.appendChild(p);
+  }
+
+  b.onclick = async () => {
+    try{
+      if(document.fullscreenElement || document.webkitFullscreenElement){
+        await (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      } else {
+        await req.call(el);
+      }
+    }catch(e){ b.classList.add("hidden"); }
+  };
+  /* Handy: Tipp aufs Banner schaltet Vollbild ein/aus */
+  document.querySelector("header").addEventListener("click", () => {
+    if(window.matchMedia("(max-width: 600px)").matches) b.onclick();
+  });
+  document.querySelector("header").classList.add("fs-able");
+})();
+/* Bei Wechsel in/aus Vollbild Spielliste neu aufbauen (Mini-Tabelle) */
+document.addEventListener("fullscreenchange", () => renderMatches());
+document.addEventListener("webkitfullscreenchange", () => renderMatches());
+</script>
+</body>
+</html>

@@ -421,6 +421,26 @@
   @media (prefers-color-scheme: dark){ .cal-btn{color:#5fb2ea;border-color:rgba(95,178,234,.6)} }
   .ico-cal{width:1.15em;height:1.15em;flex:none}
   .cal-subs{display:flex;flex-wrap:wrap;gap:8px}
+  /* Handy: Kalender-Symbol hinter der Uhrzeit statt Knopfzeile; Auswahl im Popup */
+  .cal-ico{display:none}
+  @media (max-width: 600px){
+    .cal-row{display:none !important}
+    .cal-ico{display:inline-flex;align-items:center;justify-content:center;margin-left:8px;vertical-align:-0.2em;color:inherit;
+      position:relative;width:1.35em;height:1.35em}
+    .cal-ico::after{content:"";position:absolute;inset:-8px -8px -8px -6px}
+    .cal-ico .ico-cal{width:1.25em;height:1.25em}
+  }
+  .cal-pop-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+  .cal-pop{background:var(--card);color:var(--ink);width:100%;max-width:480px;border-radius:16px 16px 0 0;
+    padding:16px 16px max(16px, env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.3)}
+  .cal-pop h3{margin:0 0 4px;font-size:16px}
+  .cal-pop p{margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.4}
+  .cal-pop .cal-acts{display:flex;flex-direction:column;gap:8px}
+  .cal-pop .cal-acts a, .cal-pop .cal-acts button{display:block;text-align:center;padding:11px;border-radius:10px;font-size:15px;font-weight:600;
+    text-decoration:none;border:1.5px solid var(--logo-blue);color:var(--logo-blue);background:transparent}
+  .cal-pop .cal-acts a.primary{background:var(--logo-blue);color:#fff}
+  .cal-pop .cal-acts button{border-color:var(--line);color:var(--ink)}
+  @media (prefers-color-scheme: dark){ .cal-pop .cal-acts a:not(.primary){color:#5fb2ea;border-color:#5fb2ea} }
 </style>
 </head>
 <body>
@@ -632,6 +652,36 @@ const ICON_TREFFEN = '<svg class="ico-treffen" role="img" aria-label="Treffen" v
 const ICON_BALL = '<svg class="ico-ball" role="img" aria-label="Spielzeit" viewBox="0 0 24 24"><title>Spielzeit</title><defs><clipPath id="ntsvball"><circle cx="12" cy="12" r="10.4"/></clipPath></defs><circle cx="12" cy="12" r="10.4" fill="#fff"/><g clip-path="url(#ntsvball)"><path d="M12.00 8.30 L15.52 10.86 L14.17 14.99 L9.83 14.99 L8.48 10.86Z M12.00 5.30 L8.48 2.74 L9.83 -1.39 L14.17 -1.39 L15.52 2.74Z M18.37 9.93 L19.72 5.79 L24.07 5.79 L25.41 9.93 L21.89 12.49Z M15.94 17.42 L20.29 17.42 L21.63 21.56 L18.11 24.11 L14.59 21.56Z M8.06 17.42 L9.41 21.56 L5.89 24.11 L2.37 21.56 L3.71 17.42Z M5.63 9.93 L2.11 12.49 L-1.41 9.93 L-0.07 5.79 L4.28 5.79Z" fill="#1d1d1b"/><path d="M12.00 8.30 L12.00 5.30 M15.52 10.86 L18.37 9.93 M14.17 14.99 L15.94 17.42 M9.83 14.99 L8.06 17.42 M8.48 10.86 L5.63 9.93" stroke="#1d1d1b" stroke-width="1.1" fill="none"/></g><circle cx="12" cy="12" r="10.4" fill="none" stroke="#1d1d1b" stroke-width="1.2"/></svg>';
 /* Stecknadel mit schwarzem Kopf */
 const ICON_CAL = '<svg class="ico-cal" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 9.5h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+/* Popup „In Kalender übernehmen“ (Handy: Symbol hinter der Uhrzeit) */
+function openCalPop(team, d){
+  const sp = SPIELTAGE[d]; if(!sp) return;
+  const tName = team === "n4" ? "Blau" : "Weiß", ymd = d.replace(/-/g, ""), hm = t => t.replace(":", "") + "00";
+  const ics = `${SHARE_URL}cal/${team === "n4" ? "blau" : "weiss"}-${d}.ics`;
+  const games = MATCHES.filter(m => m.d === d && m.teams.includes(team)).sort((a, b) => a.t.localeCompare(b.t));
+  const g = "https://calendar.google.com/calendar/render?action=TEMPLATE"
+    + "&text=" + encodeURIComponent(`NTSV 7. D ${tName} – Hallenturnier ${sp.ort}`)
+    + "&dates=" + ymd + "T" + hm(sp.treffen) + "/" + ymd + "T" + hm(sp.ende) + "&ctz=Europe/Berlin"
+    + "&location=" + encodeURIComponent(`${sp.halle}, ${sp.adresse}`)
+    + "&details=" + encodeURIComponent(`Treffen ${sp.treffen} · Ende ca. ${sp.ende}\n` + games.map(m => `${m.t}  ${m.h} – ${m.a}`).join("\n") + `\n\n${SHARE_URL}`);
+  const bg = document.createElement("div");
+  bg.className = "cal-pop-bg";
+  bg.innerHTML = `<div class="cal-pop" role="dialog" aria-label="In Kalender übernehmen">
+    <h3>In Kalender übernehmen</h3>
+    <p><b>${tName} · ${fmtDay(d).replace(/<span class="wd-l">.*?<\/span>/, "")}</b><br>Treffen ${sp.treffen} Uhr – Ende ca. ${sp.ende} Uhr<br>${esc(sp.halle)}, ${esc(sp.adresse)}</p>
+    <div class="cal-acts">
+      <a class="primary" href="${ics}" download="${team === "n4" ? "blau" : "weiss"}-${d}.ics">Kalenderdatei laden (alle Kalender)</a>
+      <a href="${g}" target="_blank" rel="noopener">In Google Kalender öffnen</a>
+      <button type="button">Abbrechen</button>
+    </div></div>`;
+  const close = () => bg.remove();
+  bg.addEventListener("click", e => { if(e.target === bg || e.target.closest("button") || e.target.closest("a")) setTimeout(close, 50); });
+  document.body.appendChild(bg);
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest(".cal-ico"); if(!a) return;
+  e.preventDefault(); e.stopPropagation();
+  const [team, d] = a.dataset.cal.split("|"); openCalPop(team, d);
+}, true);
 const ICON_PIN = '<svg class="ico-pin" role="img" aria-label="Ort" viewBox="0 0 12 18"><title>Ort</title><line x1="6" y1="8.9" x2="6" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="5" r="3.9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const TEAM_ICON = { n4:"🔵", n5:"⚪" };
 const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
@@ -831,7 +881,7 @@ function renderMatches(){
      <div class="sp-head">
       ${tm !== "mix" ? (() => {
         return `<span class="sp-nr"><span class="nr-t">${vsl ? "vsl. " : ""}${n}. Spieltag</span><a class="nr-cal${vsl ? " vsl" : ""}" href="${spieltagUrl(tm, vsl ? null : d)}" target="_blank" rel="noopener" title="${vsl ? "voraussichtlich " : ""}${n}. Spieltag – auf fussball.de öffnen"><i>Spieltag</i><b>${n}</b></a></span>`; })() : ""}
-      <h2>${vsl ? "Noch nicht angesetzt" : `${fmtDay(d)}${SPIELTAGE[d] ? `, <span class="treff">${ICON_TREFFEN}&nbsp;${SPIELTAGE[d].treffen}&nbsp;Uhr</span>` : ""}`}</h2>
+      <h2>${vsl ? "Noch nicht angesetzt" : `${fmtDay(d)}${SPIELTAGE[d] ? `, <span class="treff">${ICON_TREFFEN}&nbsp;${SPIELTAGE[d].treffen}&nbsp;Uhr</span>${tm !== "mix" ? `<a class="cal-ico" href="#" data-cal="${tm}|${d}" aria-label="In Kalender übernehmen" title="In Kalender übernehmen">${ICON_CAL}</a>` : ""}` : ""}`}</h2>
       ${SPIELTAGE[d] ? `<div class="venue">${ICON_BALL} ${TURNIERBEGINN[d] || arr[0].t} – ${SPIELTAGE[d].ende}<span class="v-gap"></span>${ICON_PIN} <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SPIELTAGE[d].adresse)}&travelmode=driving" target="_blank" rel="noopener">${esc(SPIELTAGE[d].ort)} (${SPIELTAGE[d].fahrt} min)</a></div>` : ""}
      </div>
      <div class="sp-body">

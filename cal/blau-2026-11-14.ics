@@ -25,21 +25,19 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ntsv7d-n4-20261114@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261114T144500
 DTEND;TZID=Europe/Berlin:20261114T173000
-SUMMARY:🔵 BLAU · NTSV 7. D Hallenturnier Osdorf
+SUMMARY:NTSV 7. D Blau Hallenturnier
 LOCATION:Sporthalle Lise-Meitner-Gymnasium (Eingang Harderweg)\, Knabeweg 3
  \, 22549 Hamburg
-DESCRIPTION:Treffen 14:45 · Beginn 15:30 · Ende ca. 17:30\n15:54  NTSV 7.
-  D – Eimsbüttel 13.D  6:0\n16:18  HEBC 3.D – NTSV 7. D  1:0\n16:54  E
- imsbüttel 6.D – NTSV 7. D  1:3\n17:18  NTSV 7. D – Eimsbüttel 15.D  
- 2:4\n\nÜbersicht: https://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:1. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 14:45 Uhr\nTurn
+ ierbeginn: 15:30 Uhr\nTurnierende: 17:30 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 14:45 Uhr – Osdorf
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 14:45 Uhr – Sporthalle Lise-Meitner-Gymnasium (Eingan
+ g Harderweg)
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 END:VCALENDAR

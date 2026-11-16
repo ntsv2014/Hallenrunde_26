@@ -28,13 +28,14 @@ for (const [d, sp] of Object.entries(SPIELTAGE).sort()) {
     const games = MATCHES.filter(m => m.d === d && m.teams.includes(team)).sort((x, y) => x.t.localeCompare(y.t));
     if (!games.length) continue;
     const ymd = d.replace(/-/g, ""), hm = t => t.replace(":", "") + "00";
-    const desc = `Treffen ${sp.treffen} · Beginn ${TURNIERBEGINN[d] || games[0].t} · Ende ca. ${sp.ende}\n` +
-      games.map(m => `${m.t}  ${m.h} – ${m.a}${m.score ? "  " + m.score : ""}`).join("\n") + `\n\nÜbersicht: ${PAGES_URL}`;
+    const days = [...new Set(MATCHES.filter(m => m.d && m.teams.includes(team)).map(m => m.d))].sort();
+    const nr = days.indexOf(d) + 1;
+    const desc = `${nr}. Spieltag HFV U13 Hallenmeisterschaft\nTreff: ${sp.treffen} Uhr\nTurnierbeginn: ${TURNIERBEGINN[d] || games[0].t} Uhr\nTurnierende: ${sp.ende} Uhr`;
     const ev = ["BEGIN:VEVENT", `UID:ntsv7d-${team}-${ymd}@ntsv2014.github.io`, `DTSTAMP:${stamp}`,
       `DTSTART;TZID=Europe/Berlin:${ymd}T${hm(sp.treffen)}`, `DTEND;TZID=Europe/Berlin:${ymd}T${hm(sp.ende)}`,
-      "SUMMARY:" + esc(`${LABEL[team]} · NTSV 7. D Hallenturnier ${sp.ort}`),
-      "LOCATION:" + esc(`${sp.halle}, ${sp.adresse}`), "DESCRIPTION:" + esc(desc), `URL:${PAGES_URL}`,
-      "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + esc(`Treffen ${sp.treffen} Uhr – ${sp.ort}`), "TRIGGER:-PT2H", "END:VALARM",
+      "SUMMARY:" + esc(`NTSV 7. D ${team === "n4" ? "Blau" : "Weiß"} Hallenturnier`),
+      "LOCATION:" + esc(`${sp.halle}, ${sp.adresse}`), "DESCRIPTION:" + esc(desc),
+      "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + esc(`Treffen ${sp.treffen} Uhr – ${sp.halle}`), "TRIGGER:-PT30M", "END:VALARM",
       "END:VEVENT"];
     per[team].push(ev);
     fs.writeFileSync(path.join(root, "cal", `${WORD[team]}-${d}.ics`), cal(`NTSV 7. D ${team === "n4" ? "Blau" : "Weiß"}`, [ev]));

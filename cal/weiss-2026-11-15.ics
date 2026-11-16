@@ -25,21 +25,19 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ntsv7d-n5-20261115@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261115T081500
 DTEND;TZID=Europe/Berlin:20261115T110000
-SUMMARY:⚪ WEISS · NTSV 7. D Hallenturnier Eimsbüttel
+SUMMARY:NTSV 7. D Weiß Hallenturnier
 LOCATION:Sporthalle Rellinger Straße (Eingang Kieler Str. 128)\, Rellinger
   Str. 13-15\, 20257 Hamburg
-DESCRIPTION:Treffen 08:15 · Beginn 09:00 · Ende ca. 11:00\n09:12  NTSV 7.
-  D – NTSV 5.D  2:0\n09:36  SV Gr. Borstel 6.D – NTSV 7. D  0:7\n10:0
- 0  SV Gr. Borstel 4.D – NTSV 7. D  0:1\n10:24  NTSV 7. D – SCALA 9.D
-   1:0\n\nÜbersicht: https://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:1. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 08:15 Uhr\nTurn
+ ierbeginn: 09:00 Uhr\nTurnierende: 11:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 08:15 Uhr – Eimsbüttel
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 08:15 Uhr – Sporthalle Rellinger Straße (Eingang Kie
+ ler Str. 128)
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 END:VCALENDAR

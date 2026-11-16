@@ -25,20 +25,17 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ntsv7d-n5-20261129@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261129T131500
 DTEND;TZID=Europe/Berlin:20261129T160000
-SUMMARY:⚪ WEISS · NTSV 7. D Hallenturnier Pinneberg
+SUMMARY:NTSV 7. D Weiß Hallenturnier
 LOCATION:JCS-Halle\, Horn 5\, 25421 Pinneberg
-DESCRIPTION:Treffen 13:15 · Beginn 14:00 · Ende ca. 16:00\n14:12  NTSV 7.
-  D – VfL Pinneberg 5.D\n14:36  GW Eimsbüttel 1.D – NTSV 7. D\n15:00  
- Rantzau 1.D – NTSV 7. D\n15:24  NTSV 7. D – Teutonia 10 3.D\n\nÜbersi
- cht: https://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:3. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 13:15 Uhr\nTurn
+ ierbeginn: 14:00 Uhr\nTurnierende: 16:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 13:15 Uhr – Pinneberg
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 13:15 Uhr – JCS-Halle
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 END:VCALENDAR

@@ -25,21 +25,18 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ntsv7d-n4-20261128@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261128T143000
 DTEND;TZID=Europe/Berlin:20261128T170000
-SUMMARY:🔵 BLAU · NTSV 7. D Hallenturnier Altona
+SUMMARY:NTSV 7. D Blau Hallenturnier
 LOCATION:Sporthalle Eckernförder Straße\, Eckernförder Str. 70\, 22769 H
  amburg
-DESCRIPTION:Treffen 14:30 · Beginn 15:15 · Ende ca. 17:00\n15:36  NTSV 7.
-  D – Wellingsbüttel 2.D\n16:12  NTSV 7. D – Rahlstedt 3.D\n16:48  Ura
- nia 1.D – NTSV 7. D\n\nÜbersicht: https://ntsv2014.github.io/Hallenrund
- e_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:3. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 14:30 Uhr\nTurn
+ ierbeginn: 15:15 Uhr\nTurnierende: 17:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 14:30 Uhr – Altona
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 14:30 Uhr – Sporthalle Eckernförder Straße
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 END:VCALENDAR

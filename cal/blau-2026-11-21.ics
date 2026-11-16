@@ -25,20 +25,17 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ntsv7d-n4-20261121@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261121T131500
 DTEND;TZID=Europe/Berlin:20261121T160000
-SUMMARY:🔵 BLAU · NTSV 7. D Hallenturnier Hummelsbüttel
+SUMMARY:NTSV 7. D Blau Hallenturnier
 LOCATION:Gymnasium Hummelsbüttel\, Grützmühlenweg 38\, 22339 Hamburg
-DESCRIPTION:Treffen 13:15 · Beginn 14:00 · Ende ca. 16:00\n14:00  Glashü
- tte 1.D – NTSV 7. D\n14:36  NTSV 7. D – Paloma 11.D\n15:12  NTSV 7. D 
- – Rahlstedt 2.D\n15:48  HSV 8.D – NTSV 7. D\n\nÜbersicht: https://nts
- v2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:2. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 13:15 Uhr\nTurn
+ ierbeginn: 14:00 Uhr\nTurnierende: 16:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 13:15 Uhr – Hummelsbüttel
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 13:15 Uhr – Gymnasium Hummelsbüttel
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 END:VCALENDAR

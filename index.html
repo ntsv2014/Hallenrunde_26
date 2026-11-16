@@ -659,10 +659,10 @@ function openCalPop(team, d){
   const ics = `${SHARE_URL}cal/${team === "n4" ? "blau" : "weiss"}-${d}.ics`;
   const games = MATCHES.filter(m => m.d === d && m.teams.includes(team)).sort((a, b) => a.t.localeCompare(b.t));
   const g = "https://calendar.google.com/calendar/render?action=TEMPLATE"
-    + "&text=" + encodeURIComponent(`NTSV 7. D ${tName} – Hallenturnier ${sp.ort}`)
+    + "&text=" + encodeURIComponent(`NTSV 7. D ${tName} Hallenturnier`)
     + "&dates=" + ymd + "T" + hm(sp.treffen) + "/" + ymd + "T" + hm(sp.ende) + "&ctz=Europe/Berlin"
     + "&location=" + encodeURIComponent(`${sp.halle}, ${sp.adresse}`)
-    + "&details=" + encodeURIComponent(`Treffen ${sp.treffen} · Ende ca. ${sp.ende}\n` + games.map(m => `${m.t}  ${m.h} – ${m.a}`).join("\n") + `\n\n${SHARE_URL}`);
+    + "&details=" + encodeURIComponent(`${spieltagNr(d, team)}. Spieltag HFV U13 Hallenmeisterschaft\nTreff: ${sp.treffen} Uhr\nTurnierbeginn: ${TURNIERBEGINN[d] || (games[0] || {}).t || "–"} Uhr\nTurnierende: ${sp.ende} Uhr`);
   const bg = document.createElement("div");
   bg.className = "cal-pop-bg";
   bg.innerHTML = `<div class="cal-pop" role="dialog" aria-label="In Kalender übernehmen">

@@ -25,75 +25,64 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ntsv7d-n5-20261115@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261115T081500
 DTEND;TZID=Europe/Berlin:20261115T110000
-SUMMARY:⚪ WEISS · NTSV 7. D Hallenturnier Eimsbüttel
+SUMMARY:NTSV 7. D Weiß Hallenturnier
 LOCATION:Sporthalle Rellinger Straße (Eingang Kieler Str. 128)\, Rellinger
   Str. 13-15\, 20257 Hamburg
-DESCRIPTION:Treffen 08:15 · Beginn 09:00 · Ende ca. 11:00\n09:12  NTSV 7.
-  D – NTSV 5.D  2:0\n09:36  SV Gr. Borstel 6.D – NTSV 7. D  0:7\n10:0
- 0  SV Gr. Borstel 4.D – NTSV 7. D  0:1\n10:24  NTSV 7. D – SCALA 9.D
-   1:0\n\nÜbersicht: https://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:1. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 08:15 Uhr\nTurn
+ ierbeginn: 09:00 Uhr\nTurnierende: 11:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 08:15 Uhr – Eimsbüttel
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 08:15 Uhr – Sporthalle Rellinger Straße (Eingang Kie
+ ler Str. 128)
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:ntsv7d-n5-20261122@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261122T154500
 DTEND;TZID=Europe/Berlin:20261122T174500
-SUMMARY:⚪ WEISS · NTSV 7. D Hallenturnier Rissen
+SUMMARY:NTSV 7. D Weiß Hallenturnier
 LOCATION:Sporthalle Vosshagen\, Voßhagen 15\, 22559 Hamburg
-DESCRIPTION:Treffen 15:45 · Beginn 16:30 · Ende ca. 17:45\n16:42  NTSV 7.
-  D – Germania 6.D\n17:06  Harksheide 1.D – NTSV 7. D\n17:30  Altona 93
-  3.D – NTSV 7. D\n17:54  NTSV 7. D – Germania 7.D\n\nÜbersicht: https
- ://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:2. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 15:45 Uhr\nTurn
+ ierbeginn: 16:30 Uhr\nTurnierende: 17:45 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 15:45 Uhr – Rissen
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 15:45 Uhr – Sporthalle Vosshagen
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:ntsv7d-n5-20261129@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261129T131500
 DTEND;TZID=Europe/Berlin:20261129T160000
-SUMMARY:⚪ WEISS · NTSV 7. D Hallenturnier Pinneberg
+SUMMARY:NTSV 7. D Weiß Hallenturnier
 LOCATION:JCS-Halle\, Horn 5\, 25421 Pinneberg
-DESCRIPTION:Treffen 13:15 · Beginn 14:00 · Ende ca. 16:00\n14:12  NTSV 7.
-  D – VfL Pinneberg 5.D\n14:36  GW Eimsbüttel 1.D – NTSV 7. D\n15:00  
- Rantzau 1.D – NTSV 7. D\n15:24  NTSV 7. D – Teutonia 10 3.D\n\nÜbersi
- cht: https://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:3. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 13:15 Uhr\nTurn
+ ierbeginn: 14:00 Uhr\nTurnierende: 16:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 13:15 Uhr – Pinneberg
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 13:15 Uhr – JCS-Halle
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:ntsv7d-n5-20261212@ntsv2014.github.io
-DTSTAMP:20261116T171558Z
+DTSTAMP:20261116T172727Z
 DTSTART;TZID=Europe/Berlin:20261212T121500
 DTEND;TZID=Europe/Berlin:20261212T150000
-SUMMARY:⚪ WEISS · NTSV 7. D Hallenturnier Barmstedt
+SUMMARY:NTSV 7. D Weiß Hallenturnier
 LOCATION:Sporthalle Heederbrook\, Heederbrook 10A\, 25355 Barmstedt
-DESCRIPTION:Treffen 12:15 · Beginn 13:00 · Ende ca. 15:00\n13:12  NTSV 7.
-  D – Cosmos Wedel 2.D\n13:36  Eimsbüttel 14.D – NTSV 7. D\n14:00  Ris
- sen 2.D – NTSV 7. D\n14:24  NTSV 7. D – Osdorfer Born 2.D\n\nÜbersich
- t: https://ntsv2014.github.io/Hallenrunde_26/
-URL:https://ntsv2014.github.io/Hallenrunde_26/
+DESCRIPTION:4. Spieltag HFV U13 Hallenmeisterschaft\nTreff: 12:15 Uhr\nTurn
+ ierbeginn: 13:00 Uhr\nTurnierende: 15:00 Uhr
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:Treffen 12:15 Uhr – Barmstedt
-TRIGGER:-PT2H
+DESCRIPTION:Treffen 12:15 Uhr – Sporthalle Heederbrook
+TRIGGER:-PT30M
 END:VALARM
 END:VEVENT
 END:VCALENDAR

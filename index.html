@@ -413,6 +413,14 @@
   @media (max-width: 600px){ html, body, #view-spiele, #matchList{touch-action:pan-y} }
   /* nichts darf seitlich überstehen – sonst „scrollt“ der Browser beim Wischen nach links, statt die Ansicht zu wechseln */
   html, body{overflow-x:clip}
+  /* Kalender-Knopf in der Spieltagskarte und im Info-Tab */
+  .cal-row{border-top:1px solid var(--line);padding:6px 10px;text-align:center}
+  .cal-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--logo-blue);text-decoration:none;
+    border:1.5px solid rgba(0,117,191,.55);border-radius:999px;padding:4px 12px;background:transparent}
+  .cal-btn:active{background:rgba(0,117,191,.1)}
+  @media (prefers-color-scheme: dark){ .cal-btn{color:#5fb2ea;border-color:rgba(95,178,234,.6)} }
+  .ico-cal{width:1.15em;height:1.15em;flex:none}
+  .cal-subs{display:flex;flex-wrap:wrap;gap:8px}
 </style>
 </head>
 <body>
@@ -623,6 +631,7 @@ const ICON_TREFFEN = '<svg class="ico-treffen" role="img" aria-label="Treffen" v
 /* Fußball schwarz-weiß (überall gleich, statt Emoji) */
 const ICON_BALL = '<svg class="ico-ball" role="img" aria-label="Spielzeit" viewBox="0 0 24 24"><title>Spielzeit</title><defs><clipPath id="ntsvball"><circle cx="12" cy="12" r="10.4"/></clipPath></defs><circle cx="12" cy="12" r="10.4" fill="#fff"/><g clip-path="url(#ntsvball)"><path d="M12.00 8.30 L15.52 10.86 L14.17 14.99 L9.83 14.99 L8.48 10.86Z M12.00 5.30 L8.48 2.74 L9.83 -1.39 L14.17 -1.39 L15.52 2.74Z M18.37 9.93 L19.72 5.79 L24.07 5.79 L25.41 9.93 L21.89 12.49Z M15.94 17.42 L20.29 17.42 L21.63 21.56 L18.11 24.11 L14.59 21.56Z M8.06 17.42 L9.41 21.56 L5.89 24.11 L2.37 21.56 L3.71 17.42Z M5.63 9.93 L2.11 12.49 L-1.41 9.93 L-0.07 5.79 L4.28 5.79Z" fill="#1d1d1b"/><path d="M12.00 8.30 L12.00 5.30 M15.52 10.86 L18.37 9.93 M14.17 14.99 L15.94 17.42 M9.83 14.99 L8.06 17.42 M8.48 10.86 L5.63 9.93" stroke="#1d1d1b" stroke-width="1.1" fill="none"/></g><circle cx="12" cy="12" r="10.4" fill="none" stroke="#1d1d1b" stroke-width="1.2"/></svg>';
 /* Stecknadel mit schwarzem Kopf */
+const ICON_CAL = '<svg class="ico-cal" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 9.5h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const ICON_PIN = '<svg class="ico-pin" role="img" aria-label="Ort" viewBox="0 0 12 18"><title>Ort</title><line x1="6" y1="8.9" x2="6" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="5" r="3.9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const TEAM_ICON = { n4:"🔵", n5:"⚪" };
 const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
@@ -837,6 +846,7 @@ function renderMatches(){
           <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${m.score ? "disabled" : ""}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
         </div>`;
       }).join("")}
+      ${!vsl && tm !== "mix" && SPIELTAGE[d] ? `<div class="cal-row"><a class="cal-btn" href="${SHARE_URL}cal/${tm === "n4" ? "blau" : "weiss"}-${d}.ics" target="_blank" rel="noopener">${ICON_CAL} In Kalender übernehmen</a></div>` : ""}
      </div>
     </div>`;
   }).join("");
@@ -976,6 +986,13 @@ function renderInfo(){
   /* Datenstand / Hinweis im Info-Tab statt in der Fußzeile */
   document.getElementById("view-info").insertAdjacentHTML("beforeend",
     `<div class="card"><strong>Datenstand</strong><p class="note">Stand: ${DATA_STAND} · Quellen: fussball.de, SpielerPlus<br>Inoffizielle Übersicht, alle Angaben ohne Gewähr.</p></div>`);
+  /* Kalender abonnieren: alle Spieltage eines Teams, aktualisiert sich automatisch */
+  const sub = f => SHARE_URL.replace(/^https:/, "webcal:") + "cal/" + f;
+  const gcal = f => "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(sub(f));
+  document.getElementById("view-info").insertAdjacentHTML("beforeend",
+    `<div class="card"><strong>Kalender abonnieren</strong><p class="note">Alle Spieltage eines Teams im eigenen Kalender – Änderungen und neue Termine kommen automatisch dazu.</p>
+     <p class="cal-subs"><a class="cal-btn" href="${sub("blau.ics")}">${ICON_CAL} Blau abonnieren</a> <a class="cal-btn" href="${sub("weiss.ics")}">${ICON_CAL} Weiß abonnieren</a></p>
+     <p class="note">Google Kalender: <a href="${gcal("blau.ics")}" target="_blank" rel="noopener">Blau</a> · <a href="${gcal("weiss.ics")}" target="_blank" rel="noopener">Weiß</a></p></div>`);
   const ft = document.getElementById("footer"); if(ft) ft.remove();
 }
 

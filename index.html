@@ -1139,7 +1139,7 @@ function fitZoom(){
   const list = document.getElementById("matchList"); if(!list) return;
   if(!MOBILE.matches){ list.style.zoom = ""; return; }
   /* gleiche Ansicht (z. B. nur Tabelle kurz/lang umgeschaltet): Vergrößerung beibehalten, damit nichts springt */
-  const zkey = [typeof mSel !== "undefined" ? mSel : "", typeof mTeamCur !== "undefined" ? mTeamCur : "", typeof mNext !== "undefined" ? mNext : "", window.innerWidth, window.innerHeight].join("|");
+  const zkey = [typeof mSel !== "undefined" ? mSel : "", typeof mTeamCur !== "undefined" ? mTeamCur : "", typeof mNext !== "undefined" ? mNext : "", window.innerWidth].join("|");
   if(zkey === fitZoom.key){ list.style.zoom = fitZoom.val; fitTables(); return; }
   list.style.zoom = "1";
   const hd = document.querySelector("header"), nw = document.querySelector(".navwrap");

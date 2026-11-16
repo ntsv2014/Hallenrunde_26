@@ -479,8 +479,9 @@
 const DATA_STAND = "15.11.2026";
 const CLAUDE_URL = "https://claude.ai/artifact/L2oRP9c6x9FXKR2mc4YwCa";
 /* Auf der eigenen Domain (z. B. ingomue.de) zeigt der QR-Code auf diese Adresse, sonst auf claude.ai */
-const SHARE_URL = (/claudeusercontent|claude\.ai/.test(location.hostname) || !/^https?:$/.test(location.protocol))
-  ? CLAUDE_URL : location.origin + location.pathname.replace(/index\.html$/, "");
+/* Geteilt wird immer die GitHub-Adresse (dort mit Wappen-Icon als App installierbar) */
+const PAGES_URL = "https://ntsv2014.github.io/Hallenrunde_26/";
+const SHARE_URL = PAGES_URL;
 
 const TEAMS = {
   n4:  { name: "NTSV 7. D Blau (4.D-Jun. A2)",  short: "Blau",  group: "JH 05", staffel: "174405",

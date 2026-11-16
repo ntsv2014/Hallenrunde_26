@@ -1000,7 +1000,7 @@ function calButtons(d, arr){
 function fmtTeam(s){
   const m = s.match(/^(.*?)\s+(\d+)\.\s?D\s*\(([A-Z]\d+)\)$/);
   const own = s.match(/^NTSV 7\. D (Blau|Weiß)$/);
-  if(own) return `<span class="t-name">${esc(s)}</span><span class="t-sub">${own[1] === "Blau" ? "(4. D, A2)" : "(10. D, A5)"}</span>`;
+  if(own) return `<span class="t-name">NTSV ${own[1]}</span><span class="t-sub">${own[1] === "Blau" ? "(4. D, A2)" : "(10. D, A5)"}</span>`;
   if(!m) return `<span class="t-name">${esc(s)}</span>`;
   return `<span class="t-name">${esc(m[1])}</span><span class="t-sub">(${m[2]}. D, ${m[3]})</span>`;
 }

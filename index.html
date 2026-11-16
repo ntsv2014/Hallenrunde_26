@@ -419,9 +419,9 @@
   <div class="navwrap">
   <!-- Handy: eine Zeile, Knöpfe schalten durch wiederholtes Antippen um -->
   <nav class="tabs mnav">
+    <button class="chip" id="mCur" data-s="cur" aria-pressed="true">Aktuell</button>
     <button class="chip" id="mBlau" data-s="n4" aria-pressed="false">Blau</button>
     <button class="chip" id="mWeiss" data-s="n5" aria-pressed="false">Weiß</button>
-    <button class="chip" id="mCur" data-s="cur" aria-pressed="true">Aktuell</button>
     <button class="chip" id="mInfo" aria-pressed="false" aria-label="Info und Teilen" title="Info und Teilen">ⓘ</button>
   </nav>
   <nav class="tabs" role="tablist">
@@ -1063,7 +1063,7 @@ function mShow(v){
   mSync();
 }
 /* Handy: drei Ansichten – Blau (Tabelle + alle Blau-Spieltage), Weiß (dito), Aktuell (aktueller Spieltag beider Teams) */
-const M_ORDER = ["n4", "n5", "cur"];
+const M_ORDER = ["cur", "n4", "n5"];
 let mSel = "cur";
 let mNext = false;   // „Aktuell“ erneut angetippt → „Demnächst“ (nächster Spieltag)
 let mTeamCur = false; // Blau/Weiß erneut angetippt → nur aktueller Spieltag des Teams (mit Kurztabelle)

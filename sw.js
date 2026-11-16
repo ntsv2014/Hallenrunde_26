@@ -1,5 +1,5 @@
 /* Service Worker: immer zuerst aus dem Netz (aktuelle Daten), bei Funkloch die zuletzt geladene Fassung */
-const CACHE = "ntsv-7d-v1";
+const CACHE = "ntsv-7d-v2";
 self.addEventListener("install", e => self.skipWaiting());
 self.addEventListener("activate", e => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", e => {

@@ -1072,9 +1072,9 @@ function mShow(v){
 const M_ORDER = ["cur", "n4", "n5"];
 let mSel = "cur";
 let mNext = false;   // „Aktuell“ erneut angetippt → „Demnächst“ (nächster Spieltag)
-let mTeamCur = false; // Blau/Weiß erneut angetippt → nur aktueller Spieltag des Teams (mit Kurztabelle)
+let mTeamCur = true;  // Team: true = aktueller Spieltag mit Kurztabelle (Standard), false = alle Spieltage
 function mSet(s, keep){
-  if(!keep){ mNext = false; mTeamCur = false; }
+  if(!keep){ mNext = false; mTeamCur = true; }   // Team-Knopf zeigt zuerst den aktuellen Spieltag
   mSel = s;
   if(s === "cur"){ selTeams = ["n4", "n5"]; MODE = "cur"; }
   else { selTeams = [s]; MODE = mTeamCur ? "cur" : "all"; }

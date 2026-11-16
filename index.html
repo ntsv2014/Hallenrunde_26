@@ -455,6 +455,8 @@
   .tcard td:nth-child(2) .t-name, .tcard td:nth-child(2) .t-sub{vertical-align:middle}
   /* Tabelle: Zahlenspalten mittig */
   .tcard th:nth-child(n+3), .tcard td:nth-child(n+3){text-align:center !important}
+  /* helles Design: Zeile „NTSV Weiß“ im Hellblau der Knöpfe */
+  @media (prefers-color-scheme: light){ .tcard tr.hl-n5 td{background:#e3f0fa !important;color:var(--logo-black) !important} }
 </style>
 </head>
 <body>

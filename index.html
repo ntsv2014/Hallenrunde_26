@@ -395,7 +395,7 @@
     .tcard .tbl-head{padding-top:7px !important;padding-bottom:2px !important}
     .tcard thead th{height:22px !important;padding-top:2px !important;padding-bottom:3px !important}
     .tcard tbody td, .tcard td{height:34px !important;padding-top:2px !important;padding-bottom:2px !important;line-height:1.15 !important}
-    .tcard .t-gap td{height:14px !important;line-height:10px !important;padding:0 !important}
+    .tcard .t-gap td{height:20px !important;line-height:1 !important;padding-top:0 !important;padding-bottom:0 !important}
     .sp{margin:8px 0 !important}
     #matchList > :first-child, #matchList > :first-child > .sp:first-child{margin-top:0 !important}
     .sp-head{padding-top:7px !important;padding-bottom:7px !important}
@@ -405,6 +405,10 @@
     #matchList > .tcard.mini{margin:0 0 8px !important}
     #matchList > .tcard.mini + .sp{margin-top:8px !important}
   }
+  /* Platzhalter-Zeilen: drei senkrechte Punkte unter den Platzziffern */
+  .tcard .t-gap td{letter-spacing:0}
+  .tcard .t-gap td:first-child{padding-left:12px;text-align:left}
+  .tcard .t-gap .gap-dots{display:inline-block;width:1ch;text-align:center;font-weight:700}
 </style>
 </head>
 <body>
@@ -936,9 +940,9 @@ function tableRows(tb, team, full){
   const idx = tb.rows.findIndex(r => rowTeam(r[1]) === team);
   const row = r => `<tr class="${rowTeam(r[1]) ? "hl hl-" + rowTeam(r[1]) : ""}">${r.map((c, i) => `<td>${i === 1 ? fmtTeam(String(c)) : esc(String(c))}</td>`).join("")}</tr>`;
   let body = tb.rows.slice(0, 3).map(row).join("");
-  if(idx > 3) body += `<tr class="t-gap"><td colspan="9">…</td></tr>`;
+  if(idx > 3) body += `<tr class="t-gap"><td><span class="gap-dots">⋮</span></td><td colspan="8"></td></tr>`;
   if(idx >= 3) body += row(tb.rows[idx]);
-  if(Math.max(idx, 2) < tb.rows.length - 1) body += `<tr class="t-gap"><td colspan="9">…</td></tr>`;
+  if(Math.max(idx, 2) < tb.rows.length - 1) body += `<tr class="t-gap"><td><span class="gap-dots">⋮</span></td><td colspan="8"></td></tr>`;
   if(full) body = tb.rows.map(row).join("");
   return body;
 }

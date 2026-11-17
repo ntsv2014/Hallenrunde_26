@@ -1136,12 +1136,16 @@ async function adminHash(){
   const t = (prompt("GitHub-Zugangsschlüssel für die Ergebnis-Eingabe:") || "").trim();
   if(!t) return;
   try{
-    const r = await fetch(REPO_API.replace("/contents/index.html", ""), { headers: { "Authorization": "Bearer " + t, "Accept": "application/vnd.github+json" } });
-    const j = r.ok ? await r.json() : null;
-    if(!j || !(j.permissions && (j.permissions.push || j.permissions.admin))) throw 0;
+    const r = await fetch(REPO_API.replace("/contents/index.html", ""), { headers: { "Authorization": "Bearer " + t, "Accept": "application/vnd.github+json" }, cache: "no-store" });
+    if(r.status === 401) throw new Error("Schlüssel falsch, unvollständig kopiert oder abgelaufen (401)");
+    if(r.status === 403 || r.status === 404) throw new Error("Schlüssel hat keinen Zugriff auf Hallenrunde_26 (" + r.status + ")");
+    if(!r.ok) throw new Error("GitHub antwortet nicht (" + r.status + ")");
+    const j = await r.json();
+    if(j.permissions && !(j.permissions.push || j.permissions.admin))
+      throw new Error("Schlüssel hat nur Lesezugriff – bei „Contents“ „Read and write“ wählen");
     localStorage.setItem(ADMIN_KEY, t);
-    toast("Ergebnis-Eingabe aktiviert – auf „Aktuell“ das Ergebnisfeld antippen"); renderAll();
-  }catch(e){ toast("Schlüssel ungültig oder ohne Schreibrecht", 6000); }
+    toast("Ergebnis-Eingabe aktiviert – auf „Aktuell“ das Ergebnisfeld antippen", 6000); renderAll();
+  }catch(e){ toast("Nicht aktiviert: " + (e && e.message ? e.message : "Schlüssel ungültig"), 10000); }
 }
 window.addEventListener("hashchange", adminHash);
 

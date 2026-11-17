@@ -1359,7 +1359,24 @@ mSync();
 (function(){
   const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   if("serviceWorker" in navigator && /^https:$/.test(location.protocol)){
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).catch(() => {});
+    /* Neue Daten automatisch laden: beim Zurückkehren in die App und alle 5 min (wenn sichtbar)
+       kurz beim Server nachfragen, ob sich die Seite geändert hat – wenn ja, neu laden */
+    let etag = null;
+    const check = async () => {
+      if(document.visibilityState !== "visible") return;
+      try{
+        const r = await fetch(location.pathname, { method: "HEAD", cache: "no-store" });
+        const t = r.headers.get("etag") || r.headers.get("last-modified");
+        if(!t) return;
+        if(etag && t !== etag && !document.querySelector(".cal-pop-bg, .fs-ask")){ location.reload(); return; }
+        etag = t;
+      }catch(e){}
+    };
+    check();
+    document.addEventListener("visibilitychange", check);
+    window.addEventListener("focus", check);
+    setInterval(check, 5 * 60 * 1000);
   }
   if(standalone) { window.__noFsAsk = true; return; }   // läuft schon als App
   let n = 0;

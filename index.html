@@ -463,6 +463,12 @@
     .sp:not(.sp-offen) .sp-head{display:flex;flex-direction:column;justify-content:space-between}
     .sp:not(.sp-offen) .sp-head .venue{line-height:1.1;margin-top:6px;position:relative;top:-2px}
   }
+  /* Hinweis-Einblendung (Ergebnis-Eingabe) */
+  #toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%, 20px);opacity:0;
+    background:var(--logo-black);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:80;
+    transition:opacity .2s, transform .2s;max-width:90vw;text-align:center;pointer-events:none}
+  #toast.show{opacity:1;transform:translate(-50%, 0)}
+  .score:not([disabled]){cursor:pointer;outline:1.5px dashed rgba(0,117,191,.6);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -512,8 +518,9 @@
   <section id="view-info" class="hidden">
     <div class="card">
       <strong>So funktioniert die Seite</strong>
-      <p class="note">Alle Daten stammen von fussball.de. Der Spielplan ist dort teils noch vorläufig,
-      Zeiten können sich ändern. Hallen und Treffzeiten stammen aus SpielerPlus.</p>
+      <p class="note">Spielplan und Tabellen stammen von fussball.de, der Spielplan ist dort teils noch vorläufig,
+      Zeiten können sich ändern. Hallen und Treffzeiten stammen aus SpielerPlus. Ergebnisse unserer Spiele trägt
+      das Trainerteam teils schon während des Turniers ein; maßgeblich ist fussball.de.</p>
     </div>
     <div class="card">
       <strong>Teams &amp; Links</strong>
@@ -789,7 +796,7 @@ const store = {
   get(k, def){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } },
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
-let localScores = store.get(LS_SCORES, {});
+let localScores = {}; store.set(LS_SCORES, {});   // öffentliche (nur lokale) Eingabe abgeschafft
 MATCHES.forEach(m => { if(m.score && localScores[m.nr]) delete localScores[m.nr]; });
 store.set(LS_SCORES, localScores);
 let selTeams = store.get(LS_TEAMS, DEFAULT_TEAMS).filter(t => TEAMS[t]);
@@ -910,7 +917,7 @@ function renderMatches(){
               <span class="${isOurs(m.a) ? "ntsv" : ""}">${esc(m.a)}</span></span>
             ${isVorl(m) ? '<span class="meta">vorläufig</span>' : ""}
           </div>
-          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${m.score ? "disabled" : ""}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
+          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${canEdit() ? "" : "disabled"}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
         </div>`;
       }).join("")}
       ${!vsl && tm !== "mix" && SPIELTAGE[d] ? `<div class="cal-row"><a class="cal-btn" href="${SHARE_URL}cal/${tm === "n4" ? "blau" : "weiss"}-${d}.ics" target="_blank" rel="noopener">${ICON_CAL} In Kalender übernehmen</a></div>` : ""}
@@ -1072,11 +1079,77 @@ function renderInfo(){
 
 function esc(s){ return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
 
+/* ---- Ergebnis-Eingabe nur für das Trainerteam ----
+   Freischalten: Seite einmal mit „#eingabe“ am Ende der Adresse öffnen und den GitHub-Zugangsschlüssel
+   eingeben (bleibt nur auf diesem Gerät gespeichert). Abmelden: „#abmelden“.
+   Gespeichert wird direkt im GitHub-Repository; nach ca. 1–2 min sehen es alle. */
+const ADMIN_KEY = "ntsv-admin-token";
+const REPO_API = "https://api.github.com/repos/ntsv2014/Hallenrunde_26/contents/index.html";
+const adminToken = () => { try{ return localStorage.getItem(ADMIN_KEY) || ""; }catch(e){ return ""; } };
+const canEdit = () => !!adminToken() && /github\.io$/.test(location.hostname) &&
+  (!MOBILE.matches || (typeof mSel !== "undefined" && mSel === "cur"));
+function toast(msg, ms = 3500){
+  let t = document.getElementById("toast");
+  if(!t){ t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), ms);
+}
+const b64dec = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, "")), c => c.charCodeAt(0)));
+const b64enc = s => { const b = new TextEncoder().encode(s); let r = ""; for(let i = 0; i < b.length; i += 0x8000) r += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(r); };
+async function saveScore(nr, score){
+  const m = MATCHES.find(x => x.nr === nr); if(!m) return;
+  const prev = m.score; m.score = score; renderAll();          // sofort auf diesem Gerät anzeigen
+  toast("Speichere …", 20000);
+  const hdr = { "Authorization": "Bearer " + adminToken(), "Accept": "application/vnd.github+json" };
+  try{
+    for(let attempt = 0; attempt < 3; attempt++){
+      const g = await fetch(REPO_API + "?ref=main&t=" + Date.now(), { headers: hdr, cache: "no-store" });
+      if(g.status === 401 || g.status === 403) throw new Error("Schlüssel ungültig oder ohne Schreibrecht");
+      if(!g.ok) throw new Error("GitHub antwortet nicht (" + g.status + ")");
+      const f = await g.json();
+      const src = b64dec(f.content);
+      const re = new RegExp('(nr:"' + nr + '"[^\\n]*?score:)(null|"[^"]*")');
+      if(!re.test(src)) throw new Error("Spiel nicht gefunden");
+      const out = src.replace(re, "$1" + (score ? '"' + score + '"' : "null"));
+      if(out === src){ toast("Unverändert"); return; }
+      const p = await fetch(REPO_API, { method: "PUT", headers: { ...hdr, "Content-Type": "application/json" },
+        body: JSON.stringify({ message: `Ergebnis ${m.h} – ${m.a}: ${score || "gelöscht"} (Eingabe Trainerteam)`,
+          content: b64enc(out), sha: f.sha, branch: "main" }) });
+      if(p.status === 409 || p.status === 422) continue;          // gleichzeitig geändert – neu versuchen
+      if(!p.ok) throw new Error("Speichern fehlgeschlagen (" + p.status + ")");
+      toast("Gespeichert ✓ – für alle in ca. 1–2 min sichtbar");
+      return;
+    }
+    throw new Error("Seite wurde gerade anderweitig geändert – bitte erneut versuchen");
+  }catch(err){
+    m.score = prev; renderAll();
+    toast("Nicht gespeichert: " + err.message, 6000);
+  }
+}
+async function adminHash(){
+  if(location.hash === "#abmelden"){
+    try{ localStorage.removeItem(ADMIN_KEY); }catch(e){}
+    history.replaceState(null, "", location.pathname); toast("Ergebnis-Eingabe auf diesem Gerät abgemeldet"); renderAll(); return;
+  }
+  if(location.hash !== "#eingabe") return;
+  history.replaceState(null, "", location.pathname);
+  const t = (prompt("GitHub-Zugangsschlüssel für die Ergebnis-Eingabe:") || "").trim();
+  if(!t) return;
+  try{
+    const r = await fetch(REPO_API.replace("/contents/index.html", ""), { headers: { "Authorization": "Bearer " + t, "Accept": "application/vnd.github+json" } });
+    const j = r.ok ? await r.json() : null;
+    if(!j || !(j.permissions && (j.permissions.push || j.permissions.admin))) throw 0;
+    localStorage.setItem(ADMIN_KEY, t);
+    toast("Ergebnis-Eingabe aktiviert – auf „Aktuell“ das Ergebnisfeld antippen"); renderAll();
+  }catch(e){ toast("Schlüssel ungültig oder ohne Schreibrecht", 6000); }
+}
+window.addEventListener("hashchange", adminHash);
+
 /* Ergebnis-Dialog */
 const dlg = document.getElementById("scoreDlg");
 let dlgNr = null;
 function openDlg(nr){
-  const m = MATCHES.find(x => x.nr === nr); if(m.score) return; dlgNr = nr;
+  const m = MATCHES.find(x => x.nr === nr); if(!m || !canEdit()) return; dlgNr = nr;
   document.getElementById("dlgTitle").textContent = `${m.h} – ${m.a}`;
   const s = scoreOf(m);
   const [h, a] = s ? s.split(":") : ["", ""];
@@ -1089,11 +1162,10 @@ document.getElementById("dlgCancel").onclick = closeDlg;
 document.getElementById("dlgSave").onclick = () => {
   const h = document.getElementById("sHome").value, a = document.getElementById("sAway").value;
   if(h === "" || a === ""){ return; }
-  localScores[dlgNr] = `${parseInt(h,10)}:${parseInt(a,10)}`;
-  store.set(LS_SCORES, localScores); closeDlg(); renderAll();
+  closeDlg(); saveScore(dlgNr, `${parseInt(h,10)}:${parseInt(a,10)}`);
 };
 document.getElementById("dlgClear").onclick = () => {
-  delete localScores[dlgNr]; store.set(LS_SCORES, localScores); closeDlg(); renderAll();
+  closeDlg(); saveScore(dlgNr, null);
 };
 
 /* Tabs */
@@ -1353,6 +1425,7 @@ try{ TWO_COL.addEventListener("change", () => renderMatches()); }catch(e){ try{ 
 if(MOBILE.matches){ selTeams = ["n4", "n5"]; MODE = "cur"; }
 renderAll(); renderTables(); renderInfo(); renderShare();
 mSync();
+adminHash();
 
 /* ---- Als App auf den Startbildschirm: Frage beim 1. und 5. Aufruf ---- */
 (function(){

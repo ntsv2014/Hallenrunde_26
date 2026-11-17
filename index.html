@@ -1373,10 +1373,24 @@ mSync();
         etag = t;
       }catch(e){}
     };
-    check();
-    document.addEventListener("visibilitychange", check);
-    window.addEventListener("focus", check);
-    setInterval(check, 5 * 60 * 1000);
+    /* Wann lohnt sich das Nachfragen?
+       – häufig (alle 5 min) nur, wenn ein Spieltag begonnen hat und die Tabellen noch nicht auf dessen Stand sind
+       – beim Öffnen/Zurückkehren immer, bis einen Tag nach dem letzten Spieltag; danach gar nicht mehr */
+    const iso = s => s.split(".").reverse().join("-");
+    const days = Object.keys(SPIELTAGE).sort();
+    const seasonOver = () => { if(!days.length) return true;
+      const e = new Date(days[days.length - 1] + "T23:59:59"); e.setDate(e.getDate() + 1); return new Date() > e; };
+    const resultsPending = () => days.some(d => {
+      if(new Date() < new Date(d + "T" + SPIELTAGE[d].treffen + ":00")) return false;   // Spieltag noch nicht begonnen
+      const teams = [...new Set(MATCHES.filter(m => m.d === d).flatMap(m => m.teams))];
+      return TABLES.some(t => t.teams.some(x => teams.includes(x)) && iso(t.stand) < d);  // Tabelle noch nicht auf dem Stand dieses Spieltags
+    });
+    if(!seasonOver()){
+      check();
+      document.addEventListener("visibilitychange", check);
+      window.addEventListener("focus", check);
+      setInterval(() => { if(resultsPending()) check(); }, 5 * 60 * 1000);
+    }
   }
   if(standalone) { window.__noFsAsk = true; return; }   // läuft schon als App
   let n = 0;

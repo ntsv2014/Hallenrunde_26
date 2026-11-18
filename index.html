@@ -122,7 +122,7 @@
   .fd-btn{font:inherit;font-weight:600;padding:7px 12px;border-radius:999px;border:1.5px solid var(--logo-blue);cursor:pointer}
   .fd-btn.n4{background:var(--logo-blue);color:#fff}
   .fd-btn.n5{background:#fff;color:var(--logo-blue)}
-  .fd-btn:disabled{opacity:.5;cursor:default}
+  .fd-btn:disabled{opacity:.35;filter:grayscale(1);cursor:default}
   .lv-s{display:none}
   @media (max-width: 600px){ .lv-l{display:none} .lv-s{display:inline} }
   .tablewrap{overflow-x:auto}
@@ -1181,12 +1181,11 @@ document.getElementById("fdBar").addEventListener("click", async e => {
     if(r.status === 401) return done("Abruf nicht gestartet: Schlüssel ungültig (401)");
     if(r.status === 403 || r.status === 404) return done("Abruf nicht gestartet: Schlüssel braucht „Actions: Read and write“ (" + r.status + ")");
     if(!r.ok) return done("Abruf nicht gestartet (" + r.status + ")");
-    toast("Abruf läuft … neue Daten in ca. 1–2 min", 120000);
     const t0 = Date.now();
     const poll = async () => {
       const t = await headTag();
-      if(t && tag0 && t !== tag0){ toast("Neue Daten – lade neu …"); setTimeout(() => location.reload(), 600); return; }
-      if(Date.now() - t0 > 4 * 60 * 1000) return done("Keine neuen Daten auf fussball.de");
+      if(t && tag0 && t !== tag0){ location.reload(); return; }
+      if(Date.now() - t0 > 4 * 60 * 1000) return done();
       setTimeout(poll, 15000);
     };
     setTimeout(poll, 30000);
@@ -1407,9 +1406,12 @@ function mGo(s, dir, force){   // dir: -1 = nach links (nächster), +1 = nach re
   }, 130);
 }
 /* Wischen: Ansicht bleibt gleich – Team aktuell → Team aktuell, Team alles → Team alles; von „Aktuell“ kommend: Team aktuell */
+let mTblCarry = false;   // Wischen: Tabelle auf-/zugeklappt wie im zuletzt gezeigten Team
 function mSwipe(dir){
   const i = M_ORDER.indexOf(mSel), n = M_ORDER.length, t = M_ORDER[(i - dir + n) % n];
   mNext = false;
+  if(mSel !== "cur") mTblCarry = OPEN_TBL.has(mSel);
+  if(t !== "cur"){ if(mTblCarry) OPEN_TBL.add(t); else OPEN_TBL.delete(t); }
   mGo(t, dir, true);
 }
 document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => {

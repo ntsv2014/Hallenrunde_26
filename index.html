@@ -1419,11 +1419,11 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
     let on;
     if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Demnächst
     else{ on = mTeamCur = !mTeamCur;      // Team-Übersicht ⇄ aktueller Spieltag des Teams
-      if(on) OPEN_TBL.delete(s); }        // per Knopf aufgerufen: Tabelle zugeklappt
+      OPEN_TBL.delete(s); }               // per Knopf aufgerufen: Tabelle zugeklappt
     mGo(s, on ? -1 : 1, true);
     return;
   }
-  if(s !== "cur" && mTeamCur) OPEN_TBL.delete(s);   // Knopf → aktuelle Teamansicht: Tabelle zugeklappt
+  if(s !== "cur") OPEN_TBL.delete(s);   // per Knopf aufgerufen: Tabelle zugeklappt
   mGo(s, M_ORDER.indexOf(s) > M_ORDER.indexOf(mSel) ? -1 : 1);
 });
 /* Seitwärts wischen: Ansicht folgt dem Finger, danach nächster bzw. vorheriger Knopf (rundum) */

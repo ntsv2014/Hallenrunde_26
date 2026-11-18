@@ -181,7 +181,7 @@
     .wrap{overflow-x:clip}
     #view-spiele{will-change:transform}
   }
-  .tcard .tbl-head{cursor:pointer}
+  .tcard .tbl-head{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
   /* Team-Übersicht (Handy): aktueller Spieltag im zugeklappten Zustand – ganze Karte invertiert */
   /* Weiß-Ansicht: aktuelle Karte (zugeklappt) mit blauer Schrift – wie die aktuelle Blau-Karte */
   .sp-n5.is-cur.past:not(.open) .sp-head{color:var(--logo-blue) !important;border-bottom:none !important}
@@ -1326,11 +1326,28 @@ function spieltagNr(d, team){
 const OPEN_PAST = new Set();
 const OPEN_TBL = new Set();   // Handy: vollständig aufgeklappte Tabellen
 /* Handy: Klick auf Tabellenkopf klappt die ganze Tabelle auf bzw. wieder zu */
-document.addEventListener("click", e => {
-  const h = e.target.closest(".tcard .tbl-head"); if(!h) return;
+/* Auf dem Handy direkt beim Loslassen des Fingers reagieren (nicht erst auf „click“, der nach
+   Scrollen, Wisch-Animation oder Neuaufbau der Ansicht manchmal verschluckt wird) */
+const toggleTbl = h => {
   const t = h.closest(".tcard").dataset.team; if(!t) return;
   OPEN_TBL.has(t) ? OPEN_TBL.delete(t) : OPEN_TBL.add(t);
   if(h.closest("#matchList")) renderMatches(); else renderTables();
+};
+let tblTap = null, tblTapAt = 0;
+document.addEventListener("pointerdown", e => {
+  const h = e.target.closest(".tcard .tbl-head");
+  tblTap = h ? { h, x: e.clientX, y: e.clientY, t: Date.now() } : null;
+}, { passive:true });
+document.addEventListener("pointercancel", () => { tblTap = null; }, { passive:true });
+document.addEventListener("pointerup", e => {
+  const p = tblTap; tblTap = null; if(!p) return;
+  if(Math.hypot(e.clientX - p.x, e.clientY - p.y) > 12 || Date.now() - p.t > 800) return;
+  tblTapAt = Date.now(); toggleTbl(p.h);
+}, { passive:true });
+document.addEventListener("click", e => {
+  const h = e.target.closest(".tcard .tbl-head"); if(!h) return;
+  if(Date.now() - tblTapAt < 1000) return;        // schon per pointerup erledigt
+  toggleTbl(h);
 });
 /* Handy-Knöpfe „Alles“ / „Aktuell“ (schließen sich gegenseitig aus) */
 function setMode(m){

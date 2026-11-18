@@ -140,9 +140,9 @@
   .nr-mini i{font-style:normal;font-size:4.2px;font-weight:700;text-transform:uppercase;letter-spacing:.1px;padding:1px 0 .5px}
   .nr-mini b{width:100%;text-align:center;font-size:7.5px;font-weight:800;border-top:1px solid currentColor;padding:1px 0}
   .info-txt ul.ico-list{list-style:none;padding-left:0}
-  .info-txt ul.ico-list li{display:flex;align-items:flex-start;gap:8px}
-  .info-txt ul.ico-list .ico{flex:0 0 24px;height:1.45em;display:flex;align-items:center;justify-content:center}
-  .info-txt ul.ico-list .ico svg{width:15px;height:15px;vertical-align:0}
+  .info-txt ul.ico-list li{display:flex;align-items:center;gap:8px}
+  .info-txt ul.ico-list .ico{flex:0 0 24px;display:flex;align-items:center;justify-content:center}
+  .info-txt ul.ico-list .ico svg{width:20px;height:20px;vertical-align:0}
   .info-txt ul.ico-list .nr-mini{vertical-align:0}
   html.dark{color-scheme:dark}
   .fs-only{display:none}
@@ -1290,7 +1290,7 @@ function renderShare(){
   try{
     const q = qrcode(0, "M"); q.addData(SHARE_URL); q.make();
     box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
-    const svg = box.querySelector("svg"); if(svg){ svg.style.width = "220px"; svg.style.height = "220px"; }
+    const svg = box.querySelector("svg"); if(svg){ svg.style.width = "110px"; svg.style.height = "110px"; }
   }catch(e){ box.innerHTML = '<span class="note">QR-Code konnte nicht geladen werden.</span>'; }
   const btn = document.getElementById("copyLink");
   btn.onclick = async () => {

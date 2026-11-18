@@ -1,0 +1,29 @@
+name: fussball.de abrufen
+on:
+  workflow_dispatch:
+    inputs:
+      team:
+        description: "n4 (Blau, JH 05), n5 (Weiß, JH 04) oder beide"
+        default: "beide"
+permissions:
+  contents: write
+concurrency:
+  group: fussballde
+  cancel-in-progress: false
+jobs:
+  abruf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q fonttools
+      - name: Abrufen
+        run: |
+          T="${{ github.event.inputs.team }}"; [ "$T" = "beide" -o -z "$T" ] && T="n4 n5"
+          python3 tools/fetch_fd.py $T | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Speichern
+        run: |
+          git diff --quiet && exit 0
+          git config user.name "fussball.de-Abruf"; git config user.email "actions@github.com"
+          git commit -qam "Tabellen/Ergebnisse von fussball.de ($(TZ=Europe/Berlin date '+%d.%m. %H:%M'))"
+          for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done

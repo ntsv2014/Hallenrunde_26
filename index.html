@@ -715,9 +715,13 @@ const ICON_PIN = '<svg class="ico-pin" role="img" aria-label="Ort" viewBox="0 0 
 const TEAM_ICON = { n4:"🔵", n5:"⚪" };
 const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
 
-/* Tabellen: [Platz, Team, Sp, G, U, V, Tore, Diff, Pkt] */
+/* Tabellen: [Platz, Team, Sp, G, U, V, Tore, Diff, Pkt]
+   spieltag = letzter (ggf. laufender) Spieltag; played/total = eingetragene/angesetzte Spiele
+   dieses Spieltags in der Gruppe (spielfreie Teams zählen nicht). played == total oder null → komplett. */
+const tblTitle = tb => "Vorrunde – " + tb.group + (tb.spieltag ? " – " + tb.spieltag + ". Spieltag" +
+  (tb.total && tb.played < tb.total ? " nach " + tb.played + " von " + tb.total + " Spielen" : "") : "");
 const TABLES = [
-  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"17.11.2026",
+  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"17.11.2026", spieltag:1, played:null, total:null,
     rows:[
       [1,"Eimsbüttel 15.D (A11)",4,3,1,0,"11:6",5,10],
       [2,"Paloma 11.D (A6)",3,3,0,0,"5:1",4,9],
@@ -743,7 +747,7 @@ const TABLES = [
       [13,"tus BERNE 5.D (A3)",0,0,0,0,"0:0",0,0],
       [23,"Eintr. Norderstedt 6.D (A4)",3,0,0,3,"1:7",-6,0]
     ]},
-  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"17.11.2026",
+  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"17.11.2026", spieltag:1, played:null, total:null,
     rows:[
       [1,"NTSV 7. D Weiß",4,4,0,0,"11:0",11,12],
       [2,"TuS Osdorf 1.D (A1)",4,3,1,0,"9:3",6,10],
@@ -1025,7 +1029,7 @@ function miniTable(team, defFull){
   /* Handy-Teamansicht: standardmäßig ganze Tabelle, Tipp auf den Kopf verkürzt sie */
   const body = tableRows(tb, team, defFull ? !OPEN_TBL.has(team) : OPEN_TBL.has(team));
   return `<div class="card tcard tc-${team} mini" data-team="${team}">
-    <div class="tbl-head ${team}"><strong>Vorrunde – ${tb.group}</strong></div>
+    <div class="tbl-head ${team}"><strong>${tblTitle(tb)}</strong></div>
     <div class="tablewrap"><table${MOBILE.matches && FIT_FS[team + "@" + window.innerWidth] ? ` style="font-size:${FIT_FS[team + "@" + window.innerWidth]}px !important"` : ""}>
       <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
       <tbody>${body}</tbody></table></div></div>`;
@@ -1051,7 +1055,7 @@ function renderTables(){
   document.getElementById("tables").innerHTML = [...shown].sort((a, b) => ORDER.indexOf(a.teams[0]) - ORDER.indexOf(b.teams[0])).map(tb => {
     const links = tb.teams.map(t => TEAMS[t].groupUrl).filter(Boolean);
     return `<div class="card tcard tc-${tb.teams[0]}" data-team="${tb.teams[0]}">
-      <div class="tbl-head ${tb.teams[0]}"><strong>Vorrunde – ${tb.group}</strong></div>
+      <div class="tbl-head ${tb.teams[0]}"><strong>${tblTitle(tb)}</strong></div>
       <div class="tablewrap"><table>
         <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
         <tbody>${tableRows(tb, tb.teams[0], OPEN_TBL.has(tb.teams[0]))}</tbody>

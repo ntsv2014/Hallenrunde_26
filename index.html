@@ -127,6 +127,8 @@
   .info-txt ul.note li{margin:3px 0}
   .info-txt ul.note svg{width:1em;height:1em;vertical-align:-2px}
   .credits{text-align:center;font-size:12px;color:var(--muted);margin:18px 0 8px}
+  .fs-only{display:none}
+  html.fs-ok .fs-only{display:list-item}
   .lv-s{display:none}
   @media (max-width: 600px){ .lv-l{display:none} .lv-s{display:inline} }
   .tablewrap{overflow-x:auto}
@@ -136,7 +138,8 @@
   .venue b{color:var(--ink);font-weight:600}
   /* Spieltag-Karte: Kopf in Teamfarbe (Blau = blaue Fläche, Weiß = weiße Fläche mit Rand) */
   .sp{background:var(--card);border:2px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
-  .sp-n4{border-color:var(--logo-blue)}
+  .sp-n4{border-color:var(--logo-blue);background:var(--logo-blue)}   /* kein heller Rand in den Ecken */
+  .sp-n4 .sp-body{background:var(--card)}
   .sp-n5{border-color:var(--logo-black)}
   .sp-head{padding:10px 12px 9px;position:relative}
   .sp-n4 .sp-head{background:var(--logo-blue);color:#fff}
@@ -1088,6 +1091,7 @@ function renderInfo(){
         <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß – die gewählte Ansicht bleibt dabei erhalten.</li>
         <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
         <li>Vergangene Spieltage stehen zugeklappt am Ende; Antippen klappt sie auf.</li>
+        <li class="fs-only"><b>Banner oben</b> antippen: Vollbild ein bzw. aus – oder hier: <a href="#" class="fs-link">Vollbild ein/aus</a>.</li>
       </ul>
       <p class="note"><b>Links in den Spieltagskarten</b></p>
       <ul class="note">
@@ -1614,6 +1618,8 @@ adminHash();
   const req = el.requestFullscreen || el.webkitRequestFullscreen;
   try{ if(!req || !(document.fullscreenEnabled || document.webkitFullscreenEnabled)) return; }catch(e){ return; }
   b.classList.remove("hidden");
+  document.documentElement.classList.add("fs-ok");
+  document.addEventListener("click", e => { if(e.target.closest(".fs-link")){ e.preventDefault(); b.onclick(); } });
 
   /* Automatisch ins Vollbild darf der Browser nicht – deshalb auf dem Handy einmal kurz nachfragen */
   const isPhone = window.matchMedia("(max-width: 600px)").matches;

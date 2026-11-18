@@ -181,6 +181,7 @@
     .wrap{overflow-x:clip}
     #view-spiele{will-change:transform}
   }
+  .tcard thead{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
   .tcard .tbl-head{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
   /* Team-Übersicht (Handy): aktueller Spieltag im zugeklappten Zustand – ganze Karte invertiert */
   /* Weiß-Ansicht: aktuelle Karte (zugeklappt) mit blauer Schrift – wie die aktuelle Blau-Karte */
@@ -515,7 +516,6 @@
   <!-- SPIELE -->
   <section id="view-spiele">
     <div id="matchList"></div>
-    <div id="fdBar" hidden><span>fussball.de abrufen:</span><button class="fd-btn n4" data-fd="n4">Blau · JH 05</button><button class="fd-btn n5" data-fd="n5">Weiß · JH 04</button></div>
   </section>
 
   <!-- TABELLEN -->
@@ -525,6 +525,7 @@
 
   <!-- INFO -->
   <section id="view-info" class="hidden">
+    <div id="fdBar" hidden><span>fussball.de abrufen:</span><button class="fd-btn n4" data-fd="n4">Blau · JH 05</button><button class="fd-btn n5" data-fd="n5">Weiß · JH 04</button></div>
     <div class="card">
       <strong>So funktioniert die Seite</strong>
       <p class="note">Spielplan und Tabellen stammen von fussball.de, der Spielplan ist dort teils noch vorläufig,
@@ -876,7 +877,7 @@ function teamTags(m){
 
 function renderMatches(){
   const list = document.getElementById("matchList");
-  const fb = document.getElementById("fdBar"); if(fb) fb.hidden = !canEdit();
+  const fb = document.getElementById("fdBar"); if(fb) fb.hidden = !isAdmin();
   const today = todayIso();
   let ms = filtered();
   /* „Vergangene Spiele“ gilt für ganze Spieltage (Blau + Weiß gleicher Nummer):
@@ -1100,7 +1101,8 @@ function esc(s){ return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">"
 const ADMIN_KEY = "ntsv-admin-token";
 const REPO_API = "https://api.github.com/repos/ntsv2014/Hallenrunde_26/contents/index.html";
 const adminToken = () => { try{ return localStorage.getItem(ADMIN_KEY) || ""; }catch(e){ return ""; } };
-const canEdit = () => !!adminToken() && /github\.io$/.test(location.hostname) &&
+const isAdmin = () => !!adminToken() && /github\.io$/.test(location.hostname);
+const canEdit = () => isAdmin() &&
   (!MOBILE.matches || (typeof mSel !== "undefined" && mSel === "cur"));
 function toast(msg, ms = 3500){
   let t = document.getElementById("toast");
@@ -1168,7 +1170,7 @@ const headTag = async () => { try{ const r = await fetch(location.pathname, { me
   return r.headers.get("etag") || r.headers.get("last-modified"); }catch(e){ return null; } };
 let fdBusy = false;
 document.getElementById("fdBar").addEventListener("click", async e => {
-  const b = e.target.closest("[data-fd]"); if(!b || fdBusy || !canEdit()) return;
+  const b = e.target.closest("[data-fd]"); if(!b || fdBusy || !isAdmin()) return;
   fdBusy = true; document.querySelectorAll(".fd-btn").forEach(x => x.disabled = true);
   const done = msg => { fdBusy = false; document.querySelectorAll(".fd-btn").forEach(x => x.disabled = false); if(msg) toast(msg, 6000); };
   try{
@@ -1335,7 +1337,7 @@ const toggleTbl = h => {
 };
 let tblTap = null, tblTapAt = 0;
 document.addEventListener("pointerdown", e => {
-  const h = e.target.closest(".tcard .tbl-head");
+  const h = e.target.closest(".tcard .tbl-head, .tcard thead");
   tblTap = h ? { h, x: e.clientX, y: e.clientY, t: Date.now() } : null;
 }, { passive:true });
 document.addEventListener("pointercancel", () => { tblTap = null; }, { passive:true });
@@ -1345,7 +1347,7 @@ document.addEventListener("pointerup", e => {
   tblTapAt = Date.now(); toggleTbl(p.h);
 }, { passive:true });
 document.addEventListener("click", e => {
-  const h = e.target.closest(".tcard .tbl-head"); if(!h) return;
+  const h = e.target.closest(".tcard .tbl-head, .tcard thead"); if(!h) return;
   if(Date.now() - tblTapAt < 1000) return;        // schon per pointerup erledigt
   toggleTbl(h);
 });
@@ -1416,10 +1418,12 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
     if(mBusy) return;
     let on;
     if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Demnächst
-    else on = mTeamCur = !mTeamCur;       // Team-Übersicht ⇄ aktueller Spieltag des Teams
+    else{ on = mTeamCur = !mTeamCur;      // Team-Übersicht ⇄ aktueller Spieltag des Teams
+      if(on) OPEN_TBL.delete(s); }        // per Knopf aufgerufen: Tabelle zugeklappt
     mGo(s, on ? -1 : 1, true);
     return;
   }
+  if(s !== "cur" && mTeamCur) OPEN_TBL.delete(s);   // Knopf → aktuelle Teamansicht: Tabelle zugeklappt
   mGo(s, M_ORDER.indexOf(s) > M_ORDER.indexOf(mSel) ? -1 : 1);
 });
 /* Seitwärts wischen: Ansicht folgt dem Finger, danach nächster bzw. vorheriger Knopf (rundum) */

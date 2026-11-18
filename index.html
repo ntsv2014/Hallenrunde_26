@@ -123,6 +123,10 @@
   .fd-btn.n4{background:var(--logo-blue);color:#fff}
   .fd-btn.n5{background:#fff;color:var(--logo-blue)}
   .fd-btn:disabled{opacity:.35;filter:grayscale(1);cursor:default}
+  .info-txt ul.note{margin:4px 0 8px;padding-left:18px}
+  .info-txt ul.note li{margin:3px 0}
+  .info-txt ul.note svg{width:1em;height:1em;vertical-align:-2px}
+  .credits{text-align:center;font-size:12px;color:var(--muted);margin:18px 0 8px}
   .lv-s{display:none}
   @media (max-width: 600px){ .lv-l{display:none} .lv-s{display:inline} }
   .tablewrap{overflow-x:auto}
@@ -526,12 +530,7 @@
   <!-- INFO -->
   <section id="view-info" class="hidden">
     <div id="fdBar" hidden><span>fussball.de abrufen:</span><button class="fd-btn n4" data-fd="n4">Blau · JH 05</button><button class="fd-btn n5" data-fd="n5">Weiß · JH 04</button></div>
-    <div class="card">
-      <strong>So funktioniert die Seite</strong>
-      <p class="note">Spielplan und Tabellen stammen von fussball.de, der Spielplan ist dort teils noch vorläufig,
-      Zeiten können sich ändern. Hallen und Treffzeiten stammen aus SpielerPlus. Ergebnisse unserer Spiele trägt
-      das Trainerteam teils schon während des Turniers ein; maßgeblich ist fussball.de.</p>
-    </div>
+    <div id="howBox"></div>
     <div class="card">
       <strong>Teams &amp; Links</strong>
       <ul class="links" id="teamLinks"></ul>
@@ -1079,18 +1078,52 @@ function renderInfo(){
   document.getElementById("teamLinks").innerHTML = Object.values(TEAMS).map(t =>
     `<li><a href="${t.url}" target="_blank" rel="noopener">${esc(t.name)}</a> – Gruppe ${t.group} (Staffel-ID ${t.staffel})</li>`).join("");
   const nb = document.getElementById("notesBox"); if(nb) nb.remove();
-  /* Datenstand / Hinweis im Info-Tab statt in der Fußzeile */
-  document.getElementById("view-info").insertAdjacentHTML("beforeend",
-    `<div class="card"><strong>Datenstand</strong><p class="note">Stand: ${DATA_STAND} · Quellen: fussball.de, SpielerPlus<br>Inoffizielle Übersicht, alle Angaben ohne Gewähr.</p></div>`);
+  /* Bedienung, Links, App-Installation */
+  document.getElementById("howBox").outerHTML =
+    `<div class="card info-txt"><strong>So funktioniert die Seite</strong>
+      <p class="note"><b>Knöpfe oben (Handy)</b></p>
+      <ul class="note">
+        <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der Spieltag danach („Demnächst“), ein weiteres Mal: zurück.</li>
+        <li><b>Blau</b> / <b>Weiß</b> zeigen Tabelle und alle Spieltage des Teams. Noch einmal tippen: nur der aktuelle Spieltag mit kurzer Tabelle, ein weiteres Mal: zurück.</li>
+        <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß – die gewählte Ansicht bleibt dabei erhalten.</li>
+        <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
+        <li>Vergangene Spieltage stehen zugeklappt am Ende; Antippen klappt sie auf.</li>
+      </ul>
+      <p class="note"><b>Links in den Spieltagskarten</b></p>
+      <ul class="note">
+        <li><b>Spieltag-Kästchen</b> (rechts oben): der Spieltag auf fussball.de.</li>
+        <li>${ICON_PIN} <b>Ortsangabe</b>: Route in Google Maps.</li>
+        <li>${ICON_CAL} <b>Kalendersymbol</b> neben der Treffzeit: Termin in den eigenen Kalender übernehmen.</li>
+      </ul></div>
+    <div class="card info-txt"><strong>Als App auf das Handy</strong>
+      <ul class="note">
+        <li><b>Android, Chrome:</b> Menü <b>⋮</b> → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“.</li>
+        <li><b>Samsung Internet:</b> Menü <b>≡</b> → „Seite hinzufügen zu“ → „Startbildschirm“.</li>
+        <li><b>Firefox (Android):</b> Menü <b>⋮</b> → „Installieren“ bzw. „Zum Startbildschirm hinzufügen“.</li>
+        <li><b>iPhone / iPad, Safari:</b> Teilen-Symbol → „Zum Home-Bildschirm“.</li>
+      </ul>
+      <p class="note">Die App startet dann mit dem NTSV-Wappen ohne Browserleiste und holt sich neue Daten selbst.</p></div>`;
   /* Kalender abonnieren: alle Spieltage eines Teams, aktualisiert sich automatisch */
   const sub = f => SHARE_URL.replace(/^https:/, "webcal:") + "cal/" + f;
   const gcal = f => "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(sub(f));
-  document.getElementById("view-info").insertAdjacentHTML("beforeend",
+  const info = document.getElementById("view-info");
+  info.insertAdjacentHTML("beforeend",
     `<div class="card"><strong>Kalender abonnieren</strong><p class="note">Alle Spieltage eines Teams im eigenen Kalender – Änderungen und neue Termine kommen automatisch dazu.</p>
      <p class="cal-subs"><a class="cal-btn" href="${sub("blau.ics")}">${ICON_CAL} Blau abonnieren</a> <a class="cal-btn" href="${sub("weiss.ics")}">${ICON_CAL} Weiß abonnieren</a></p>
      <p class="note">Google Kalender: <a href="${gcal("blau.ics")}" target="_blank" rel="noopener">Blau</a> · <a href="${gcal("weiss.ics")}" target="_blank" rel="noopener">Weiß</a></p></div>`);
+  /* Datenstand */
+  info.insertAdjacentHTML("beforeend",
+    `<div class="card"><strong>Datenstand</strong><p class="note">Stand: ${DATA_STAND}</p>
+     <p class="note">Spielplan und Tabellen stammen von fussball.de, der Spielplan ist dort teils noch vorläufig,
+     Zeiten können sich ändern. Hallen und Treffzeiten stammen aus SpielerPlus. Ergebnisse unserer Spiele werden
+     teils schon während des Turniers manuell eingetragen; maßgeblich ist fussball.de.</p>
+     <p class="note">Inoffizielle Übersicht, alle Angaben ohne Gewähr.</p></div>`);
+  /* Fußzeile */
+  info.insertAdjacentHTML("beforeend",
+    `<p class="credits">Erstellt von Ingo mit Claude${FEEDBACK_URL ? ` · <a href="${FEEDBACK_URL}">Feedback</a>` : ""}</p>`);
   const ft = document.getElementById("footer"); if(ft) ft.remove();
 }
+const FEEDBACK_URL = "";
 
 function esc(s){ return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
 

@@ -126,7 +126,8 @@
   .info-txt ul.note{margin:4px 0 8px;padding-left:18px}
   .info-txt ul.note li{margin:3px 0}
   .info-txt ul.note svg{width:1em;height:1em;vertical-align:-2px}
-  .credits{text-align:center;font-size:12px;color:var(--muted);margin:18px 0 8px}
+  .credits{text-align:center;font-size:12px;color:var(--muted);margin:48px 0 16px}
+  #view-info.hidden ~ #credits{display:none}
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
   .lv-s{display:none}
@@ -1084,11 +1085,11 @@ function renderInfo(){
   /* Bedienung, Links, App-Installation */
   document.getElementById("howBox").outerHTML =
     `<div class="card info-txt"><strong>So funktioniert die Seite</strong>
-      <p class="note"><b>Knöpfe oben (Handy)</b></p>
+      <p class="note"><b>Buttons oben (Handy)</b></p>
       <ul class="note">
         <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der Spieltag danach („Demnächst“), ein weiteres Mal: zurück.</li>
         <li><b>Blau</b> / <b>Weiß</b> zeigen Tabelle und alle Spieltage des Teams. Noch einmal tippen: nur der aktuelle Spieltag mit kurzer Tabelle, ein weiteres Mal: zurück.</li>
-        <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß – die gewählte Ansicht bleibt dabei erhalten.</li>
+        <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß.</li>
         <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
         <li>Vergangene Spieltage stehen zugeklappt am Ende; Antippen klappt sie auf.</li>
         <li class="fs-only"><b>Banner oben</b> antippen: Vollbild ein bzw. aus – oder hier: <a href="#" class="fs-link">Vollbild ein/aus</a>.</li>
@@ -1122,9 +1123,9 @@ function renderInfo(){
      Zeiten können sich ändern. Hallen und Treffzeiten stammen aus SpielerPlus. Ergebnisse unserer Spiele werden
      teils schon während des Turniers manuell eingetragen; maßgeblich ist fussball.de.</p>
      <p class="note">Inoffizielle Übersicht, alle Angaben ohne Gewähr.</p></div>`);
-  /* Fußzeile */
-  info.insertAdjacentHTML("beforeend",
-    `<p class="credits">Erstellt von Ingo mit Claude${FEEDBACK_URL ? ` · <a href="${FEEDBACK_URL}">Feedback</a>` : ""}</p>`);
+  /* Fußzeile: ganz unten, nach „Seite teilen“ */
+  document.getElementById("view-teilen").insertAdjacentHTML("afterend",
+    `<p class="credits" id="credits">Erstellt von Ingo mit Claude${FEEDBACK_URL ? ` · <a href="${FEEDBACK_URL}">Feedback</a>` : ""}</p>`);
   const ft = document.getElementById("footer"); if(ft) ft.remove();
 }
 const FEEDBACK_URL = "";

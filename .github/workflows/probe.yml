@@ -1,0 +1,18 @@
+name: probe-fussballde
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          mkdir out && cd out
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
+          curl -sSL -A "$UA" -o jh05.html -w "jh05 %{http_code} %{size_download}\n" "https://www.fussball.de/spieltag/jh-05--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg/-/spieldatum/2026-11-14/staffel/0327PBA1RK00000BVS5489BUVUFHD2VV-G" >> log.txt 2>&1
+          curl -sSL -A "$UA" -o jh04.html -w "jh04 %{http_code} %{size_download}\n" "https://www.fussball.de/spieltag/jh-04--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg/-/staffel/0327PBA1J400000BVS5489BUVUFHD2VV-G" >> log.txt 2>&1
+          curl -sSL -A "$UA" -o team.html -w "team %{http_code} %{size_download}\n" "https://www.fussball.de/mannschaft/niendorf-10d-jun-a5-niendorf-hamburg/-/saison/2627/team-id/02UCRRKAL8000000VS5489BRVTRSB17S" >> log.txt 2>&1
+          cat log.txt
+          git init -q . && git checkout -q -b probe && git add -A
+          git -c user.name=probe -c user.email=probe@x commit -qm probe
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" probe

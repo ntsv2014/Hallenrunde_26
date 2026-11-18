@@ -117,6 +117,8 @@
   .tbl-head.n4{background:var(--logo-blue);color:#fff}
   .tbl-head.n5{background:#fff;color:var(--logo-black);border-bottom:1px solid var(--logo-black)}
   .tbl-head .meta{color:inherit;opacity:.8}
+  .lv-s{display:none}
+  @media (max-width: 600px){ .lv-l{display:none} .lv-s{display:inline} }
   .tablewrap{overflow-x:auto}
   .note{font-size:13px;color:var(--muted)}
   .stand{font-size:12px;color:var(--muted);margin:2px 0 8px}
@@ -719,7 +721,7 @@ const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
    spieltag = letzter (ggf. laufender) Spieltag; played/total = eingetragene/angesetzte Spiele
    dieses Spieltags in der Gruppe (spielfreie Teams zählen nicht). played == total oder null → komplett. */
 const tblTitle = tb => "Vorrunde – " + tb.group + (tb.spieltag ? " – " + tb.spieltag + ". Spieltag" +
-  (tb.total && tb.played < tb.total ? " nach " + tb.played + " von " + tb.total + " Spielen" : "") : "");
+  (tb.total && tb.played < tb.total ? `<span class="lv-l"> nach ${tb.played} von ${tb.total} Spielen</span><span class="lv-s"> (${tb.played}/${tb.total} Spiele)</span>` : "") : "");
 const TABLES = [
   { group:"JH 05", staffel:"174405", teams:["n4"], stand:"17.11.2026", spieltag:1, played:null, total:null,
     rows:[

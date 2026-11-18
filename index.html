@@ -1106,7 +1106,7 @@ function renderInfo(){
         <li><b>Firefox (Android):</b> Menü <b>⋮</b> → „Installieren“ bzw. „Zum Startbildschirm hinzufügen“.</li>
         <li><b>iPhone / iPad, Safari:</b> Teilen-Symbol → „Zum Home-Bildschirm“.</li>
       </ul>
-      <p class="note">Die App startet dann mit dem NTSV-Wappen ohne Browserleiste und holt sich neue Daten selbst.</p></div>`;
+      <p class="note">Die App startet dann mit dem NTSV-Wappen ohne Browserleiste und holt sich neue Daten selbst, wenn sie läuft.</p></div>`;
   /* Kalender abonnieren: alle Spieltage eines Teams, aktualisiert sich automatisch */
   const sub = f => SHARE_URL.replace(/^https:/, "webcal:") + "cal/" + f;
   const gcal = f => "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(sub(f));

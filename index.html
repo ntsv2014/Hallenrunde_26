@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NTSV 7. D · Hallenmeisterschaft 2026/27</title>
 <meta name="theme-color" content="#0075bf">
+<script>/* Design: gespeicherte Wahl, sonst als App dunkel, im Browser wie das System */
+(function(){ var t = null; try{ t = localStorage.getItem("ntsv-theme"); }catch(e){}
+  var app = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
+  var sys = window.matchMedia && matchMedia("(prefers-color-scheme: dark)");
+  var set = function(){ var d = t ? t === "dark" : (app || (sys && sys.matches)); document.documentElement.classList.toggle("dark", !!d); };
+  set(); try{ sys.addEventListener("change", function(){ if(!t) set(); }); }catch(e){}
+  document.addEventListener("click", function(e){ var a = e.target.closest && e.target.closest(".theme-link"); if(!a) return; e.preventDefault();
+    t = document.documentElement.classList.contains("dark") ? "light" : "dark"; try{ localStorage.setItem("ntsv-theme", t); }catch(e){} set(); });
+})();</script>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=3">
 <link rel="shortcut icon" type="image/png" href="icon-192.png?v=3">
@@ -21,10 +30,8 @@
     --brand:#0075bf; --brand-2:#0075bf; --accent:#e30613; --logo-blue:#0075bf; --logo-red:#e30613; --logo-black:#1d1d1b;
     --win:#1f8a4c; --draw:#8a7a1f; --loss:#b23a3a; --today:rgba(0,117,191,.08);
   }
-  @media (prefers-color-scheme: dark){
-    :root{ --bg:#0d1117; --card:#161b22; --ink:#e6edf3; --muted:#8b98a7; --line:#262d36;
+  html.dark{ --bg:#0d1117; --card:#161b22; --ink:#e6edf3; --muted:#8b98a7; --line:#262d36;
            --brand:#0075bf; --brand-2:#0075bf; --today:rgba(0,117,191,.18); }
-  }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);
     font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
@@ -109,7 +116,7 @@
   th:nth-child(2),td:nth-child(2){text-align:left}
   th{font-size:12px;color:var(--muted);font-weight:600}
   tr:nth-child(even) td{background:rgba(0,117,191,.06)}
-  @media (prefers-color-scheme: dark){ tr:nth-child(even) td{background:rgba(255,255,255,.05)} }
+  :where(html.dark) tr:nth-child(even) td{background:rgba(255,255,255,.05)}
   tr.hl td{font-weight:700}
   tr.hl-n4 td{background:var(--logo-blue);color:#fff}
   tr.hl-n5 td{background:#fff;color:var(--logo-black);border-top:1px solid var(--logo-black);border-bottom:1px solid var(--logo-black)}
@@ -132,6 +139,12 @@
     box-shadow:0 0 0 1px currentColor;line-height:1}
   .nr-mini i{font-style:normal;font-size:4.2px;font-weight:700;text-transform:uppercase;letter-spacing:.1px;padding:1px 0 .5px}
   .nr-mini b{width:100%;text-align:center;font-size:7.5px;font-weight:800;border-top:1px solid currentColor;padding:1px 0}
+  .info-txt ul.ico-list{list-style:none;padding-left:0}
+  .info-txt ul.ico-list li{display:flex;align-items:flex-start;gap:8px}
+  .info-txt ul.ico-list .ico{flex:0 0 24px;height:1.45em;display:flex;align-items:center;justify-content:center}
+  .info-txt ul.ico-list .ico svg{width:15px;height:15px;vertical-align:0}
+  .info-txt ul.ico-list .nr-mini{vertical-align:0}
+  html.dark{color-scheme:dark}
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
   .lv-s{display:none}
@@ -150,7 +163,7 @@
   .sp-n4 .sp-head{background:var(--logo-blue);color:#fff}
   .sp-n5 .sp-head{background:#fff;color:var(--logo-black);border-bottom:1px solid var(--logo-black)}
   .treff{white-space:nowrap}
-  @media (prefers-color-scheme: dark){ .sp-n5{border-color:#fff} }
+  :where(html.dark) .sp-n5{border-color:#fff}
   .sp-nr{position:absolute;top:11px;right:12px;font-size:12px;font-weight:700;letter-spacing:.3px;opacity:.9;white-space:nowrap}
   .day.sp .sp-head h2{margin:0;padding-right:92px;font-size:14px;font-weight:700;color:inherit;letter-spacing:.4px}
   .sp-head .venue{margin:4px 0 0;color:inherit;opacity:.92;font-size:13px}
@@ -213,8 +226,8 @@
   .sp, .sp *, .tcard, .tcard *{outline:none !important;-webkit-tap-highlight-color:transparent}
   .sp:focus, .sp:focus-within, .sp:focus-visible{outline:none !important}
   /* „Aktuell“ ausgewählt: im dunklen Design weißer Rahmen */
-  @media (max-width: 600px) and (prefers-color-scheme: dark){
-    #mCur[aria-pressed="true"]{border-color:var(--logo-blue) !important;box-shadow:none}
+  @media (max-width: 600px){
+    :where(html.dark) #mCur[aria-pressed="true"]{border-color:var(--logo-blue) !important;box-shadow:none}
   }
   @media (max-width: 600px){
     #mTeam[data-t="blau"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}
@@ -250,7 +263,7 @@
   .t-sub{display:block;font-size:.82em;opacity:.75;white-space:nowrap}
   /* Helles Design: inaktive Knöpfe blassblau hinterlegt */
   .navwrap .chip[aria-pressed="false"]{background:#e3f0fa}
-  @media (prefers-color-scheme: dark){ .navwrap .chip[aria-pressed="false"]{background:var(--card)} }
+  :where(html.dark) .navwrap .chip[aria-pressed="false"]{background:var(--card)}
   .fs-ask{position:fixed;left:10px;right:10px;bottom:max(12px, env(safe-area-inset-bottom));z-index:50;
     display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;
     background:var(--card);color:var(--ink);border:2px solid var(--logo-blue);box-shadow:0 6px 20px rgba(0,0,0,.35)}
@@ -339,7 +352,7 @@
   .score{font-weight:800;white-space:nowrap}
   .score.empty{font-weight:400}
   .score[disabled]{border-color:transparent;min-width:0;padding-left:0;padding-right:0;text-align:right}
-  @media (prefers-color-scheme: dark){ :root{ --win:#5fd38d; --loss:#ff7070; --draw:#e2cd5e; } }
+  html.dark{ --win:#5fd38d; --loss:#ff7070; --draw:#e2cd5e; }
   /* Kopf immer zweizeilig hoch, damit das Kalenderblatt gleich groß bleibt */
   .sp-head{min-height:62px}
   /* Ergebnis: Doppelpunkt genau unter der Mitte des Kalenderblatts
@@ -351,7 +364,7 @@
   .tcard{padding:0;border:2px solid var(--line);border-radius:12px;overflow:hidden}
   .tc-n4{border-color:var(--logo-blue)}
   .tc-n5{border-color:var(--logo-black)}
-  @media (prefers-color-scheme: dark){ .tc-n5{border-color:#fff} }
+  :where(html.dark) .tc-n5{border-color:#fff}
   .tcard .tbl-head{margin:0;padding:10px 12px;border-radius:0;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
   .t-stand{font-size:12px;font-weight:600;white-space:nowrap}
   .t-stand a{color:inherit;text-decoration:none}
@@ -439,7 +452,7 @@
   .cal-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--logo-blue);text-decoration:none;
     border:1.5px solid rgba(0,117,191,.55);border-radius:999px;padding:4px 12px;background:transparent}
   .cal-btn:active{background:rgba(0,117,191,.1)}
-  @media (prefers-color-scheme: dark){ .cal-btn{color:#5fb2ea;border-color:rgba(95,178,234,.6)} }
+  :where(html.dark) .cal-btn{color:#5fb2ea;border-color:rgba(95,178,234,.6)}
   .ico-cal{width:1.15em;height:1.15em;flex:none}
   .cal-subs{display:flex;flex-wrap:wrap;gap:8px}
   /* Handy: Kalender-Symbol hinter der Uhrzeit statt Knopfzeile; Auswahl im Popup */
@@ -459,7 +472,7 @@
     text-decoration:none;border:1.5px solid var(--logo-blue);color:var(--logo-blue);background:transparent}
   .cal-pop .cal-acts a.primary{background:var(--logo-blue);color:#fff}
   .cal-pop .cal-acts button{border-color:var(--line);color:var(--ink)}
-  @media (prefers-color-scheme: dark){ .cal-pop .cal-acts a:not(.primary){color:#5fb2ea;border-color:#5fb2ea} }
+  :where(html.dark) .cal-pop .cal-acts a:not(.primary){color:#5fb2ea;border-color:#5fb2ea}
   /* Handy: Tabellenschrift so groß wie in den Spieltagskarten */
   @media (max-width: 600px){
     .tcard table{font-size:15px !important}
@@ -476,9 +489,9 @@
   .tcard th:nth-child(n+3), .tcard td:nth-child(n+3){text-align:center !important}
   /* helles Design: Zeile „NTSV Weiß“ im Hellblau der Knöpfe */
   /* dunkles Design: NTSV Weiß hellblau nur auf Platz 1, sonst weiß */
-  @media (prefers-color-scheme: dark){ .tcard tr.hl-n5.hl-top td{background:#e3f0fa !important;color:var(--logo-black) !important} }
+  :where(html.dark) .tcard tr.hl-n5.hl-top td{background:#e3f0fa !important;color:var(--logo-black) !important}
   /* helles Design: alternierende Tabellenzeilen hellgrau */
-  @media (prefers-color-scheme: light){ .tcard tbody tr:nth-child(even):not(.hl) td{background:#f0f1f3 !important} }
+  :where(html:not(.dark)) .tcard tbody tr:nth-child(even):not(.hl) td{background:#f0f1f3 !important}
   /* Handy: zweite Kopfzeile unten bündig mit dem Spieltag-Kalenderblatt */
   @media (max-width: 600px){
     .sp:not(.sp-offen) .sp-head{display:flex;flex-direction:column;justify-content:space-between}
@@ -1099,10 +1112,10 @@ function renderInfo(){
         <li class="fs-only"><b>Banner oben</b> antippen: Vollbild ein bzw. aus – oder hier: <a href="#" class="fs-link">Vollbild ein/aus</a>.</li>
       </ul>
       <p class="note"><b>Links in den Spieltagskarten</b></p>
-      <ul class="note">
-        <li><span class="nr-mini"><i>Spieltag</i><b>2</b></span> <b>Spieltag-Kästchen</b> (rechts oben): der Spieltag mit allen Paarungen auf fussball.de.</li>
-        <li>${ICON_PIN} <b>Ortsangabe</b>: Route in Google Maps.</li>
-        <li>${ICON_CAL} <b>Kalendersymbol</b> neben der Treffzeit: Termin in den eigenen Kalender übernehmen.</li>
+      <ul class="note ico-list">
+        <li><span class="ico"><span class="nr-mini"><i>Spieltag</i><b>2</b></span></span><span><b>Spieltag-Kästchen</b> (rechts oben): der Spieltag mit allen Paarungen auf fussball.de.</span></li>
+        <li><span class="ico">${ICON_PIN}</span><span><b>Ortsangabe</b>: Route in Google Maps.</span></li>
+        <li><span class="ico">${ICON_CAL}</span><span><b>Kalendersymbol</b> neben der Treffzeit: Termin in den eigenen Kalender übernehmen.</span></li>
       </ul></div>
     <div class="card info-txt"><strong>Als App auf das Handy</strong>
       <ul class="note">
@@ -1111,7 +1124,8 @@ function renderInfo(){
         <li><b>Firefox (Android):</b> Menü <b>⋮</b> → „Installieren“ bzw. „Zum Startbildschirm hinzufügen“.</li>
         <li><b>iPhone / iPad, Safari:</b> Teilen-Symbol → „Zum Home-Bildschirm“.</li>
       </ul>
-      <p class="note">Die App startet dann mit dem NTSV-Wappen ohne Browserleiste und holt sich neue Daten selbst, wenn sie läuft.</p></div>`;
+      <p class="note">Die App startet dann mit dem NTSV-Wappen ohne Browserleiste und holt sich neue Daten selbst, wenn sie läuft.</p>
+      <p class="note"><b>Design:</b> <a href="#" class="theme-link">hell / dunkel umschalten</a> – das dunkle Design ist für diese Seite besser geeignet.</p></div>`;
   /* Kalender abonnieren: alle Spieltage eines Teams, aktualisiert sich automatisch */
   const sub = f => SHARE_URL.replace(/^https:/, "webcal:") + "cal/" + f;
   const gcal = f => "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(sub(f));

@@ -9,10 +9,15 @@ jobs:
       - run: |
           mkdir out && cd out
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
-          curl -sSL -A "$UA" -o jh05.html -w "jh05 %{http_code} %{size_download}\n" "https://www.fussball.de/spieltag/jh-05--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg/-/spieldatum/2026-11-14/staffel/0327PBA1RK00000BVS5489BUVUFHD2VV-G" >> log.txt 2>&1
-          curl -sSL -A "$UA" -o jh04.html -w "jh04 %{http_code} %{size_download}\n" "https://www.fussball.de/spieltag/jh-04--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg/-/staffel/0327PBA1J400000BVS5489BUVUFHD2VV-G" >> log.txt 2>&1
-          curl -sSL -A "$UA" -o team.html -w "team %{http_code} %{size_download}\n" "https://www.fussball.de/mannschaft/niendorf-10d-jun-a5-niendorf-hamburg/-/saison/2627/team-id/02UCRRKAL8000000VS5489BRVTRSB17S" >> log.txt 2>&1
-          cat log.txt
+          for id in 9q8et5s5 tfxe1wcz; do
+            curl -sSL -A "$UA" -o $id.css "https://www.fussball.de/export.fontface/-/id/$id/type/css"
+            cat $id.css >> log.txt
+            for u in $(grep -o "url([^)]*)" $id.css | sed 's/url(//;s/)//;s/["'"'"']//g'); do
+              case "$u" in //*) u="https:$u";; /*) u="https://www.fussball.de$u";; esac
+              f=$(echo "$u" | sed 's#.*/##;s/[?#].*//'); curl -sSL -A "$UA" -o "${id}_$f" "$u"; echo "$u -> ${id}_$f" >> log.txt
+            done
+          done
+          ls -la >> log.txt
           git init -q . && git checkout -q -b probe && git add -A
           git -c user.name=probe -c user.email=probe@x commit -qm probe
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" probe

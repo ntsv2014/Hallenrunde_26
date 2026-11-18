@@ -565,7 +565,7 @@
    DATEN – hier pflegen
    Stand: 15.11.2026 (fussball.de)
    ===================================================================== */
-const DATA_STAND = "17.11.2026";
+const DATA_STAND = "18.11.2026";
 const CLAUDE_URL = "https://claude.ai/artifact/L2oRP9c6x9FXKR2mc4YwCa";
 /* Auf der eigenen Domain (z. B. ingomue.de) zeigt der QR-Code auf diese Adresse, sonst auf claude.ai */
 /* Geteilt wird immer die GitHub-Adresse (dort mit Wappen-Icon als App installierbar) */
@@ -723,38 +723,38 @@ const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
 const tblTitle = tb => "Vorrunde – " + tb.group + (tb.spieltag ? " – " + tb.spieltag + ". Spieltag" +
   (tb.total && tb.played < tb.total ? `<span class="lv-l"> nach ${tb.played} von ${tb.total} Spielen</span><span class="lv-s"> (${tb.played}/${tb.total} Spiele)</span>` : "") : "");
 const TABLES = [
-  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"17.11.2026", spieltag:1, played:null, total:null,
+  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"18.11.2026", spieltag:1, played:null, total:null,
     rows:[
-      [1,"Eimsbüttel 15.D (A11)",4,3,1,0,"11:6",5,10],
-      [2,"Paloma 11.D (A6)",3,3,0,0,"5:1",4,9],
-      [3,"SCALA 2.D (A3)",3,2,1,0,"8:0",8,7],
-      [4,"HEBC 3.D (A3)",4,2,1,1,"6:3",3,7],
-      [5,"Glashütte 1.D (A1)",3,2,1,0,"3:0",3,7],
-      [6,"NTSV 7. D Blau",4,2,0,2,"11:6",5,6],
-      [7,"Paloma 3.D (A3)",3,1,1,1,"4:2",2,4],
-      [8,"Eimsbüttel 13.D (A9)",4,1,1,2,"5:13",-8,4],
-      [9,"BU 3.D (A3)",3,1,0,2,"4:7",-3,3],
-      [10,"Nordlichter im NSV 1.D (A1)",3,1,0,2,"2:7",-5,3],
-      [11,"Urania 1.D (A1)",3,0,1,2,"1:4",-3,1],
-      [12,"Eimsbüttel 6.D (A6)",4,0,1,3,"5:10",-5,1],
-      [13,"Condor 7.D (A4)",0,0,0,0,"0:0",0,0],
-      [13,"DUWO 08 1.D (A1)",0,0,0,0,"0:0",0,0],
-      [13,"Farmsen 1.D (A1)",0,0,0,0,"0:0",0,0],
-      [13,"HSV 8.D (A4)",0,0,0,0,"0:0",0,0],
-      [13,"HafenCity 1.D (A1)",0,0,0,0,"0:0",0,0],
-      [13,"Rahlstedt 1.D (A1)",0,0,0,0,"0:0",0,0],
-      [13,"Rahlstedt 2.D (A2)",0,0,0,0,"0:0",0,0],
-      [13,"Rahlstedt 3.D (J1)",0,0,0,0,"0:0",0,0],
-      [13,"Wellingsbüttel 2.D (A2)",0,0,0,0,"0:0",0,0],
-      [13,"tus BERNE 5.D (A3)",0,0,0,0,"0:0",0,0],
-      [23,"Eintr. Norderstedt 6.D (A4)",3,0,0,3,"1:7",-6,0]
+      [1,"tus BERNE 5.D (A3)",4,3,1,0,"7:0",7,10],
+      [2,"Rahlstedt 1.D (A1)",4,3,1,0,"8:2",6,10],
+      [3,"Eimsbüttel 15.D (A11)",4,3,1,0,"11:6",5,10],
+      [4,"Condor 7.D (A4)",4,3,1,0,"5:0",5,10],
+      [5,"Paloma 11.D (A6)",3,3,0,0,"5:1",4,9],
+      [6,"Wellingsbüttel 2.D (A2)",4,2,2,0,"5:1",4,8],
+      [7,"SCALA 2.D (A3)",3,2,1,0,"8:0",8,7],
+      [8,"HEBC 3.D (A3)",4,2,1,1,"6:3",3,7],
+      [9,"Glashütte 1.D (A1)",3,2,1,0,"3:0",3,7],
+      [10,"NTSV 7. D Blau",4,2,0,2,"11:6",5,6],
+      [11,"HSV 8.D (A4)",4,2,0,2,"6:3",3,6],
+      [12,"Rahlstedt 2.D (A2)",4,2,0,2,"3:2",1,6],
+      [13,"Paloma 3.D (A3)",3,1,1,1,"4:2",2,4],
+      [14,"Farmsen 1.D (A1)",4,1,1,2,"5:5",0,4],
+      [15,"Eimsbüttel 13.D (A9)",4,1,1,2,"5:13",-8,4],
+      [16,"BU 3.D (A3)",3,1,0,2,"4:7",-3,3],
+      [17,"Nordlichter im NSV 1.D (A1)",3,1,0,2,"2:7",-5,3],
+      [18,"Rahlstedt 3.D (J1)",4,1,0,3,"3:9",-6,3],
+      [19,"Urania 1.D (A1)",3,0,1,2,"1:4",-3,1],
+      [20,"Eimsbüttel 6.D (A6)",4,0,1,3,"5:10",-5,1],
+      [21,"DUWO 08 1.D (A1)",4,0,0,4,"2:8",-6,0],
+      [22,"Eintr. Norderstedt 6.D (A4)",3,0,0,3,"1:7",-6,0],
+      [23,"HafenCity 1.D (A1)",4,0,0,4,"0:14",-14,0]
     ]},
-  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"17.11.2026", spieltag:1, played:null, total:null,
+  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"18.11.2026", spieltag:1, played:null, total:null,
     rows:[
       [1,"NTSV 7. D Weiß",4,4,0,0,"11:0",11,12],
-      [2,"TuS Osdorf 1.D (A1)",4,3,1,0,"9:3",6,10],
-      [3,"Hetlingen 1.D (A1)",4,3,1,0,"6:1",5,10],
-      [4,"Eimsbüttel 14.D (A10)",4,3,0,1,"6:3",3,9],
+      [2,"Eimsbüttel 14.D (A10)",4,4,0,0,"7:2",5,12],
+      [3,"TuS Osdorf 1.D-Jun (A1)",4,3,1,0,"9:3",6,10],
+      [4,"Hetlingen 1.D (A1)",4,3,1,0,"6:1",5,10],
       [5,"NTSV 5.D (A3)",4,3,0,1,"5:3",2,9],
       [6,"Nienstedten 3.D (A2)",4,3,0,1,"4:2",2,9],
       [7,"Altona 93 4.D (A4)",4,2,2,0,"11:2",9,8],
@@ -768,13 +768,13 @@ const TABLES = [
       [15,"Rantzau 1.D (A1)",4,1,1,2,"7:5",2,4],
       [16,"Paloma 2.D (A2)",4,1,1,2,"4:5",-1,4],
       [17,"VfL Pinneberg 5.D (A3)",4,1,1,2,"3:6",-3,4],
-      [18,"SV Gr. Borstel 6.D (A3)",4,1,1,2,"2:10",-8,4],
-      [19,"Eimsbüttel 8.D (A6)",4,1,0,3,"5:7",-2,3],
-      [20,"Cosmos Wedel 2.D (A2)",4,0,3,1,"2:5",-3,3],
-      [21,"GW Eimsbüttel 1.D (A1)",4,1,0,3,"5:10",-5,3],
-      [22,"Germania 7.D (A3)",4,1,0,3,"3:9",-6,3],
-      [23,"Germania 6.D (A1)",4,0,2,2,"2:4",-2,2],
-      [24,"SV Gr. Borstel 4.D (A2)",4,0,0,4,"0:8",-8,0],
+      [18,"SV Groß Borstel 6.D (A3)",4,1,1,2,"2:10",-8,4],
+      [19,"Cosmos Wedel 2.D (A2)",4,0,3,1,"2:5",-3,3],
+      [20,"GW Eimsbüttel 1.D (A1)",4,1,0,3,"5:10",-5,3],
+      [21,"Germania 7.D (A3)",4,1,0,3,"3:9",-6,3],
+      [22,"Germania 6.D (A1)",4,0,2,2,"2:4",-2,2],
+      [23,"Eimsbüttel 8.D (A6)",4,0,0,4,"4:8",-4,0],
+      [24,"SV Groß Borstel 4.D (A2)",4,0,0,4,"0:8",-8,0],
       [25,"Sternschanze 2.D (A1)",4,0,0,4,"0:22",-22,0]
     ]}
 ];

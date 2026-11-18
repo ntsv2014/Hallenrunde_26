@@ -1651,6 +1651,7 @@ adminHash();
     p.querySelector('[data-a="y"]').onclick = async () => { close(); try{ await req.call(el); }catch(e){} };
     p.querySelector('[data-a="n"]').onclick = close;
     document.body.appendChild(p);
+    setTimeout(() => { if(p.isConnected) close(); }, 3000);   // nach 3 s von selbst ausblenden
   }
 
   b.onclick = async () => {

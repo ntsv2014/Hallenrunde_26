@@ -1,5 +1,8 @@
 name: fussball.de abrufen
 on:
+  schedule:
+    - cron: "*/15 7-20 * * 6,0"   # Sa/So 08:00–21:45 (Winterzeit) alle 15 min
+    - cron: "47 6,17 * * 1"       # Montag 07:47 und 18:47 (Nachträge)
   workflow_dispatch:
     inputs:
       team:
@@ -20,7 +23,8 @@ jobs:
       - name: Abrufen
         run: |
           T="${{ github.event.inputs.team }}"; [ "$T" = "beide" -o -z "$T" ] && T="n4 n5"
-          python3 tools/fetch_fd.py $T | tee -a "$GITHUB_STEP_SUMMARY"
+          A=""; [ "${{ github.event_name }}" = "schedule" ] && A="--scheduled"
+          python3 tools/fetch_fd.py $T $A | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Speichern
         run: |
           git diff --quiet && exit 0

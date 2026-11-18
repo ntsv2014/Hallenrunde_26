@@ -174,5 +174,17 @@ def main(tids):
     print("\n".join(log))
 
 
+def in_window():
+    """Zeitgesteuerte Läufe nur an Spieltags-Wochenenden (Sa, So) und am Montag danach."""
+    src = open(INDEX, encoding="utf-8").read()
+    today = dt.datetime.now(ZoneInfo("Europe/Berlin")).date()
+    for d in set(re.findall(r'\{ d:"(\d{4}-\d\d-\d\d)"', src)):
+        x = dt.date.fromisoformat(d); sat = x - dt.timedelta(days=(x.weekday() - 5) % 7)
+        if sat <= today <= sat + dt.timedelta(days=2): return True
+    return False
+
+
 if __name__ == "__main__":
+    if "--scheduled" in sys.argv and not in_window():
+        print("kein Spieltags-Wochenende – nichts zu tun"); sys.exit(0)
     main([a for a in sys.argv[1:] if a in GROUPS] or ["n4", "n5"])

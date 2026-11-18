@@ -1503,7 +1503,8 @@ adminHash();
       if(new Date() < new Date(d + "T" + SPIELTAGE[d].treffen + ":00")) return false;   // Spieltag noch nicht begonnen
       const teams = [...new Set(MATCHES.filter(m => m.d === d).flatMap(m => m.teams))];
       return TABLES.some(t => t.teams.some(x => teams.includes(x)) && iso(t.stand) < d);  // Tabelle noch nicht auf dem Stand dieses Spieltags
-    });
+    }) || (TABLES.some(t => t.total && t.played < t.total) && days.some(d => {             // Live-Tabelle am Spieltags-Wochenende
+      const x = new Date(d + "T00:00:00"), n = new Date(); return n >= x - 864e5 && n - x < 3 * 864e5; }));
     if(!seasonOver()){
       check();
       document.addEventListener("visibilitychange", check);

@@ -26,7 +26,7 @@ GROUPS = {
                slug="jh-04--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg",
                st="0327PBA1J400000BVS5489BUVUFHD2VV-G"),
 }
-ALIAS = [("Alstertal-Langenhorn", "SCALA"), ("Eintracht Norderstedt", "Eintr. Norderstedt"), ("Niendorf ", "NTSV ")]
+ALIAS = [("Alstertal-Langenhorn", "SCALA"), ("Eintracht Norderstedt", "Eintr. Norderstedt"), ("SV Groß Borstel", "SV Gr. Borstel"), ("Niendorf ", "NTSV ")]
 
 
 def get(url):
@@ -103,7 +103,7 @@ def parse(s, d):
 
 def tblname(n, g):
     if n == g["own"]: return g["own_tbl"]
-    n = n.replace(".D-Jun.", ".D")
+    n = re.sub(r"\.D-Jun\.?", ".D", n)
     for a, b in ALIAS:
         if n.startswith(a): n = b + n[len(a):]
     return n

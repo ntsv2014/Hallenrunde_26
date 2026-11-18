@@ -117,6 +117,12 @@
   .tbl-head.n4{background:var(--logo-blue);color:#fff}
   .tbl-head.n5{background:#fff;color:var(--logo-black);border-bottom:1px solid var(--logo-black)}
   .tbl-head .meta{color:inherit;opacity:.8}
+  #fdBar{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px 0;font-size:13px;color:var(--muted)}
+  #fdBar[hidden]{display:none}
+  .fd-btn{font:inherit;font-weight:600;padding:7px 12px;border-radius:999px;border:1.5px solid var(--logo-blue);cursor:pointer}
+  .fd-btn.n4{background:var(--logo-blue);color:#fff}
+  .fd-btn.n5{background:#fff;color:var(--logo-blue)}
+  .fd-btn:disabled{opacity:.5;cursor:default}
   .lv-s{display:none}
   @media (max-width: 600px){ .lv-l{display:none} .lv-s{display:inline} }
   .tablewrap{overflow-x:auto}
@@ -509,6 +515,7 @@
   <!-- SPIELE -->
   <section id="view-spiele">
     <div id="matchList"></div>
+    <div id="fdBar" hidden><span>fussball.de abrufen:</span><button class="fd-btn n4" data-fd="n4">Blau · JH 05</button><button class="fd-btn n5" data-fd="n5">Weiß · JH 04</button></div>
   </section>
 
   <!-- TABELLEN -->
@@ -869,6 +876,7 @@ function teamTags(m){
 
 function renderMatches(){
   const list = document.getElementById("matchList");
+  const fb = document.getElementById("fdBar"); if(fb) fb.hidden = !canEdit();
   const today = todayIso();
   let ms = filtered();
   /* „Vergangene Spiele“ gilt für ganze Spieltage (Blau + Weiß gleicher Nummer):
@@ -1154,6 +1162,35 @@ async function adminHash(){
   }catch(e){ toast("Nicht aktiviert: " + (e && e.message ? e.message : "Schlüssel ungültig"), 10000); }
 }
 window.addEventListener("hashchange", adminHash);
+/* fussball.de-Abruf (nur Trainerteam): startet den GitHub-Workflow, wartet auf die neue Seitenversion */
+const WF_API = "https://api.github.com/repos/ntsv2014/Hallenrunde_26/actions/workflows/fussballde.yml/dispatches";
+const headTag = async () => { try{ const r = await fetch(location.pathname, { method: "HEAD", cache: "no-store" });
+  return r.headers.get("etag") || r.headers.get("last-modified"); }catch(e){ return null; } };
+let fdBusy = false;
+document.getElementById("fdBar").addEventListener("click", async e => {
+  const b = e.target.closest("[data-fd]"); if(!b || fdBusy || !canEdit()) return;
+  fdBusy = true; document.querySelectorAll(".fd-btn").forEach(x => x.disabled = true);
+  const done = msg => { fdBusy = false; document.querySelectorAll(".fd-btn").forEach(x => x.disabled = false); if(msg) toast(msg, 6000); };
+  try{
+    const tag0 = await headTag();
+    const r = await fetch(WF_API, { method: "POST", headers: { "Authorization": "Bearer " + adminToken(),
+      "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
+      body: JSON.stringify({ ref: "main", inputs: { team: b.dataset.fd } }) });
+    if(r.status === 401) return done("Abruf nicht gestartet: Schlüssel ungültig (401)");
+    if(r.status === 403 || r.status === 404) return done("Abruf nicht gestartet: Schlüssel braucht „Actions: Read and write“ (" + r.status + ")");
+    if(!r.ok) return done("Abruf nicht gestartet (" + r.status + ")");
+    toast("Abruf läuft … neue Daten in ca. 1–2 min", 120000);
+    const t0 = Date.now();
+    const poll = async () => {
+      const t = await headTag();
+      if(t && tag0 && t !== tag0){ toast("Neue Daten – lade neu …"); setTimeout(() => location.reload(), 600); return; }
+      if(Date.now() - t0 > 4 * 60 * 1000) return done("Keine neuen Daten auf fussball.de");
+      setTimeout(poll, 15000);
+    };
+    setTimeout(poll, 30000);
+  }catch(err){ done("Abruf nicht gestartet: " + err.message); }
+});
+
 
 /* Ergebnis-Dialog */
 const dlg = document.getElementById("scoreDlg");

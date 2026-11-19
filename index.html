@@ -78,7 +78,13 @@
   .navwrap nav.tabs{margin:0;flex:1 1 0;overflow:visible;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .navwrap nav.tabs button{overflow:hidden;text-overflow:ellipsis}
   .navwrap nav.tabs[role="tablist"]{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .navwrap nav.tabs2{display:none}   /* nur noch Handy-Altlasten */
+  .navwrap nav.tabs2{display:none}
+  @media (min-width: 601px){
+    #matchList.desk-team{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+    #matchList.desk-team .dt-cards{display:flex;flex-direction:column;gap:12px;min-width:0}
+    #matchList.desk-team .dt-cards .sp{margin:0}
+    #matchList.desk-team .dt-tbl .tcard{margin:0}
+  }   /* nur noch Handy-Altlasten */
   .chip[data-dteam="n4"][aria-pressed="true"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}
   .chip[data-dteam="n5"][aria-pressed="true"]{background:#fff;color:var(--logo-black);border-color:var(--logo-black)}
   @media (max-width: 600px){ .navwrap{flex-direction:column;margin:0 -6px 6px;padding:8px 6px} }
@@ -998,7 +1004,7 @@ function renderMatches(){
     const cur = cards.filter(c => +c.dataset.n === CUR_N), past = cards.filter(c => /^\d{4}-/.test(c.dataset.d) && isPastN(+c.dataset.n) && +c.dataset.n !== CUR_N);
     const rest = cards.filter(c => !cur.includes(c) && !past.includes(c));
     list.innerHTML = `<div class="dt-tbl">${miniTable(DESK_TEAM, true)}</div><div class="dt-cards"></div>`;
-    const col = list.querySelector(".dt-cards"); [...cur, ...rest, ...past].forEach(c => col.appendChild(c));
+    const col = list.querySelector(".dt-cards"); cards.forEach(c => col.appendChild(c));   // chronologisch, aktueller Spieltag aufgeklappt
   }
   list.classList.toggle("desk-team", !!DT);
   /* Team-Übersicht (Handy): vergangene Spieltage (zugeklappt) ans Ende der Liste */

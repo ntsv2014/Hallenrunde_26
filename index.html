@@ -433,6 +433,8 @@
   .tcard table{table-layout:fixed}
   .tcard td, .tcard th{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:34px;padding-top:0;padding-bottom:0}
   .tcard thead th{height:26px;padding-bottom:4px}
+  /* Text in den Tabellenzeilen optisch mittig (unabhängig von der Schrift des Systems, z. B. Segoe UI in Edge) */
+  .tcard tbody td{text-box:trim-both cap alphabetic}
   .tcard th:nth-child(1), .tcard td:nth-child(1){width:38px}
   .tcard th:nth-child(n+3):nth-child(-n+6), .tcard td:nth-child(n+3):nth-child(-n+6){width:30px}
   .tcard th:nth-child(7), .tcard td:nth-child(7){width:54px}

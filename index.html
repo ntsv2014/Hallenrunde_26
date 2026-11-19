@@ -972,7 +972,8 @@ function renderMatches(){
   }
   /* Team-Übersicht (Handy): „Details“ unter den Karten – wie ein erneuter Tipp auf den Team-Button */
   if(isMobile && MODE === "all" && selTeams.length === 1){
-    list.insertAdjacentHTML("beforeend", `<button class="chip details-btn" data-s="${selTeams[0]}">Details</button>`);
+    const first = list.querySelector(":scope > .sp");   // direkt unter die erste Spieltagskarte
+    (first || list).insertAdjacentHTML(first ? "afterend" : "beforeend", `<button class="chip details-btn" data-s="${selTeams[0]}">Details</button>`);
   }
   /* Handy, aktueller Spieltag eines Teams: Karte oben (aufgeklappt), darunter die ganze Tabelle;
      zwei Tage nach dem letzten Spieltag des Teams nur noch die Tabelle. Team-Übersicht: ohne Tabelle */

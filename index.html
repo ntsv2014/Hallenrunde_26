@@ -310,6 +310,7 @@
     #tables > .card{margin:0}
     #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
     #tables table{font-size:13px}
+    #tables .tbl-head, #tables thead{cursor:default}
     #tables th, #tables td{padding-left:5px;padding-right:5px}
   }
   /* Handy-Feinschliff – steht am Ende, damit es die Grundregeln sicher überschreibt.
@@ -1116,7 +1117,7 @@ function renderTables(){
       <div class="tbl-head ${tb.teams[0]}"><strong>${tblTitle(tb)}</strong></div>
       <div class="tablewrap"><table>
         <thead><tr><th>Pl.</th><th>Mannschaft</th><th>Sp</th><th>G</th><th>U</th><th>V</th><th>Tore</th><th>Diff</th><th>Pkt</th></tr></thead>
-        <tbody>${tableRows(tb, tb.teams[0], OPEN_TBL.has(tb.teams[0]))}</tbody>
+        <tbody>${tableRows(tb, tb.teams[0], !MOBILE.matches || OPEN_TBL.has(tb.teams[0]))}</tbody>   <!-- Desktop: immer ganz -->
       </table></div>
     </div>`;
   }).join("");

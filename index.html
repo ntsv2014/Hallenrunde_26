@@ -329,7 +329,7 @@
     #tables .tbl-head, #tables thead{cursor:default}
     /* feste, knappe Spaltenbreiten – der Rest gehört der Mannschaft */
     :is(#tables, .dt-tbl) th, :is(#tables, .dt-tbl) td{padding-left:2px;padding-right:2px}
-    :is(#tables, .dt-tbl) .tcard th:nth-child(1), :is(#tables, .dt-tbl) .tcard td:nth-child(1){width:26px;padding-left:8px}
+    :is(#tables, .dt-tbl) .tcard th:nth-child(1), :is(#tables, .dt-tbl) .tcard td:nth-child(1){width:32px;padding-left:8px}
     :is(#tables, .dt-tbl) .tcard th:nth-child(2), :is(#tables, .dt-tbl) .tcard td:nth-child(2){padding-left:10px}
     :is(#tables, .dt-tbl) .tcard th:nth-child(n+3):nth-child(-n+6), :is(#tables, .dt-tbl) .tcard td:nth-child(n+3):nth-child(-n+6){width:23px}
     :is(#tables, .dt-tbl) .tcard th:nth-child(7), :is(#tables, .dt-tbl) .tcard td:nth-child(7){width:44px}   /* Platz für „12:10“ */
@@ -1040,7 +1040,7 @@ function renderMatches(){
     fitZoom();
   });
   /* Desktop: Blau links, Weiß rechts; Spieltage mit gleicher Nummer in einer Zeile, oben bündig */
-  if(TWO_COL.matches){
+  if(TWO_COL.matches && !list.classList.contains("desk-team")){   // Teamansicht hat ihr eigenes Raster
     const cards = [...list.children];
     const by = { n4:{}, n5:{} }; const ns = new Set();
     cards.forEach(el => { const t = el.classList.contains("sp-n5") ? "n5" : "n4"; const n = +el.dataset.n || 0;

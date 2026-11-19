@@ -313,14 +313,15 @@
     #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
     #tables table{font-size:13px}
     #tables .tbl-head, #tables thead{cursor:default}
-    #tables th, #tables td{padding-left:3px;padding-right:3px}
-    #tables th:nth-child(1), #tables td:nth-child(1){padding-left:6px;padding-right:0;width:1.6em}      /* Pl. dicht an die Mannschaft */
-    #tables th:nth-child(2), #tables td:nth-child(2){padding-left:9px}
-    #tables th:nth-child(n+3):nth-child(-n+6), #tables td:nth-child(n+3):nth-child(-n+6){padding-left:1px;padding-right:1px;min-width:1.3em}   /* Sp G U V eng */
-    #tables th:nth-child(7), #tables td:nth-child(7){padding-left:4px;padding-right:0;text-align:right !important}      /* Tore … */
-    #tables th:nth-child(8), #tables td:nth-child(8){padding-left:0;padding-right:3px}      /* … und Diff dicht beieinander */
-    #tables th:nth-child(9), #tables td:nth-child(9){padding-right:6px}
-    #tables td:nth-child(2), #tables th:nth-child(2){width:100%;white-space:nowrap}
+    /* feste, knappe Spaltenbreiten – der Rest gehört der Mannschaft */
+    #tables th, #tables td{padding-left:2px;padding-right:2px}
+    #tables .tcard th:nth-child(1), #tables .tcard td:nth-child(1){width:26px;padding-left:6px}
+    #tables .tcard th:nth-child(2), #tables .tcard td:nth-child(2){padding-left:10px}
+    #tables .tcard th:nth-child(n+3):nth-child(-n+6), #tables .tcard td:nth-child(n+3):nth-child(-n+6){width:22px}
+    #tables .tcard th:nth-child(7), #tables .tcard td:nth-child(7){width:38px}
+    #tables .tcard th:nth-child(8), #tables .tcard td:nth-child(8){width:30px}
+    #tables .tcard th:nth-child(9), #tables .tcard td:nth-child(9){width:30px;padding-right:6px}
+    #tables td:nth-child(2), #tables th:nth-child(2){width:auto;white-space:nowrap}
   }
   /* Handy-Feinschliff – steht am Ende, damit es die Grundregeln sicher überschreibt.
      Banner und Karten haben links und rechts denselben Rand. */

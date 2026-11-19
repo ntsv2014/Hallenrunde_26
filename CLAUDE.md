@@ -9,3 +9,4 @@
 - Keine personenbezogenen Daten (Spielernamen, Zu-/Absagen) veröffentlichen.
 - „Alstertal-Langenhorn“ immer als „SCALA“, „Eintracht“ als „Eintr.“.
 - Tabellen/Ergebnisse kommen automatisch per GitHub-Workflow `fussball.de abrufen` (`tools/fetch_fd.py`, Start über die Buttons auf „Aktuell“ mit Schlüssel). Tabellenkopf: `spieltag`, `played`/`total` (Live-Stand, null = komplett). „SV Groß Borstel“ als „SV Gr. Borstel“, „Nordlichter im NSV“ als „Nordlichter i. NSV“.
+- Neue/geänderte Ansetzungen: täglicher Workflow `Ansetzungen prüfen` (`tools/ansetzungen.py`) übernimmt Spiele in `MATCHES` und schreibt Hinweise (neuer Turniertag, abweichende Halle) nach `checks/ansetzungen.md`.

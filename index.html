@@ -75,7 +75,10 @@
   .navwrap .chip[aria-pressed="false"]{border:1.5px solid rgba(0,117,191,.55)}
   .navwrap nav.tabs{margin:0;flex:1 1 0;overflow:visible;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .navwrap nav.tabs button{overflow:hidden;text-overflow:ellipsis}
-  nav.tabs #togglePast{grid-column:span 2}
+  .navwrap nav.tabs[role="tablist"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .navwrap nav.tabs2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chip[data-dteam="n4"][aria-pressed="true"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}
+  .chip[data-dteam="n5"][aria-pressed="true"]{background:#fff;color:var(--logo-black);border-color:var(--logo-black)}
   @media (max-width: 600px){ .navwrap{flex-direction:column;margin:0 -6px 6px;padding:8px 6px} }
   .tf{display:contents}
   .chip[data-team="n5"][aria-pressed="true"]{background:#fff;color:var(--logo-black);border-color:var(--logo-black)}
@@ -246,7 +249,6 @@
   }
   .m-only{display:none}
   @media (max-width: 600px){
-    nav.tabs #togglePast{display:none !important}
     .m-only{display:block}
     .m-only.hidden{display:none}
   }
@@ -311,17 +313,21 @@
       width:min(1080px, 100vw - 40px);margin-left:calc((100% - min(1080px, 100vw - 40px)) / 2)}
     #tables > .card{margin:0}
     #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
-    #tables table{font-size:13px}
+    :is(#tables, .dt-tbl) table{font-size:13px}
+    #matchList.desk-team{width:min(1080px, 100vw - 40px);margin-left:calc((100% - min(1080px, 100vw - 40px)) / 2)}
+    #matchList.desk-team .dt-cards{display:flex;flex-direction:column;gap:12px;min-width:0}
+    #matchList.desk-team .dt-tbl .tcard{margin:0}
+    .dt-tbl .tbl-head, .dt-tbl thead{cursor:default}
     #tables .tbl-head, #tables thead{cursor:default}
     /* feste, knappe Spaltenbreiten – der Rest gehört der Mannschaft */
-    #tables th, #tables td{padding-left:2px;padding-right:2px}
-    #tables .tcard th:nth-child(1), #tables .tcard td:nth-child(1){width:26px;padding-left:8px}
-    #tables .tcard th:nth-child(2), #tables .tcard td:nth-child(2){padding-left:10px}
-    #tables .tcard th:nth-child(n+3):nth-child(-n+6), #tables .tcard td:nth-child(n+3):nth-child(-n+6){width:23px}
-    #tables .tcard th:nth-child(7), #tables .tcard td:nth-child(7){width:44px}   /* Platz für „12:10“ */
-    #tables .tcard th:nth-child(8), #tables .tcard td:nth-child(8){width:31px}
-    #tables .tcard th:nth-child(9), #tables .tcard td:nth-child(9){width:31px;padding-right:6px}
-    #tables td:nth-child(2), #tables th:nth-child(2){width:auto;white-space:nowrap}
+    :is(#tables, .dt-tbl) th, :is(#tables, .dt-tbl) td{padding-left:2px;padding-right:2px}
+    :is(#tables, .dt-tbl) .tcard th:nth-child(1), :is(#tables, .dt-tbl) .tcard td:nth-child(1){width:26px;padding-left:8px}
+    :is(#tables, .dt-tbl) .tcard th:nth-child(2), :is(#tables, .dt-tbl) .tcard td:nth-child(2){padding-left:10px}
+    :is(#tables, .dt-tbl) .tcard th:nth-child(n+3):nth-child(-n+6), :is(#tables, .dt-tbl) .tcard td:nth-child(n+3):nth-child(-n+6){width:23px}
+    :is(#tables, .dt-tbl) .tcard th:nth-child(7), :is(#tables, .dt-tbl) .tcard td:nth-child(7){width:44px}   /* Platz für „12:10“ */
+    :is(#tables, .dt-tbl) .tcard th:nth-child(8), :is(#tables, .dt-tbl) .tcard td:nth-child(8){width:31px}
+    :is(#tables, .dt-tbl) .tcard th:nth-child(9), :is(#tables, .dt-tbl) .tcard td:nth-child(9){width:31px;padding-right:6px}
+    :is(#tables, .dt-tbl) td:nth-child(2), :is(#tables, .dt-tbl) th:nth-child(2){width:auto;white-space:nowrap}
   }
   /* Handy-Feinschliff – steht am Ende, damit es die Grundregeln sicher überschreibt.
      Banner und Karten haben links und rechts denselben Rand. */
@@ -546,13 +552,12 @@
   </nav>
   <nav class="tabs" role="tablist">
     <button class="chip" data-view="spiele" aria-pressed="true">Spiele</button>
-    <button class="chip" data-view="tabellen" aria-pressed="false">Tabellen</button>
-    <span class="tf" id="teamFilter"></span>
+    <button class="chip" data-view="spiele" data-dteam="n4" aria-pressed="false">Blau</button>
+    <button class="chip" data-view="spiele" data-dteam="n5" aria-pressed="false">Weiß</button>
   </nav>
   <nav class="tabs tabs2">
     <button class="chip" data-view="info" aria-pressed="false">Info</button>
     <button class="chip" data-view="teilen" aria-pressed="false">Teilen</button>
-    <button class="chip" id="togglePast" aria-pressed="true">Vergangene Spiele</button>
     <button class="chip m-only" id="modeAll" aria-pressed="false">Alles</button>
     <button class="chip m-only" id="modeCur" aria-pressed="true">Aktuell</button>
   </nav>
@@ -858,8 +863,8 @@ let selTeams = store.get(LS_TEAMS, DEFAULT_TEAMS).filter(t => TEAMS[t]);
 let MODE = "cur";
 const MOBILE = window.matchMedia("(max-width: 600px)");
 /* Vergangene Spieltage: Desktop standardmäßig an, Handy standardmäßig aus */
-let showPast = !window.matchMedia("(max-width: 600px)").matches;
-document.getElementById("togglePast").setAttribute("aria-pressed", showPast);
+let showPast = true;     // Desktop: immer alle Spieltage („Vergangene Spiele“ entfällt)
+let DESK_TEAM = null;    // Desktop: null = „Spiele“ (beide Teams), sonst "n4"/"n5" = Teamansicht
 
 const isNtsv = s => /^NTSV\b/.test(s);
 const isOurs = s => /^NTSV 7\. D/.test(s);
@@ -888,7 +893,8 @@ function outcome(m){
 }
 
 function renderFilter(){
-  const box = document.getElementById("teamFilter");
+  if(!MOBILE.matches) selTeams = DESK_TEAM ? [DESK_TEAM] : ["n4", "n5"];   // Desktop: kein Farbfilter mehr
+  const box = document.getElementById("teamFilter"); if(!box) return;
   box.innerHTML = "";
   Object.entries(TEAMS).forEach(([id, t]) => {
     const b = document.createElement("button");
@@ -947,6 +953,9 @@ function renderMatches(){
     return;
   }
   /* Nächster Spieltag (kleinste Spieltag-Nummer mit Datum ab heute) bleibt aufgeklappt, alle anderen zu */
+  const DT = !isMobile && DESK_TEAM;
+  if(DT){ const ns = [...new Set(ms.filter(m => m.d).map(m => spieltagNr(m.d, DESK_TEAM)))].sort((a, b) => a - b);
+    CUR_N = ns.find(n => !isPastN(n)) ?? ns[ns.length - 1] ?? null; }
   const NEXT_N = CUR_N !== null ? CUR_N : (isMobile && MODE === "all") ? -999 : (() => { const ns = MATCHES.filter(m => m.d).map(m => spieltagNr(m.d, m.teams[0])).filter(n => !isPastN(n));
     return ns.length ? Math.min(...ns) : -1; })();
   const TEAM_CUR = isMobile && MODE === "cur" && selTeams.length === 1;   // aktueller Spieltag eines Teams: Karte offen, aber zuklappbar
@@ -981,6 +990,15 @@ function renderMatches(){
      </div>
     </div>`;
   }).join("");
+  /* Desktop-Teamansicht: links die Tabelle (vollständig), rechts die Spieltage – der aktuelle zuerst */
+  if(DT){
+    const cards = [...list.querySelectorAll(":scope > .sp")];
+    const cur = cards.filter(c => +c.dataset.n === CUR_N), past = cards.filter(c => /^\d{4}-/.test(c.dataset.d) && isPastN(+c.dataset.n) && +c.dataset.n !== CUR_N);
+    const rest = cards.filter(c => !cur.includes(c) && !past.includes(c));
+    list.innerHTML = `<div class="dt-tbl">${miniTable(DESK_TEAM, true)}</div><div class="dt-cards"></div>`;
+    const col = list.querySelector(".dt-cards"); [...cur, ...rest, ...past].forEach(c => col.appendChild(c));
+  }
+  list.classList.toggle("desk-team", !!DT);
   /* Team-Übersicht (Handy): vergangene Spieltage (zugeklappt) ans Ende der Liste */
   if(isMobile && MODE === "all"){
     [...list.querySelectorAll(":scope > .sp")]
@@ -1312,15 +1330,12 @@ document.getElementById("dlgClear").onclick = () => {
 
 /* Tabs */
 document.querySelectorAll("nav.tabs .chip[data-view]").forEach(b => b.onclick = () => {
-  document.querySelectorAll("nav.tabs .chip[data-view]").forEach(x => x.setAttribute("aria-pressed", x === b));
-  document.getElementById("togglePast").classList.toggle("hidden", b.dataset.view !== "spiele");
+  document.querySelectorAll("nav.tabs .chip[data-view]").forEach(x => x.setAttribute("aria-pressed", x === b));   // immer nur ein Button aktiv
+  if(b.dataset.view === "spiele"){ DESK_TEAM = b.dataset.dteam || null; renderFilter(); renderMatches(); }
   ["modeAll", "modeCur"].forEach(id => document.getElementById(id).classList.toggle("hidden", b.dataset.view !== "spiele"));
   ["spiele","tabellen","info","teilen"].forEach(v =>
     document.getElementById("view-" + v).classList.toggle("hidden", v !== b.dataset.view));
 });
-document.getElementById("togglePast").onclick = e => {
-  showPast = !showPast; e.target.setAttribute("aria-pressed", showPast); renderMatches();
-};
 
 function renderShare(){
   document.getElementById("shareUrlTxt").textContent = SHARE_URL;
@@ -1427,6 +1442,7 @@ const OPEN_TBL = new Set();   // Handy: vollständig aufgeklappte Tabellen
 /* Auf dem Handy direkt beim Loslassen des Fingers reagieren (nicht erst auf „click“, der nach
    Scrollen, Wisch-Animation oder Neuaufbau der Ansicht manchmal verschluckt wird) */
 const toggleTbl = h => {
+  if(!MOBILE.matches) return;   // Desktop: Tabellen immer vollständig
   const t = h.closest(".tcard").dataset.team; if(!t) return;
   OPEN_TBL.has(t) ? OPEN_TBL.delete(t) : OPEN_TBL.add(t);
   if(h.closest("#matchList")) renderMatches(); else renderTables();

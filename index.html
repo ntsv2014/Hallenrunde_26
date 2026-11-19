@@ -524,6 +524,7 @@
   .tcard td:nth-child(2) .t-sub{vertical-align:.07em}   /* kleinere Klammer-Angabe optisch mittig zum Namen */
   /* Paarungen: Mannschaften und Ergebnis optisch mittig (Höhe der Großbuchstaben/Ziffern) */
   .m .teams .vs, .score > span{text-box:trim-both cap alphabetic}
+  .m .teams .vs{overflow:clip;overflow-clip-margin:.4em}   /* Unterlängen (p, g, …) nicht abschneiden */
   /* Tabelle: Zahlenspalten mittig */
   .tcard th:nth-child(n+3), .tcard td:nth-child(n+3){text-align:center !important}
   /* helles Design: Zeile „NTSV Weiß“ im Hellblau der Knöpfe */

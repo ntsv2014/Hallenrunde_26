@@ -306,12 +306,15 @@
     #matchList .col:only-child{grid-column:1 / -1}
     #matchList > .note{grid-column:1 / -1}
     /* Tabellen nebeneinander (Blau links, Weiß rechts – wie die Spieltagskarten) */
-    #tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+    #tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;
+      /* breiter als die übrige Seite (bis 1080px), damit die Mannschaftsnamen Platz haben */
+      width:min(1080px, 100vw - 40px);margin-left:calc((796px - min(1080px, 100vw - 40px)) / 2)}
     #tables > .card{margin:0}
     #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
     #tables table{font-size:13px}
     #tables .tbl-head, #tables thead{cursor:default}
-    #tables th, #tables td{padding-left:5px;padding-right:5px}
+    #tables th, #tables td{padding-left:4px;padding-right:4px}
+    #tables td:nth-child(2), #tables th:nth-child(2){width:100%;white-space:nowrap}
   }
   /* Handy-Feinschliff – steht am Ende, damit es die Grundregeln sicher überschreibt.
      Banner und Karten haben links und rechts denselben Rand. */

@@ -524,7 +524,8 @@
   .tcard td:nth-child(2) .t-sub{vertical-align:.07em}   /* kleinere Klammer-Angabe optisch mittig zum Namen */
   /* Paarungen: Mannschaften und Ergebnis optisch mittig (Höhe der Großbuchstaben/Ziffern) */
   .m .teams .vs, .score > span{text-box:trim-both cap alphabetic}
-  .m .teams .vs{overflow:clip;overflow-clip-margin:.4em}   /* Unterlängen (p, g, …) nicht abschneiden */
+  .m .teams .vs{overflow:clip;overflow-clip-margin:.4em}
+  @media (min-width: 601px){ .vs-d{white-space:pre;word-spacing:.35em} }   /* Desktop: breiterer Abstand um den Strich (≈ zwei Leerzeichen) */   /* Unterlängen (p, g, …) nicht abschneiden */
   /* Tabelle: Zahlenspalten mittig */
   .tcard th:nth-child(n+3), .tcard td:nth-child(n+3){text-align:center !important}
   /* helles Design: Zeile „NTSV Weiß“ im Hellblau der Knöpfe */
@@ -992,8 +993,7 @@ function renderMatches(){
         const s = scoreOf(m), o = outcome(m);
         return `<div class="m">
           <div class="teams">
-            <span class="vs"><span class="${isOurs(m.h) ? "ntsv" : ""}">${esc(m.h)}</span> –
-              <span class="${isOurs(m.a) ? "ntsv" : ""}">${esc(m.a)}</span></span>
+            <span class="vs"><span class="${isOurs(m.h) ? "ntsv" : ""}">${esc(m.h)}</span><span class="vs-d"> – </span><span class="${isOurs(m.a) ? "ntsv" : ""}">${esc(m.a)}</span></span>
             ${isVorl(m) ? '<span class="meta">vorläufig</span>' : ""}
           </div>
           <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${canEdit() && !m.fd ? "" : "disabled"}${m.fd ? ' title="Ergebnis von fussball.de"' : ""}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>

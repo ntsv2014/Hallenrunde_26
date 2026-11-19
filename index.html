@@ -308,7 +308,7 @@
     /* Tabellen nebeneinander (Blau links, Weiß rechts – wie die Spieltagskarten) */
     #tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;
       /* breiter als die übrige Seite (bis 1080px), damit die Mannschaftsnamen Platz haben */
-      width:min(1080px, 100vw - 40px);margin-left:calc((796px - min(1080px, 100vw - 40px)) / 2)}
+      width:min(1080px, 100vw - 40px);margin-left:calc((100% - min(1080px, 100vw - 40px)) / 2)}
     #tables > .card{margin:0}
     #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
     #tables table{font-size:13px}

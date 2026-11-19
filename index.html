@@ -966,8 +966,17 @@ function renderMatches(){
       .filter(c => /^\d{4}-/.test(c.dataset.d) && isPastN(+c.dataset.n) && +c.dataset.n !== CUR_MARK)
       .forEach(c => list.appendChild(c));
   }
-  /* Vollbild + genau ein Team: Tabellenausschnitt (Top 3, …, eigenes Team) vor den Spieltagen */
-  if(selTeams.length === 1 && (isMobile || !!(document.fullscreenElement || document.webkitFullscreenElement))){
+  /* Handy, aktueller Spieltag eines Teams: Karte oben (aufgeklappt), darunter die ganze Tabelle;
+     zwei Tage nach dem letzten Spieltag des Teams nur noch die Tabelle. Team-Übersicht: ohne Tabelle */
+  if(isMobile && selTeams.length === 1){
+    if(MODE === "cur"){
+      const last = MATCHES.filter(m => m.d && m.teams.includes(selTeams[0])).map(m => m.d).sort().pop();
+      const end = last ? new Date(last + "T06:00:00") : null; if(end) end.setDate(end.getDate() + 2);
+      if(end && new Date() >= end) list.innerHTML = "";
+      list.insertAdjacentHTML("beforeend", miniTable(selTeams[0], true));
+    }
+  } else if(selTeams.length === 1 && !!(document.fullscreenElement || document.webkitFullscreenElement)){
+    /* Desktop-Vollbild + genau ein Team: Tabellenausschnitt vor den Spieltagen */
     list.insertAdjacentHTML("afterbegin", miniTable(selTeams[0], false));
   }
   /* Alle Kartenköpfe gleich hoch – auch „Noch nicht angesetzt“ (einzeilig) */
@@ -1106,7 +1115,7 @@ function renderInfo(){
       <p class="note"><b>Buttons oben (Handy)</b></p>
       <ul class="note">
         <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der vorangegangene Spieltag („Zuletzt“), ein weiteres Mal: zurück.</li>
-        <li><b>Blau</b> / <b>Weiß</b> zeigen Tabelle und alle Spieltage des Teams. Noch einmal tippen: nur der aktuelle Spieltag mit kurzer Tabelle, ein weiteres Mal: zurück.</li>
+        <li><b>Blau</b> / <b>Weiß</b> zeigen alle Spieltage des Teams. Noch einmal tippen: der aktuelle Spieltag und darunter die Tabelle (nach Saisonende nur die Tabelle), ein weiteres Mal: zurück.</li>
         <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß.</li>
         <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
         <li>Vergangene Spieltage stehen zugeklappt am Ende; Antippen klappt sie auf.</li>

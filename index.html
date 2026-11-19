@@ -145,6 +145,9 @@
   .info-txt ul.ico-list .ico svg{width:20px;height:20px;vertical-align:0}
   .info-txt ul.ico-list .nr-mini{vertical-align:0}
   html.dark{color-scheme:dark}
+  .details-btn{display:block;width:100%;margin:4px 0 8px;padding:4px 12px;font-size:15px;font-weight:600;
+    background:#e3f0fa;color:var(--ink);border:1.5px solid rgba(0,117,191,.55)}
+  :where(html.dark) .details-btn{background:var(--card)}
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
   .lv-s{display:none}
@@ -929,6 +932,7 @@ function renderMatches(){
   /* Nächster Spieltag (kleinste Spieltag-Nummer mit Datum ab heute) bleibt aufgeklappt, alle anderen zu */
   const NEXT_N = CUR_N !== null ? CUR_N : (isMobile && MODE === "all") ? -999 : (() => { const ns = MATCHES.filter(m => m.d).map(m => spieltagNr(m.d, m.teams[0])).filter(n => !isPastN(n));
     return ns.length ? Math.min(...ns) : -1; })();
+  const TEAM_CUR = isMobile && MODE === "cur" && selTeams.length === 1;   // aktueller Spieltag eines Teams: Karte offen, aber zuklappbar
   list.classList.toggle("team-n5", isMobile && MODE === "all" && selTeams.length === 1 && selTeams[0] === "n5");
   const byDay = {};
   ms.forEach(m => (byDay[m.d || ("offen-" + m.teams[0] + "-" + (m.grp || 0))] ||= []).push(m));
@@ -937,7 +941,7 @@ function renderMatches(){
     const vsl = d.startsWith("offen");
     const n = tm === "mix" ? 0 : (vsl ? +d.split("-").pop() : spieltagNr(d, tm));
     return `
-    <div class="day sp sp-${tm} ${d === today ? "today" : ""}${n !== NEXT_N ? " past" + (OPEN_PAST.has(d) ? " open" : "") : ""}${vsl ? " sp-offen" : ""}" data-n="${n}" data-d="${d}">
+    <div class="day sp sp-${tm} ${d === today ? "today" : ""}${n !== NEXT_N ? " past" + (OPEN_PAST.has(d) ? " open" : "") : TEAM_CUR ? " past" + (CUR_CLOSED.has(d) ? "" : " open") : ""}${vsl ? " sp-offen" : ""}" data-n="${n}" data-d="${d}"${n === NEXT_N && TEAM_CUR ? ' data-cur="1"' : ""}>
      <div class="sp-head">
       ${tm !== "mix" ? (() => {
         return `<span class="sp-nr"><span class="nr-t">${vsl ? "vsl. " : ""}${n}. Spieltag</span><a class="nr-cal${vsl ? " vsl" : ""}" href="${spieltagUrl(tm, vsl ? null : d)}" target="_blank" rel="noopener" title="${vsl ? "voraussichtlich " : ""}${n}. Spieltag – auf fussball.de öffnen"><i>Spieltag</i><b>${n}</b></a></span>`; })() : ""}
@@ -965,6 +969,10 @@ function renderMatches(){
     [...list.querySelectorAll(":scope > .sp")]
       .filter(c => /^\d{4}-/.test(c.dataset.d) && isPastN(+c.dataset.n) && +c.dataset.n !== CUR_MARK)
       .forEach(c => list.appendChild(c));
+  }
+  /* Team-Übersicht (Handy): „Details“ unter den Karten – wie ein erneuter Tipp auf den Team-Button */
+  if(isMobile && MODE === "all" && selTeams.length === 1){
+    list.insertAdjacentHTML("beforeend", `<button class="chip details-btn" data-s="${selTeams[0]}">Details</button>`);
   }
   /* Handy, aktueller Spieltag eines Teams: Karte oben (aufgeklappt), darunter die ganze Tabelle;
      zwei Tage nach dem letzten Spieltag des Teams nur noch die Tabelle. Team-Übersicht: ohne Tabelle */
@@ -1010,7 +1018,9 @@ function renderMatches(){
     if(e.target.closest(".nr-cal")) return;              // Spieltag-Icon: Link zu fussball.de
     /* Desktop (zweispaltig): Karte des anderen Teams mit gleicher Spieltag-Nummer mit auf-/zuklappen */
     const group = TWO_COL.matches ? [...list.querySelectorAll(`.sp.past[data-n="${card.dataset.n}"]`)] : [card];
-    const setOpen = on => group.forEach(c => { c.classList.toggle("open", on); on ? OPEN_PAST.add(c.dataset.d) : OPEN_PAST.delete(c.dataset.d); });
+    const setOpen = on => group.forEach(c => { c.classList.toggle("open", on);
+      if(c.dataset.cur) on ? CUR_CLOSED.delete(c.dataset.d) : CUR_CLOSED.add(c.dataset.d);
+      else on ? OPEN_PAST.add(c.dataset.d) : OPEN_PAST.delete(c.dataset.d); });
     if(!card.classList.contains("open")){                // zugeklappt: Klick irgendwo klappt auf
       e.preventDefault(); setOpen(true);
     } else if(e.target.closest(".sp-head") && !e.target.closest("a")){   // offen: Klick auf Kopf klappt zu
@@ -1391,6 +1401,9 @@ function spieltagNr(d, team){
 }
 
 const OPEN_PAST = new Set();
+const CUR_CLOSED = new Set();   // Team-aktuell: vom Nutzer zugeklappte aktuelle Karten
+document.addEventListener("click", e => { const b = e.target.closest(".details-btn"); if(!b) return;
+  const c = document.querySelector(`.mnav .chip[data-s="${b.dataset.s}"]`); if(c) c.click(); });
 const OPEN_TBL = new Set();   // Handy: vollständig aufgeklappte Tabellen
 /* Handy: Klick auf Tabellenkopf klappt die ganze Tabelle auf bzw. wieder zu */
 /* Auf dem Handy direkt beim Loslassen des Fingers reagieren (nicht erst auf „click“, der nach
@@ -1487,11 +1500,11 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
     let on;
     if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Zuletzt
     else{ on = mTeamCur = !mTeamCur;      // Team-Übersicht ⇄ aktueller Spieltag des Teams
-      OPEN_TBL.delete(s); }               // per Knopf aufgerufen: Tabelle zugeklappt
+      OPEN_TBL.delete(s); CUR_CLOSED.clear(); }   // per Knopf aufgerufen: Tabelle ganz, Karte offen
     mGo(s, on ? -1 : 1, true);
     return;
   }
-  if(s !== "cur") OPEN_TBL.delete(s);   // per Knopf aufgerufen: Tabelle zugeklappt
+  if(s !== "cur"){ OPEN_TBL.delete(s); CUR_CLOSED.clear(); }   // per Knopf aufgerufen: Tabelle ganz, Karte offen
   mGo(s, M_ORDER.indexOf(s) > M_ORDER.indexOf(mSel) ? -1 : 1);
 });
 /* Seitwärts wischen: Ansicht folgt dem Finger, danach nächster bzw. vorheriger Knopf (rundum) */

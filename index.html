@@ -305,6 +305,12 @@
     #matchList .col{display:flex;flex-direction:column;gap:12px;min-width:0}
     #matchList .col:only-child{grid-column:1 / -1}
     #matchList > .note{grid-column:1 / -1}
+    /* Tabellen nebeneinander (Blau links, Weiß rechts – wie die Spieltagskarten) */
+    #tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+    #tables > .card{margin:0}
+    #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
+    #tables table{font-size:13px}
+    #tables th, #tables td{padding-left:5px;padding-right:5px}
   }
   /* Handy-Feinschliff – steht am Ende, damit es die Grundregeln sicher überschreibt.
      Banner und Karten haben links und rechts denselben Rand. */
@@ -1101,7 +1107,7 @@ function tableRows(tb, team, full){
 const rowTeam = name => /7\. D Blau/.test(name) ? "n4" : /7\. D Weiß/.test(name) ? "n5" : null;
 
 function renderTables(){
-  const ORDER = ["n5", "n4"];  // Weiß vor Blau
+  const ORDER = window.matchMedia("(min-width: 760px)").matches ? ["n4", "n5"] : ["n5", "n4"];  // nebeneinander: Blau links; untereinander: Weiß vor Blau
   const shown = TABLES.filter(tb => tb.teams.some(t => selTeams.includes(t)));
   if(!shown.length){ document.getElementById("tables").innerHTML = '<p class="note">Bitte oben mindestens ein Team auswählen.</p>'; return; }
   document.getElementById("tables").innerHTML = [...shown].sort((a, b) => ORDER.indexOf(a.teams[0]) - ORDER.indexOf(b.teams[0])).map(tb => {

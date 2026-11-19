@@ -63,7 +63,9 @@
   header{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .badge{flex:0 0 auto;height:62px;color:#fff;display:flex;align-items:center;justify-content:center;
     font-weight:800;font-size:13px;letter-spacing:.3px}
-  .badge img{height:62px;width:auto;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+  .badge img{height:62px;width:auto;display:block;
+    /* Wappen hebt sich ab: weicher, auslaufender Schatten + heller Schein */
+    filter:drop-shadow(0 4px 5px rgba(0,0,0,.45)) drop-shadow(0 8px 14px rgba(0,0,0,.35)) drop-shadow(0 0 10px rgba(255,255,255,.35))}
   header h1{margin:0;font-size:20px;letter-spacing:.2px}
   header p{margin:4px 0 0;color:#e3f1fb;font-size:13px}
   .wrap{max-width:820px;margin:0 auto;padding:0 12px 40px}
@@ -75,8 +77,8 @@
   .navwrap .chip[aria-pressed="false"]{border:1.5px solid rgba(0,117,191,.55)}
   .navwrap nav.tabs{margin:0;flex:1 1 0;overflow:visible;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .navwrap nav.tabs button{overflow:hidden;text-overflow:ellipsis}
-  .navwrap nav.tabs[role="tablist"]{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .navwrap nav.tabs2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .navwrap nav.tabs[role="tablist"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .navwrap nav.tabs2{display:none}   /* nur noch Handy-Altlasten */
   .chip[data-dteam="n4"][aria-pressed="true"]{background:var(--logo-blue);border-color:var(--logo-blue);color:#fff}
   .chip[data-dteam="n5"][aria-pressed="true"]{background:#fff;color:var(--logo-black);border-color:var(--logo-black)}
   @media (max-width: 600px){ .navwrap{flex-direction:column;margin:0 -6px 6px;padding:8px 6px} }
@@ -554,10 +556,9 @@
     <button class="chip" data-view="spiele" aria-pressed="true">Spiele</button>
     <button class="chip" data-view="spiele" data-dteam="n4" aria-pressed="false">Blau</button>
     <button class="chip" data-view="spiele" data-dteam="n5" aria-pressed="false">Weiß</button>
+    <button class="chip" data-view="info" aria-pressed="false">Info</button>
   </nav>
   <nav class="tabs tabs2">
-    <button class="chip" data-view="info" aria-pressed="false">Info</button>
-    <button class="chip" data-view="teilen" aria-pressed="false">Teilen</button>
     <button class="chip m-only" id="modeAll" aria-pressed="false">Alles</button>
     <button class="chip m-only" id="modeCur" aria-pressed="true">Aktuell</button>
   </nav>
@@ -1333,8 +1334,8 @@ document.querySelectorAll("nav.tabs .chip[data-view]").forEach(b => b.onclick = 
   document.querySelectorAll("nav.tabs .chip[data-view]").forEach(x => x.setAttribute("aria-pressed", x === b));   // immer nur ein Button aktiv
   if(b.dataset.view === "spiele"){ DESK_TEAM = b.dataset.dteam || null; renderFilter(); renderMatches(); }
   ["modeAll", "modeCur"].forEach(id => document.getElementById(id).classList.toggle("hidden", b.dataset.view !== "spiele"));
-  ["spiele","tabellen","info","teilen"].forEach(v =>
-    document.getElementById("view-" + v).classList.toggle("hidden", v !== b.dataset.view));
+  ["spiele","tabellen","info","teilen"].forEach(v =>   // „Teilen“ steht unter „Info“
+    document.getElementById("view-" + v).classList.toggle("hidden", !(v === b.dataset.view || (v === "teilen" && b.dataset.view === "info"))));
 });
 
 function renderShare(){

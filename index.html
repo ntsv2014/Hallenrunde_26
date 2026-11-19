@@ -911,8 +911,9 @@ function renderMatches(){
     const ns = [...new Set(ms.filter(m => m.d).map(m => spieltagNr(m.d, m.teams[0])))].sort((a, b) => a - b);
     const pn = ns.find(n => !isPastN(n)) ?? ns[ns.length - 1];
     if(pn !== undefined){
-      /* „Demnächst“: der Spieltag nach dem aktuellen (ggf. auch noch nicht angesetzte Karten) */
-      if(MODE === "cur"){ CUR_N = pn + (mNext ? 1 : 0); ms = ms.filter(m => (m.d ? spieltagNr(m.d, m.teams[0]) : m.grp) === CUR_N); }
+      /* „Zuletzt“: der Spieltag vor dem aktuellen (falls es einen gibt) */
+      const prev = ns.filter(n => n < pn).pop();
+      if(MODE === "cur"){ CUR_N = mNext && prev !== undefined ? prev : pn; ms = ms.filter(m => (m.d ? spieltagNr(m.d, m.teams[0]) : m.grp) === CUR_N); }
       else CUR_MARK = pn;   // Team-Übersicht: aktuellen Spieltag nur markieren
     }
   }
@@ -1104,7 +1105,7 @@ function renderInfo(){
     `<div class="card info-txt"><strong>So funktioniert die Seite</strong>
       <p class="note"><b>Buttons oben (Handy)</b></p>
       <ul class="note">
-        <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der Spieltag danach („Demnächst“), ein weiteres Mal: zurück.</li>
+        <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der vorangegangene Spieltag („Zuletzt“), ein weiteres Mal: zurück.</li>
         <li><b>Blau</b> / <b>Weiß</b> zeigen Tabelle und alle Spieltage des Teams. Noch einmal tippen: nur der aktuelle Spieltag mit kurzer Tabelle, ein weiteres Mal: zurück.</li>
         <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß.</li>
         <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
@@ -1425,7 +1426,7 @@ function mShow(v){
 /* Handy: drei Ansichten – Blau (Tabelle + alle Blau-Spieltage), Weiß (dito), Aktuell (aktueller Spieltag beider Teams) */
 const M_ORDER = ["cur", "n4", "n5"];
 let mSel = "cur";
-let mNext = false;   // „Aktuell“ erneut angetippt → „Demnächst“ (nächster Spieltag)
+let mNext = false;   // „Aktuell“ erneut angetippt → „Zuletzt“ (vorangegangener Spieltag)
 let mTeamCur = false; // Team-Ansicht: false = Tabelle + alle Spieltage (Start jeder Sitzung), true = nur aktueller Spieltag; bleibt in der Sitzung gemerkt
 function mSet(s, keep){
   if(!keep) mNext = false;   // Team-Ansicht (mTeamCur) bleibt wie zuletzt gewählt
@@ -1439,7 +1440,7 @@ function mSync(){
   M_ORDER.forEach(s => { const b = document.querySelector(`.mnav .chip[data-s="${s}"]`);
     if(b) b.setAttribute("aria-pressed", mCur !== "info" && mSel === s); });
   if(mi) mi.setAttribute("aria-pressed", mCur === "info");
-  const mc = document.getElementById("mCur"); if(mc) mc.textContent = mNext ? "Demnächst" : "Aktuell";
+  const mc = document.getElementById("mCur"); if(mc) mc.textContent = mNext ? "Zuletzt" : "Aktuell";
 }
 /* Sanfter Seitenwechsel: alte Ansicht gleitet hinaus, neue gleitet von der anderen Seite herein */
 const mView = () => document.getElementById("view-spiele");
@@ -1475,7 +1476,7 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
   if(s === mSel && mCur !== "info"){
     if(mBusy) return;
     let on;
-    if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Demnächst
+    if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Zuletzt
     else{ on = mTeamCur = !mTeamCur;      // Team-Übersicht ⇄ aktueller Spieltag des Teams
       OPEN_TBL.delete(s); }               // per Knopf aufgerufen: Tabelle zugeklappt
     mGo(s, on ? -1 : 1, true);

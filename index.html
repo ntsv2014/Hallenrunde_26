@@ -316,13 +316,10 @@
     #matchList .col:only-child{grid-column:1 / -1}
     #matchList > .note{grid-column:1 / -1}
     /* Tabellen nebeneinander (Blau links, Weiß rechts – wie die Spieltagskarten) */
-    #tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;
-      /* breiter als die übrige Seite (bis 1080px), damit die Mannschaftsnamen Platz haben */
-      width:min(1080px, 100vw - 40px);margin-left:calc((100% - min(1080px, 100vw - 40px)) / 2)}
+    #tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
     #tables > .card{margin:0}
     #tables > .card:only-child, #tables > .note{grid-column:1 / -1}
     :is(#tables, .dt-tbl) table{font-size:13px}
-    #matchList.desk-team{width:min(1080px, 100vw - 40px);margin-left:calc((100% - min(1080px, 100vw - 40px)) / 2)}
     #matchList.desk-team .dt-cards{display:flex;flex-direction:column;gap:12px;min-width:0}
     #matchList.desk-team .dt-tbl .tcard{margin:0}
     .dt-tbl .tbl-head, .dt-tbl thead{cursor:default}
@@ -397,7 +394,8 @@
   .s-h{text-align:right} .s-a{text-align:left}
   /* Tabellen wie Spieltagskarten: Rahmen 2px, Text 12px vom Rand, Stand rechts im Kopf */
   .tcard{padding:0;border:2px solid var(--line);border-radius:12px;overflow:hidden}
-  .tc-n4{border-color:var(--logo-blue)}
+  .tc-n4{border-color:var(--logo-blue);background:var(--logo-blue)}   /* kein heller Saum in den Ecken */
+  .tc-n4 .tablewrap{background:var(--card)}
   .tc-n5{border-color:var(--logo-black)}
   :where(html.dark) .tc-n5{border-color:#fff}
   .tcard .tbl-head{margin:0;padding:10px 12px;border-radius:0;display:flex;justify-content:space-between;align-items:baseline;gap:8px}

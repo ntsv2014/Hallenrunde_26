@@ -615,16 +615,16 @@ const DEFAULT_TEAMS = ["n4", "n5"];
 /* score: null = noch kein Ergebnis, sonst "Heim:Gast", z. B. "3:1" */
 const MATCHES = [
   // ---- 4. D (JH 05) – Sa 14.11.
-  { d:"2026-11-14", t:"15:54", nr:"174405013", h:"NTSV 7. D", a:"Eimsbüttel 13.D", teams:["n4"], score:"6:0" },
-  { d:"2026-11-14", t:"16:18", nr:"174405015", h:"HEBC 3.D", a:"NTSV 7. D", teams:["n4"], score:"1:0" },
-  { d:"2026-11-14", t:"16:54", nr:"174405018", h:"Eimsbüttel 6.D", a:"NTSV 7. D", teams:["n4"], score:"1:3" },
-  { d:"2026-11-14", t:"17:18", nr:"174405020", h:"NTSV 7. D", a:"Eimsbüttel 15.D", teams:["n4"], score:"2:4" },
+  { d:"2026-11-14", t:"15:54", nr:"174405013", h:"NTSV 7. D", a:"Eimsbüttel 13.D", teams:["n4"], score:"6:0", fd:true },
+  { d:"2026-11-14", t:"16:18", nr:"174405015", h:"HEBC 3.D", a:"NTSV 7. D", teams:["n4"], score:"1:0", fd:true },
+  { d:"2026-11-14", t:"16:54", nr:"174405018", h:"Eimsbüttel 6.D", a:"NTSV 7. D", teams:["n4"], score:"1:3", fd:true },
+  { d:"2026-11-14", t:"17:18", nr:"174405020", h:"NTSV 7. D", a:"Eimsbüttel 15.D", teams:["n4"], score:"2:4", fd:true },
 
   // ---- 5. D (JH 04) – So 15.11.
-  { d:"2026-11-15", t:"09:12", nr:"174404022", h:"NTSV 7. D", a:"NTSV 5.D", teams:["n5"], score:"2:0" },
-  { d:"2026-11-15", t:"09:36", nr:"174404024", h:"SV Gr. Borstel 6.D", a:"NTSV 7. D", teams:["n5"], score:"0:7" },
-  { d:"2026-11-15", t:"10:00", nr:"174404026", h:"SV Gr. Borstel 4.D", a:"NTSV 7. D", teams:["n5"], score:"0:1" },
-  { d:"2026-11-15", t:"10:24", nr:"174404028", h:"NTSV 7. D", a:"SCALA 9.D", teams:["n5"], score:"1:0" },
+  { d:"2026-11-15", t:"09:12", nr:"174404022", h:"NTSV 7. D", a:"NTSV 5.D", teams:["n5"], score:"2:0", fd:true },
+  { d:"2026-11-15", t:"09:36", nr:"174404024", h:"SV Gr. Borstel 6.D", a:"NTSV 7. D", teams:["n5"], score:"0:7", fd:true },
+  { d:"2026-11-15", t:"10:00", nr:"174404026", h:"SV Gr. Borstel 4.D", a:"NTSV 7. D", teams:["n5"], score:"0:1", fd:true },
+  { d:"2026-11-15", t:"10:24", nr:"174404028", h:"NTSV 7. D", a:"SCALA 9.D", teams:["n5"], score:"1:0", fd:true },
 
   // ---- 4. D (JH 05) – Sa 21.11.
   { d:"2026-11-21", t:"14:00", nr:"174405081", h:"Glashütte 1.D", a:"NTSV 7. D", teams:["n4"], score:null },
@@ -953,7 +953,7 @@ function renderMatches(){
               <span class="${isOurs(m.a) ? "ntsv" : ""}">${esc(m.a)}</span></span>
             ${isVorl(m) ? '<span class="meta">vorläufig</span>' : ""}
           </div>
-          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${canEdit() ? "" : "disabled"}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
+          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${canEdit() && !m.fd ? "" : "disabled"}${m.fd ? ' title="Ergebnis von fussball.de"' : ""}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
         </div>`;
       }).join("")}
       ${!vsl && tm !== "mix" && SPIELTAGE[d] ? `<div class="cal-row"><a class="cal-btn" href="${SHARE_URL}cal/${tm === "n4" ? "blau" : "weiss"}-${d}.ics" target="_blank" rel="noopener">${ICON_CAL} In Kalender übernehmen</a></div>` : ""}
@@ -1254,7 +1254,7 @@ document.getElementById("fdBar").addEventListener("click", async e => {
 const dlg = document.getElementById("scoreDlg");
 let dlgNr = null;
 function openDlg(nr){
-  const m = MATCHES.find(x => x.nr === nr); if(!m || !canEdit()) return; dlgNr = nr;
+  const m = MATCHES.find(x => x.nr === nr); if(!m || !canEdit() || m.fd) return; dlgNr = nr;
   document.getElementById("dlgTitle").textContent = `${m.h} – ${m.a}`;
   const s = scoreOf(m);
   const [h, a] = s ? s.split(":") : ["", ""];

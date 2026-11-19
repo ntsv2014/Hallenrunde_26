@@ -159,8 +159,8 @@ def main(tids):
         for m in ms:
             if not m["score"] or g["own"] not in (m["h"], m["a"]): continue
             line = re.compile(r'(\{ d:"' + m["d"] + r'", t:"' + (m["t"] or "") + r'", nr:"\d+", h:"' + re.escape(shortname(m["h"], g)) +
-                              r'", a:"' + re.escape(shortname(m["a"], g)) + r'", teams:\["' + tid + r'"\], score:)(null|"[^"]*")')
-            new = line.sub(lambda x: x.group(1) + f'"{m["score"]}"', new)
+                              r'", a:"' + re.escape(shortname(m["a"], g)) + r'", teams:\["' + tid + r'"\], score:)(null|"[^"]*")(, fd:true)?')
+            new = line.sub(lambda x: x.group(1) + f'"{m["score"]}", fd:true', new)   # fd: von fussball.de, nicht mehr änderbar
         log.append(f"{g['group']}: {n}. Spieltag, {played}/{total} Spiele, {len(rows)} Teams")
         out = new
     if out != src:

@@ -159,6 +159,8 @@
   .details-btn{display:block;width:100%;margin:4px 0 8px;padding:4px 12px;font-size:15px;font-weight:600;
     background:#e3f0fa;color:var(--ink);border:1.5px solid rgba(0,117,191,.55)}
   :where(html.dark) .details-btn{background:var(--card)}
+  .only-m{display:none}
+  @media (max-width: 600px){ .only-m{display:block} .only-d{display:none} }
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
   .lv-s{display:none}
@@ -800,7 +802,7 @@ const TABLES = [
       [14,"Farmsen 1.D (A1)",4,1,1,2,"5:5",0,4],
       [15,"Eimsbüttel 13.D (A9)",4,1,1,2,"5:13",-8,4],
       [16,"BU 3.D (A3)",3,1,0,2,"4:7",-3,3],
-      [17,"Nordlichter im NSV 1.D (A1)",3,1,0,2,"2:7",-5,3],
+      [17,"Nordlichter i. NSV 1.D (A1)",3,1,0,2,"2:7",-5,3],
       [18,"Rahlstedt 3.D (J1)",4,1,0,3,"3:9",-6,3],
       [19,"Urania 1.D (A1)",3,0,1,2,"1:4",-3,1],
       [20,"Eimsbüttel 6.D (A6)",4,0,1,3,"5:10",-5,1],
@@ -1164,8 +1166,14 @@ function renderInfo(){
   /* Bedienung, Links, App-Installation */
   document.getElementById("howBox").outerHTML =
     `<div class="card info-txt"><strong>So funktioniert die Seite</strong>
-      <p class="note"><b>Buttons oben (Handy)</b></p>
-      <ul class="note">
+      <p class="note only-d"><b>Buttons oben</b></p>
+      <ul class="note only-d">
+        <li><b>Spiele</b> zeigt alle Spieltage beider Teams – Blau links, Weiß rechts. Der aktuelle Spieltag ist aufgeklappt, die übrigen öffnen sich per Klick auf den Kopf.</li>
+        <li><b>Blau</b> / <b>Weiß</b> zeigen links die Tabelle der Gruppe und rechts alle Spieltage des Teams; der aktuelle ist aufgeklappt.</li>
+        <li><b>Info</b> zeigt diese Seite mit Link und QR-Code zum Teilen.</li>
+      </ul>
+      <p class="note only-m"><b>Buttons oben</b></p>
+      <ul class="note only-m">
         <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der vorangegangene Spieltag („Zuletzt“), ein weiteres Mal: zurück.</li>
         <li><b>Blau</b> / <b>Weiß</b> zeigen alle Spieltage des Teams. Noch einmal tippen: der aktuelle Spieltag und darunter die Tabelle (nach Saisonende nur die Tabelle), ein weiteres Mal: zurück.</li>
         <li><b>Seitwärts wischen</b> wechselt zwischen Aktuell, Blau und Weiß.</li>

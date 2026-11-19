@@ -26,7 +26,7 @@ GROUPS = {
                slug="jh-04--d-junioren-u13-kreisebene-hamburg-d-junioren-hallen-kreisturnier-d-junioren-saison2627-hamburg",
                st="0327PBA1J400000BVS5489BUVUFHD2VV-G"),
 }
-ALIAS = [("Alstertal-Langenhorn", "SCALA"), ("Eintracht Norderstedt", "Eintr. Norderstedt"), ("SV Groß Borstel", "SV Gr. Borstel"), ("Niendorf ", "NTSV ")]
+ALIAS = [("Alstertal-Langenhorn", "SCALA"), ("Eintracht Norderstedt", "Eintr. Norderstedt"), ("SV Groß Borstel", "SV Gr. Borstel"), ("Nordlichter im NSV", "Nordlichter i. NSV"), ("Niendorf ", "NTSV ")]
 
 
 def get(url):

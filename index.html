@@ -215,6 +215,14 @@
   @media (max-width: 600px){
     .navwrap > nav.tabs:not(.mnav){display:none !important}
     .navwrap > nav.mnav{display:grid !important;grid-template-columns:1fr 1fr 1fr}
+    html.beta .navwrap > nav.mnav{grid-template-columns:1fr 1fr 1fr auto}
+    #mCal{aspect-ratio:1;border-radius:50% !important;padding:0 !important;display:flex;align-items:center;justify-content:center;min-width:0}
+    #mCal svg{width:22px;height:22px}
+    #mCal[aria-pressed="true"][data-c="all"]{background:linear-gradient(90deg,var(--logo-blue) 50%,#fff 50%) !important;border-color:var(--logo-blue) !important;color:var(--logo-black) !important}
+    #mCal[aria-pressed="true"][data-c="all"] svg{filter:drop-shadow(0 0 1.5px #fff)}
+    #mCal[aria-pressed="true"][data-c="n4"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
+    #mCal[aria-pressed="true"][data-c="n5"]{background:#fff !important;border-color:var(--logo-black) !important;color:var(--logo-black) !important}
+    .cal-head{margin:2px 2px 8px;font-size:13px;font-weight:600;color:var(--muted)}
     #mBlau[aria-pressed="true"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
     #mWeiss[aria-pressed="true"]{background:#fff !important;border-color:var(--logo-black) !important;color:var(--logo-black) !important;box-shadow:inset 0 0 0 1px var(--logo-black)}
     #mCur[aria-pressed="true"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
@@ -567,6 +575,7 @@
     <button class="chip" id="mCur" data-s="cur" aria-pressed="true">Aktuell</button>
     <button class="chip" id="mBlau" data-s="n4" aria-pressed="false">Blau</button>
     <button class="chip" id="mWeiss" data-s="n5" aria-pressed="false">Weiß</button>
+    <button class="chip" id="mCal" data-s="cal" data-c="all" aria-pressed="false" aria-label="Alle Spieltage" title="Alle Spieltage" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13h2M11 13h2M14.5 13h2M7.5 16.5h2M11 16.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <button class="chip" id="mInfo" aria-pressed="false" aria-label="Info und Teilen" title="Info und Teilen">ⓘ</button>
   </nav>
   <nav class="tabs" role="tablist">
@@ -880,6 +889,9 @@ let selTeams = store.get(LS_TEAMS, DEFAULT_TEAMS).filter(t => TEAMS[t]);
 /* Handy: Ansicht „Aktuell“ (Standard) oder „Alles“ */
 let MODE = "cur";
 const MOBILE = window.matchMedia("(max-width: 600px)");
+/* BETA (zunächst nur für den Admin sichtbar): Kalender-Button mit allen Spieltagen, Teamansichten ohne Terminliste */
+const BETA = (() => { try{ return (!!localStorage.getItem("ntsv-admin-token") && /github\.io$/.test(location.hostname)) || /[?&]beta\b/.test(location.search); }catch(e){ return false; } })();
+if(BETA){ document.documentElement.classList.add("beta"); const c = document.getElementById("mCal"); if(c) c.hidden = false; }
 /* Vergangene Spieltage: Desktop standardmäßig an, Handy standardmäßig aus */
 let showPast = true;     // Desktop: immer alle Spieltage („Vergangene Spiele“ entfällt)
 let DESK_TEAM = null;    // Desktop: null = „Spiele“ (beide Teams), sonst "n4"/"n5" = Teamansicht
@@ -1022,8 +1034,11 @@ function renderMatches(){
       .filter(c => /^\d{4}-/.test(c.dataset.d) && isPastN(+c.dataset.n) && +c.dataset.n !== CUR_MARK)
       .forEach(c => list.appendChild(c));
   }
+  if(isMobile && typeof mSel !== "undefined" && mSel === "cal"){
+    list.insertAdjacentHTML("afterbegin", `<p class="cal-head">Alle Spieltage · ${({ all:"Blau und Weiß", n4:"Blau", n5:"Weiß" })[mCalSel]}</p>`);
+  }
   /* Team-Übersicht (Handy): „Details“ unter den Karten – wie ein erneuter Tipp auf den Team-Button */
-  if(isMobile && MODE === "all" && selTeams.length === 1){
+  if(isMobile && MODE === "all" && selTeams.length === 1 && !BETA){
     const first = list.querySelector(":scope > .sp");   // direkt unter die erste Spieltagskarte
     (first || list).insertAdjacentHTML(first ? "afterend" : "beforeend", `<button class="chip details-btn" data-s="${selTeams[0]}">Details</button>`);
   }
@@ -1181,7 +1196,15 @@ function renderInfo(){
         <li><b>Blau</b> / <b>Weiß</b> zeigen links die Tabelle der Gruppe und rechts alle Spieltage des Teams; der aktuelle ist aufgeklappt.</li>
         <li><b>Info</b> zeigt diese Seite mit Link und QR-Code zum Teilen.</li>
       </ul>
-      <p class="note only-m"><b>Buttons oben</b></p>
+${BETA ? `<p class="note only-m"><b>Buttons oben</b></p>
+      <ul class="note only-m">
+        <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der vorangegangene Spieltag („Zuletzt“), ein weiteres Mal: zurück.</li>
+        <li><b>Blau</b> / <b>Weiß</b> zeigen den aktuellen Spieltag des Teams und darunter die Tabelle (nach Saisonende nur die Tabelle).</li>
+        <li><b>Kalender</b> (runder Button) zeigt alle Spieltage. Weiteres Tippen wechselt zwischen <b>beiden Teams</b>, nur <b>Blau</b> und nur <b>Weiß</b>; vergangene Spieltage stehen zugeklappt am Ende.</li>
+        <li><b>Seitwärts wischen</b> wechselt zwischen den Buttons.</li>
+        <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
+        <li class="fs-only"><b>Banner oben</b> antippen: Vollbild ein bzw. aus – oder hier: <a href="#" class="fs-link">Vollbild ein/aus</a>.</li>
+      </ul>` : `      <p class="note only-m"><b>Buttons oben</b></p>
       <ul class="note only-m">
         <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der vorangegangene Spieltag („Zuletzt“), ein weiteres Mal: zurück.</li>
         <li><b>Blau</b> / <b>Weiß</b> zeigen alle Spieltage des Teams. Noch einmal tippen: der aktuelle Spieltag und darunter die Tabelle (nach Saisonende nur die Tabelle), ein weiteres Mal: zurück.</li>
@@ -1189,7 +1212,7 @@ function renderInfo(){
         <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
         <li>Vergangene Spieltage stehen zugeklappt am Ende; Antippen klappt sie auf.</li>
         <li class="fs-only"><b>Banner oben</b> antippen: Vollbild ein bzw. aus – oder hier: <a href="#" class="fs-link">Vollbild ein/aus</a>.</li>
-      </ul>
+      </ul>`}
       <p class="note" style="margin-top:28px"><b>Links in den Spieltagskarten</b></p>
       <ul class="note ico-list">
         <li><span class="ico"><span class="nr-mini"><i>Spieltag</i><b>2</b></span></span><span><b>Spieltag-Kästchen</b> (rechts oben): der Spieltag mit allen Paarungen auf fussball.de.</span></li>
@@ -1520,7 +1543,8 @@ function mShow(v){
   mSync();
 }
 /* Handy: drei Ansichten – Blau (Tabelle + alle Blau-Spieltage), Weiß (dito), Aktuell (aktueller Spieltag beider Teams) */
-const M_ORDER = ["cur", "n4", "n5"];
+const M_ORDER = BETA ? ["cur", "n4", "n5", "cal"] : ["cur", "n4", "n5"];
+let mCalSel = "all";   // Kalender-Button: alle → Blau → Weiß
 let mSel = "cur";
 let mNext = false;   // „Aktuell“ erneut angetippt → „Zuletzt“ (vorangegangener Spieltag)
 let mTeamCur = false; // Team-Ansicht: false = Tabelle + alle Spieltage (Start jeder Sitzung), true = nur aktueller Spieltag; bleibt in der Sitzung gemerkt
@@ -1528,7 +1552,8 @@ function mSet(s, keep){
   if(!keep) mNext = false;   // Team-Ansicht (mTeamCur) bleibt wie zuletzt gewählt
   mSel = s;
   if(s === "cur"){ selTeams = ["n4", "n5"]; MODE = "cur"; }
-  else { selTeams = [s]; MODE = mTeamCur ? "cur" : "all"; }
+  else if(s === "cal"){ selTeams = mCalSel === "all" ? ["n4", "n5"] : [mCalSel]; MODE = "all"; }
+  else { selTeams = [s]; MODE = BETA || mTeamCur ? "cur" : "all"; }
   mShow("spiele"); renderMatches();
 }
 function mSync(){
@@ -1537,6 +1562,8 @@ function mSync(){
     if(b) b.setAttribute("aria-pressed", mCur !== "info" && mSel === s); });
   if(mi) mi.setAttribute("aria-pressed", mCur === "info");
   const mc = document.getElementById("mCur"); if(mc) mc.textContent = mNext ? "Zuletzt" : "Aktuell";
+  const ca = document.getElementById("mCal"); if(ca){ ca.dataset.c = mCalSel;
+    ca.setAttribute("aria-label", "Spieltage: " + ({ all:"Blau und Weiß", n4:"Blau", n5:"Weiß" })[mCalSel]); }
 }
 /* Sanfter Seitenwechsel: alte Ansicht gleitet hinaus, neue gleitet von der anderen Seite herein */
 const mView = () => document.getElementById("view-spiele");
@@ -1573,6 +1600,8 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
     if(mBusy) return;
     let on;
     if(s === "cur") on = mNext = !mNext;  // Aktuell ⇄ Zuletzt
+    else if(s === "cal"){ mCalSel = ({ all:"n4", n4:"n5", n5:"all" })[mCalSel]; on = true; }   // Kalender: alle → Blau → Weiß
+    else if(BETA) return;                 // BETA: Teamansicht hat nur eine Form
     else{ on = mTeamCur = !mTeamCur;      // Team-Übersicht ⇄ aktueller Spieltag des Teams
       OPEN_TBL.delete(s); CUR_CLOSED.clear(); }   // per Knopf aufgerufen: Tabelle ganz, Karte offen
     mGo(s, on ? -1 : 1, true);

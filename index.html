@@ -215,7 +215,10 @@
   @media (max-width: 600px){
     .navwrap > nav.tabs:not(.mnav){display:none !important}
     .navwrap > nav.mnav{display:grid !important;grid-template-columns:1fr 1fr 1fr}
-    html.beta .navwrap > nav.mnav{grid-template-columns:1fr 1fr 1fr auto}
+    html.beta .navwrap > nav.mnav{grid-template-columns:1fr 1fr 1fr auto auto}
+    .mnav #mInfo.m-round{aspect-ratio:1;border-radius:50% !important;padding:0 !important;display:flex;align-items:center;justify-content:center;min-width:0;
+      font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700;font-size:20px !important}
+    .mnav #mInfo.m-round[aria-pressed="true"]{background:var(--logo-blue) !important;border-color:var(--logo-blue) !important;color:#fff !important}
     #mCal{aspect-ratio:1;border-radius:50% !important;padding:0 !important;display:flex;align-items:center;justify-content:center;min-width:0}
     #mCal svg{width:22px;height:22px}
     #mCal[aria-pressed="true"][data-c="all"]{background:linear-gradient(90deg,var(--logo-blue) 50%,#fff 50%) !important;border-color:var(--logo-blue) !important;color:var(--logo-black) !important}
@@ -1657,7 +1660,8 @@ document.querySelectorAll(".mnav .chip[data-s]").forEach(b => b.onclick = () => 
 })();
 document.getElementById("mInfo").onclick = e => { e.stopPropagation(); mShow(mCur === "info" ? "spiele" : "info"); };
 /* ⓘ sitzt auf dem Handy unten rechts im Banner */
-document.querySelector("header").appendChild(document.getElementById("mInfo"));
+if(BETA){ const mi = document.getElementById("mInfo"); mi.textContent = "i"; mi.classList.add("m-round"); }   // BETA: (i) als runder Button in der Buttonzeile
+else document.querySelector("header").appendChild(document.getElementById("mInfo"));
 /* Höhe des Banners merken, damit die Knopfleiste direkt darunter haftet */
 (function(){
   const hd = document.querySelector("header");
@@ -1769,7 +1773,7 @@ adminHash();
       <h3><img src="icon-192.png" alt="" style="width:28px;height:28px;border-radius:7px;vertical-align:-8px;margin-right:6px">Als App auf den Startbildschirm</h3>
       <p>Erkannt: <b>${dev} · ${inapp ? "App-interner Browser" : BR_NAME[br]}</b></p>
       <ol class="inst-steps">${steps.map(x => `<li>${x}</li>`).join("")}</ol>
-      <p>Weitere Hinweise – Bedienung, andere Geräte, Kalender-Abo – stehen unter <b>ⓘ</b> oben rechts.</p>
+      <p>Weitere Hinweise – Bedienung, andere Geräte, Kalender-Abo – stehen unter ${BETA ? "<b><i>i</i></b> rechts in der Buttonzeile" : "<b>ⓘ</b> oben rechts"}.</p>
       <div class="cal-acts">
         <a class="primary" href="#" data-a="inst" ${deferred ? "" : "hidden"}>Jetzt installieren</a>
         <a href="#" data-a="info">Info öffnen</a>

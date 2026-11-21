@@ -164,8 +164,12 @@
   @media (max-width: 600px){ .only-m{display:block} .only-d{display:none} }
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
-  .lv-s{display:none}
-  @media (max-width: 600px){ .lv-l{display:none} .lv-s{display:inline} }
+  .lv-l{display:none}   /* überall die kurze Form „(x/y Spiele)“ */
+  .tbl-head strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  @media (min-width: 601px){   /* Desktop: Titel optisch mittig im Tabellenkopf */
+    .card.tcard .tbl-head:is(.n4,.n5){align-items:center;padding-top:13px;padding-bottom:13px}
+    .tcard .tbl-head strong{text-box:trim-both cap alphabetic;overflow:clip;overflow-clip-margin:.4em}
+  }
   .tablewrap{overflow-x:auto}
   .note{font-size:13px;color:var(--muted)}
   .stand{font-size:12px;color:var(--muted);margin:2px 0 8px}

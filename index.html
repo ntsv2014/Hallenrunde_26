@@ -121,7 +121,8 @@
   .score.d{border-color:var(--draw);color:var(--draw)}
   .score.l{border-color:var(--loss);color:var(--loss)}
   .score.empty{color:var(--muted);font-weight:400}
-  .score[disabled]{cursor:default;opacity:1}
+  .score[disabled]{cursor:default;opacity:1;user-select:none;-webkit-user-select:none;pointer-events:none;-webkit-tap-highlight-color:transparent}   /* für Besucher nicht antippbar/markierbar */
+  .score{-webkit-tap-highlight-color:transparent}
   table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
   th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right}
   th:nth-child(2),td:nth-child(2){text-align:left}

@@ -632,7 +632,7 @@
    DATEN – hier pflegen
    Stand: 15.11.2026 (fussball.de)
    ===================================================================== */
-const DATA_STAND = "19.11.2026";
+const DATA_STAND = "21.11.2026";
 const CLAUDE_URL = "https://claude.ai/artifact/L2oRP9c6x9FXKR2mc4YwCa";
 /* Auf der eigenen Domain (z. B. ingomue.de) zeigt der QR-Code auf diese Adresse, sonst auf claude.ai */
 /* Geteilt wird immer die GitHub-Adresse (dort mit Wappen-Icon als App installierbar) */
@@ -790,7 +790,7 @@ const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
 const tblTitle = tb => "Vorrunde – " + tb.group + (tb.spieltag ? " – " + tb.spieltag + ". Spieltag" +
   (tb.total && tb.played < tb.total ? `<span class="lv-l"> nach ${tb.played} von ${tb.total} Spielen</span><span class="lv-s"> (${tb.played}/${tb.total} Spiele)</span>` : "") : "");
 const TABLES = [
-  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"18.11.2026", spieltag:1, played:null, total:null,
+  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"21.11.2026", spieltag:1, played:null, total:null,
     rows:[
       [1,"tus BERNE 5.D (A3)",4,3,1,0,"7:0",7,10],
       [2,"Rahlstedt 1.D (A1)",4,3,1,0,"8:2",6,10],
@@ -816,12 +816,12 @@ const TABLES = [
       [22,"Eintr. Norderstedt 6.D (A4)",3,0,0,3,"1:7",-6,0],
       [23,"HafenCity 1.D (A1)",4,0,0,4,"0:14",-14,0]
     ]},
-  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"18.11.2026", spieltag:1, played:null, total:null,
+  { group:"JH 04", staffel:"174404", teams:["n5"], stand:"21.11.2026", spieltag:1, played:null, total:null,
     rows:[
       [1,"NTSV 7. D Weiß",4,4,0,0,"11:0",11,12],
-      [2,"Eimsbüttel 14.D (A10)",4,4,0,0,"7:2",5,12],
-      [3,"TuS Osdorf 1.D (A1)",4,3,1,0,"9:3",6,10],
-      [4,"Hetlingen 1.D (A1)",4,3,1,0,"6:1",5,10],
+      [2,"TuS Osdorf 1.D (A1)",4,3,1,0,"9:3",6,10],
+      [3,"Hetlingen 1.D (A1)",4,3,1,0,"6:1",5,10],
+      [4,"Eimsbüttel 14.D (A10)",4,3,0,1,"6:3",3,9],
       [5,"NTSV 5.D (A3)",4,3,0,1,"5:3",2,9],
       [6,"Nienstedten 3.D (A2)",4,3,0,1,"4:2",2,9],
       [7,"Altona 93 4.D (A4)",4,2,2,0,"11:2",9,8],
@@ -836,11 +836,11 @@ const TABLES = [
       [16,"Paloma 2.D (A2)",4,1,1,2,"4:5",-1,4],
       [17,"VfL Pinneberg 5.D (A3)",4,1,1,2,"3:6",-3,4],
       [18,"SV Gr. Borstel 6.D (A3)",4,1,1,2,"2:10",-8,4],
-      [19,"Cosmos Wedel 2.D (A2)",4,0,3,1,"2:5",-3,3],
-      [20,"GW Eimsbüttel 1.D (A1)",4,1,0,3,"5:10",-5,3],
-      [21,"Germania 7.D (A3)",4,1,0,3,"3:9",-6,3],
-      [22,"Germania 6.D (A1)",4,0,2,2,"2:4",-2,2],
-      [23,"Eimsbüttel 8.D (A6)",4,0,0,4,"4:8",-4,0],
+      [19,"Eimsbüttel 8.D (A6)",4,1,0,3,"5:7",-2,3],
+      [20,"Cosmos Wedel 2.D (A2)",4,0,3,1,"2:5",-3,3],
+      [21,"GW Eimsbüttel 1.D (A1)",4,1,0,3,"5:10",-5,3],
+      [22,"Germania 7.D (A3)",4,1,0,3,"3:9",-6,3],
+      [23,"Germania 6.D (A1)",4,0,2,2,"2:4",-2,2],
       [24,"SV Gr. Borstel 4.D (A2)",4,0,0,4,"0:8",-8,0],
       [25,"Sternschanze 2.D (A1)",4,0,0,4,"0:22",-22,0]
     ]}

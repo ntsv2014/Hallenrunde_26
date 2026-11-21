@@ -134,12 +134,15 @@ def main(tids):
         def load(i):
             if i in res: return res[i]
             ms, table = [], None
-            for d in (weekends[i][0], weekends[i][1]):
+            # ganze Spieltagswoche (Mo–So): Turniere eines Spieltags liegen nicht immer am Wochenende
+            sat = weekends[i][0]
+            for k in range(-5, 2):
+                d = sat + dt.timedelta(days=k)
                 if d > today and not CACHE: continue
                 try: m, t = parse(page(tid, d.isoformat()), d.isoformat())
                 except FileNotFoundError: continue
                 ms += [dict(mm, d=d.isoformat()) for mm in m]
-                if t: table = t
+                if m and t: table = t
             res[i] = (ms, table); return res[i]
         ms, table = load(idx)
         n = idx + 1

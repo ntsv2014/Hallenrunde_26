@@ -384,7 +384,7 @@
   /* Ergebnisse: fett; endgültige (offizielle) ohne Rahmen */
   .score{font-weight:800;white-space:nowrap}
   .score.empty{font-weight:400}
-  .score[disabled]{border-color:transparent;min-width:0;padding-left:0;padding-right:0;text-align:right}
+  .score[disabled], .score:not(.empty){border-color:transparent;min-width:0;padding-left:0;padding-right:0;text-align:right}   /* eingetragene Ergebnisse sehen gleich aus – egal ob von Hand oder von fussball.de */
   html.dark{ --win:#5fd38d; --loss:#ff7070; --draw:#e2cd5e; }
   /* Kopf immer zweizeilig hoch, damit das Kalenderblatt gleich groß bleibt */
   .sp-head{min-height:62px}
@@ -546,7 +546,8 @@
     background:var(--logo-black);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:80;
     transition:opacity .2s, transform .2s;max-width:90vw;text-align:center;pointer-events:none}
   #toast.show{opacity:1;transform:translate(-50%, 0)}
-  .score:not([disabled]){cursor:pointer;outline:1.5px dashed rgba(0,117,191,.6);outline-offset:2px}
+  .score:not([disabled]){cursor:pointer}
+  .score.empty:not([disabled]){outline:1.5px dashed rgba(0,117,191,.6);outline-offset:2px}   /* nur leere Felder als eintragbar markieren */
 </style>
 </head>
 <body>
@@ -999,7 +1000,7 @@ function renderMatches(){
             <span class="vs"><span class="${isOurs(m.h) ? "ntsv" : ""}">${esc(m.h)}</span><span class="vs-d"> – </span><span class="${isOurs(m.a) ? "ntsv" : ""}">${esc(m.a)}</span></span>
             ${isVorl(m) ? '<span class="meta">vorläufig</span>' : ""}
           </div>
-          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${canEdit() && !m.fd ? "" : "disabled"}${m.fd ? ' title="Ergebnis von fussball.de"' : ""}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
+          <button class="score ${s ? o : "empty"}" data-nr="${m.nr}" ${canEdit() && !m.fd ? "" : "disabled"}>${(() => { const [h, a] = s ? s.split(":") : ["–", "–"]; return `<span class="s-h">${esc(h)}</span><span class="s-c">:</span><span class="s-a">${esc(a)}</span>`; })()}</button>
         </div>`;
       }).join("")}
       ${!vsl && tm !== "mix" && SPIELTAGE[d] ? `<div class="cal-row"><a class="cal-btn" href="${SHARE_URL}cal/${tm === "n4" ? "blau" : "weiss"}-${d}.ics" target="_blank" rel="noopener">${ICON_CAL} In Kalender übernehmen</a></div>` : ""}

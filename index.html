@@ -210,7 +210,7 @@
   /* 2px Überlappung unter das Banner, damit keine Lücke (Rundung/Subpixel) entsteht */
   .navwrap{top:calc(var(--hdr-h, 0px) - 2px) !important;margin-top:-2px !important;padding-top:10px !important}
   /* Handy: Info-Seite ohne Knopfleiste (zurück über ⓘ im Banner) */
-  @media (max-width: 600px){ body.m-info .navwrap{display:none !important} }
+  /* Buttonzeile bleibt auch auf der Info-Seite sichtbar */
   @media (max-width: 600px){ header #mInfo{display:block} }
   @media (max-width: 600px){
     .navwrap > nav.tabs:not(.mnav){display:none !important}
@@ -892,8 +892,8 @@ let selTeams = store.get(LS_TEAMS, DEFAULT_TEAMS).filter(t => TEAMS[t]);
 /* Handy: Ansicht „Aktuell“ (Standard) oder „Alles“ */
 let MODE = "cur";
 const MOBILE = window.matchMedia("(max-width: 600px)");
-/* BETA (zunächst nur für den Admin sichtbar): Kalender-Button mit allen Spieltagen, Teamansichten ohne Terminliste */
-const BETA = (() => { try{ return (!!localStorage.getItem("ntsv-admin-token") && /github\.io$/.test(location.hostname)) || /[?&]beta\b/.test(location.search); }catch(e){ return false; } })();
+/* Neue Handy-Ansicht (Kalender-Button, runder Info-Button, Teamansichten ohne Terminliste) – seit 21.11. für alle */
+const BETA = true;
 if(BETA){ document.documentElement.classList.add("beta"); const c = document.getElementById("mCal"); if(c) c.hidden = false; }
 /* Vergangene Spieltage: Desktop standardmäßig an, Handy standardmäßig aus */
 let showPast = true;     // Desktop: immer alle Spieltage („Vergangene Spiele“ entfällt)
@@ -1204,6 +1204,7 @@ ${BETA ? `<p class="note only-m"><b>Buttons oben</b></p>
         <li><b>Aktuell</b> zeigt den nächsten Spieltag beider Teams. Noch einmal tippen: der vorangegangene Spieltag („Zuletzt“), ein weiteres Mal: zurück.</li>
         <li><b>Blau</b> / <b>Weiß</b> zeigen den aktuellen Spieltag des Teams und darunter die Tabelle (nach Saisonende nur die Tabelle).</li>
         <li><b>Kalender</b> (runder Button) zeigt alle Spieltage. Weiteres Tippen wechselt zwischen <b>beiden Teams</b>, nur <b>Blau</b> und nur <b>Weiß</b>; vergangene Spieltage stehen zugeklappt am Ende.</li>
+        <li><b><i>i</i></b> (runder Button) öffnet diese Info-Seite mit Link und QR-Code zum Teilen.</li>
         <li><b>Seitwärts wischen</b> wechselt zwischen den Buttons.</li>
         <li><b>Tabellenkopf</b> oder Spaltenüberschriften antippen: ganze Tabelle auf- bzw. zuklappen.</li>
         <li class="fs-only"><b>Banner oben</b> antippen: Vollbild ein bzw. aus – oder hier: <a href="#" class="fs-link">Vollbild ein/aus</a>.</li>

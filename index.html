@@ -1315,14 +1315,31 @@ document.getElementById("fdBar").addEventListener("click", async e => {
     if(r.status === 401) return done("Abruf nicht gestartet: Schlüssel ungültig (401)");
     if(r.status === 403 || r.status === 404) return done("Abruf nicht gestartet: Schlüssel braucht „Actions: Read and write“ (" + r.status + ")");
     if(!r.ok) return done("Abruf nicht gestartet (" + r.status + ")");
-    const t0 = Date.now();
+    /* Lauf beobachten: fertig ohne neuen Commit → sofort wieder frei; mit Commit → auf die neue Seitenversion warten */
+    const API = "https://api.github.com/repos/ntsv2014/Hallenrunde_26";
+    const gh = path => fetch(API + path, { headers: { "Authorization": "Bearer " + adminToken(), "Accept": "application/vnd.github+json" }, cache: "no-store" }).then(x => x.json());
+    const sha0 = await gh("/commits/main").then(j => j.sha).catch(() => null);
+    const t0 = Date.now(), since = new Date(t0 - 30000).toISOString();
+    let runDone = false;
     const poll = async () => {
       const t = await headTag();
-      if(t && tag0 && t !== tag0){ location.reload(); return; }
+      if(t && tag0 && t !== tag0){ location.reload(); return; }               // neue Seitenversion ist online
+      if(!runDone){
+        try{
+          const j = await gh(`/actions/workflows/fussballde.yml/runs?event=workflow_dispatch&per_page=3`);
+          const run = (j.workflow_runs || []).find(x => x.created_at >= since);
+          if(run && run.status === "completed"){
+            runDone = true;
+            const sha = await gh("/commits/main").then(j => j.sha).catch(() => null);
+            if(run.conclusion !== "success") return done("Abruf fehlgeschlagen");
+            if(sha && sha0 && sha === sha0) return done();          // nichts Neues: Buttons sofort wieder frei
+          }
+        }catch(x){}
+      }
       if(Date.now() - t0 > 4 * 60 * 1000) return done();
-      setTimeout(poll, 15000);
+      setTimeout(poll, runDone ? 10000 : 5000);
     };
-    setTimeout(poll, 30000);
+    setTimeout(poll, 8000);
   }catch(err){ done("Abruf nicht gestartet: " + err.message); }
 });
 

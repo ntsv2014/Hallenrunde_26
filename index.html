@@ -502,6 +502,9 @@
   .cal-pop{background:var(--card);color:var(--ink);width:100%;max-width:480px;border-radius:16px 16px 0 0;
     padding:16px 16px max(16px, env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.3)}
   .cal-pop h3{margin:0 0 4px;font-size:16px}
+  .inst-steps{margin:0 0 12px;padding-left:20px;font-size:14px;line-height:1.45}
+  .inst-steps li{margin:3px 0}
+  .cal-pop .cal-acts a[hidden]{display:none}
   .cal-pop p{margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.4}
   .cal-pop .cal-acts{display:flex;flex-direction:column;gap:8px}
   .cal-pop .cal-acts a, .cal-pop .cal-acts button{display:block;text-align:center;padding:11px;border-radius:10px;font-size:15px;font-weight:600;
@@ -1672,39 +1675,71 @@ adminHash();
   try{ n = (parseInt(localStorage.getItem("ntsv-visits") || "0", 10) || 0) + 1; localStorage.setItem("ntsv-visits", String(n)); }catch(e){}
   if(n !== 1 && n !== 5) return;
   window.__noFsAsk = true;                               // nicht zusätzlich nach Vollbild fragen
+  /* Gerät und Browser erkennen → passende Installationsanleitung in einem Pop-up */
   const ua = navigator.userAgent;
   const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const firefox = /Firefox|FxiOS/.test(ua);
-  const samsung = /SamsungBrowser/.test(ua);
-  let deferred = null;
-  const show = (text, withBtn) => {
-    if(document.querySelector(".fs-ask.inst")) return;
-    const p = document.createElement("div");
-    p.className = "fs-ask inst";
-    p.innerHTML = `<img src="icon-192.png" alt="" style="width:40px;height:40px;border-radius:9px;flex:none">
-      <span>${text}</span>
-      ${withBtn ? '<button class="btn primary" data-a="y">Ja</button>' : ""}
-      <button class="btn" data-a="n">${withBtn ? "Nein" : "OK"}</button>`;
-    p.querySelector('[data-a="n"]').onclick = () => p.remove();
-    const y = p.querySelector('[data-a="y"]');
-    if(y) y.onclick = async () => { p.remove(); try{ deferred.prompt(); await deferred.userChoice; }catch(e){} deferred = null; };
-    document.body.appendChild(p);
+  const android = /Android/.test(ua);
+  if(!ios && !android && !window.matchMedia("(max-width: 900px)").matches) return;   // am PC nicht nötig
+  const inapp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|; wv\)/.test(ua);
+  const br = ios ? (/CriOS/.test(ua) ? "chrome-ios" : /FxiOS/.test(ua) ? "firefox-ios" : /EdgiOS/.test(ua) ? "edge-ios" : "safari")
+    : /SamsungBrowser/.test(ua) ? "samsung" : /Firefox/.test(ua) ? "firefox" : /EdgA/.test(ua) ? "edge"
+    : /OPR\/|Opera/.test(ua) ? "opera" : /Chrome/.test(ua) ? "chrome" : "other";
+  const BR_NAME = { "chrome-ios":"Chrome", "firefox-ios":"Firefox", "edge-ios":"Edge", safari:"Safari", samsung:"Samsung Internet",
+    firefox:"Firefox", edge:"Edge", opera:"Opera", chrome:"Chrome", other:"Browser" };
+  const STEPS = {
+    safari:      ["Unten das Teilen-Symbol (Quadrat mit Pfeil nach oben) antippen.", "„Zum Home-Bildschirm“ wählen (ggf. etwas nach unten scrollen).", "Oben rechts „Hinzufügen“ antippen."],
+    "chrome-ios":["Oben rechts in der Adressleiste das Teilen-Symbol antippen.", "„Zum Home-Bildschirm“ wählen.", "„Hinzufügen“ antippen."],
+    "firefox-ios":["Menü ≡ unten rechts antippen, dann „Teilen“.", "„Zum Home-Bildschirm“ wählen.", "„Hinzufügen“ antippen."],
+    "edge-ios":  ["Menü ⋯ unten antippen, dann „Teilen“.", "„Zum Home-Bildschirm“ wählen.", "„Hinzufügen“ antippen."],
+    chrome:      ["Menü ⋮ oben rechts antippen.", "„App installieren“ bzw. „Zum Startbildschirm hinzufügen“ wählen.", "Mit „Installieren“ bestätigen."],
+    samsung:     ["Menü ≡ unten rechts antippen.", "„Seite hinzufügen zu“ → „Startbildschirm“ wählen.", "Mit „Hinzufügen“ bestätigen."],
+    firefox:     ["Menü ⋮ antippen.", "„Installieren“ bzw. „Zum Startbildschirm hinzufügen“ wählen.", "Bestätigen."],
+    edge:        ["Menü ⋯ unten antippen.", "„Zum Telefon hinzufügen“ bzw. „App installieren“ wählen.", "Bestätigen."],
+    opera:       ["Menü ⋮ antippen.", "„Startbildschirm“ bzw. „Zum Startbildschirm hinzufügen“ wählen.", "Bestätigen."],
+    other:       ["Browser-Menü öffnen.", "„Zum Startbildschirm hinzufügen“ bzw. „App installieren“ wählen.", "Bestätigen."]
   };
-  /* Chrome/Edge/Samsung: echte Installationsfrage des Browsers */
-  window.addEventListener("beforeinstallprompt", e => {
-    e.preventDefault(); deferred = e;
-    show("Übersicht als App mit NTSV-Wappen auf den Startbildschirm legen?", true);
-  });
-  /* Browser ohne eigene Installationsfrage: kurze Anleitung */
-  setTimeout(() => {
-    if(deferred || document.querySelector(".fs-ask.inst")) return;
-    if(!window.matchMedia("(max-width: 900px)").matches && !ios) return;   // am PC nicht nötig
-    const how = ios ? "Teilen-Symbol <b>⎋</b> antippen, dann <b>„Zum Home-Bildschirm“</b>."
-      : firefox ? "Menü <b>⋮</b> antippen, dann <b>„Installieren“</b> bzw. <b>„Zum Startbildschirm hinzufügen“</b>."
-      : samsung ? "Menü <b>≡</b> antippen, dann <b>„Seite hinzufügen zu“ → „Startbildschirm“</b>."
-      : "Browser-Menü <b>⋮</b> antippen, dann <b>„Zum Startbildschirm hinzufügen“</b>.";
-    show(`Als App mit NTSV-Wappen auf den Startbildschirm: ${how}`, false);
-  }, 2500);
+  const devName = async () => {
+    if(ios) return /iPad/.test(ua) || !/iPhone/.test(ua) ? "iPad" : "iPhone";
+    let model = (ua.match(/Android [\d.]+; ([^;)]+)/) || [])[1] || "";
+    try{ if(navigator.userAgentData && navigator.userAgentData.getHighEntropyValues)
+      model = (await navigator.userAgentData.getHighEntropyValues(["model"])).model || model; }catch(e){}
+    model = model.replace(/ Build.*/, "").trim();
+    if(!model || model === "K") return "Android-Handy";
+    return /^SM-/.test(model) ? `Samsung Galaxy (${model})` : model;
+  };
+  let deferred = null;
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e;
+    const b = document.querySelector(".inst-pop [data-a='inst']"); if(b) b.hidden = false; });
+  const open = async () => {
+    if(document.querySelector(".inst-pop")) return;
+    const dev = await devName();
+    const steps = inapp
+      ? ["Diese Seite zuerst im richtigen Browser öffnen: Menü (⋮ oder ⋯) → „Im Browser öffnen“.", ...STEPS[ios ? "safari" : "chrome"].slice(0, 2)]
+      : STEPS[br];
+    const bg = document.createElement("div");
+    bg.className = "cal-pop-bg inst-pop";
+    bg.innerHTML = `<div class="cal-pop" role="dialog" aria-label="Als App installieren">
+      <h3><img src="icon-192.png" alt="" style="width:28px;height:28px;border-radius:7px;vertical-align:-8px;margin-right:6px">Als App auf den Startbildschirm</h3>
+      <p>Erkannt: <b>${dev} · ${inapp ? "App-interner Browser" : BR_NAME[br]}</b></p>
+      <ol class="inst-steps">${steps.map(x => `<li>${x}</li>`).join("")}</ol>
+      <p>Weitere Hinweise – Bedienung, andere Geräte, Kalender-Abo – stehen unter <b>ⓘ</b> oben rechts.</p>
+      <div class="cal-acts">
+        <a class="primary" href="#" data-a="inst" ${deferred ? "" : "hidden"}>Jetzt installieren</a>
+        <a href="#" data-a="info">Info öffnen</a>
+        <button type="button" data-a="ok">Später</button>
+      </div></div>`;
+    const close = () => bg.remove();
+    bg.addEventListener("click", async e => {
+      const a = e.target.closest("[data-a]");
+      if(e.target === bg || (a && a.dataset.a === "ok")) return close();
+      if(!a) return;
+      e.preventDefault(); close();
+      if(a.dataset.a === "inst" && deferred){ try{ deferred.prompt(); await deferred.userChoice; }catch(x){} deferred = null; }
+      if(a.dataset.a === "info"){ const i = document.getElementById("mInfo") || document.querySelector('nav.tabs .chip[data-view="info"]'); if(i) i.click(); }
+    });
+    document.body.appendChild(bg);
+  };
+  setTimeout(open, 1500);
 })();
 /* Vollbild-Knopf (nur wo der Browser es erlaubt, z. B. Android/Chrome) */
 (function(){

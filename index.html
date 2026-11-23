@@ -689,8 +689,8 @@ const MATCHES = [
   // ---- 4. D (JH 05) – Sa 21.11.
   { d:"2026-11-21", t:"14:00", nr:"174405081", h:"Glashütte 1.D", a:"NTSV 7. D", teams:["n4"], score:"0:2", fd:true },
   { d:"2026-11-21", t:"14:36", nr:"174405084", h:"NTSV 7. D", a:"Paloma 11.D", teams:["n4"], score:"1:1", fd:true },
-  { d:"2026-11-21", t:"15:12", nr:"174405087", h:"NTSV 7. D", a:"Rahlstedt 2.D", teams:["n4"], score:"1:0" },
-  { d:"2026-11-21", t:"15:48", nr:"174405090", h:"HSV 8.D", a:"NTSV 7. D", teams:["n4"], score:"0:0" },
+  { d:"2026-11-21", t:"15:12", nr:"174405087", h:"NTSV 7. D", a:"Rahlstedt 2.D", teams:["n4"], score:"1:0", fd:true },
+  { d:"2026-11-21", t:"15:48", nr:"174405090", h:"HSV 8.D", a:"NTSV 7. D", teams:["n4"], score:"0:0", fd:true },
 
   // ---- So 22.11.
   { d:"2026-11-22", t:"16:42", nr:"174404052", h:"NTSV 7. D", a:"Germania 6.D", teams:["n5"], score:"1:1" },
@@ -811,7 +811,7 @@ const TEAM_WORD = { n4:"BLAU", n5:"WEISS" };
 const tblTitle = tb => "Vorrunde – " + tb.group + (tb.spieltag ? " – " + tb.spieltag + ". Spieltag" +
   (tb.prelim ? `<span class="lv-s"> (vorläufig)</span>` : tb.total && tb.played < tb.total ? `<span class="lv-l"> nach ${tb.played} von ${tb.total} Spielen</span><span class="lv-s"> (${tb.played}/${tb.total} Spiele)</span>` : "") : "");
 const TABLES = [
-  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"23.11.2026", spieltag:2, played:14, total:43,
+  { group:"JH 05", staffel:"174405", teams:["n4"], stand:"23.11.2026", spieltag:2, played:30, total:43,
     rows:[
       [1,"Wellingsbüttel 2.D (A2)",8,6,2,0,"17:3",14,20],
       [2,"Paloma 3.D (A3)",7,5,1,1,"16:3",13,16],

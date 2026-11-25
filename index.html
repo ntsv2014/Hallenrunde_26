@@ -164,8 +164,8 @@
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
   /* Gegner des aktuellen Spieltags in der Tabelle: Name in Vereinsblau */
-  .tcard tr.opp td:nth-child(2) .t-name{color:var(--logo-blue)}
-  :where(html.dark) .tcard tr.opp td:nth-child(2) .t-name{color:#5fb2ea}
+  .tcard tr.opp td, .tcard tr.opp td .t-name, .tcard tr.opp td .t-sub{color:var(--logo-blue)}
+  :where(html.dark) .tcard tr.opp td, :where(html.dark) .tcard tr.opp td .t-name, :where(html.dark) .tcard tr.opp td .t-sub{color:#5fb2ea}
   .lv-l{display:none}   /* überall die kurze Form „(x/y Spiele)“ */
   .tbl-head strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   @media (min-width: 601px){   /* Desktop: Titel optisch mittig im Tabellenkopf */

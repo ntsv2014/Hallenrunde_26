@@ -163,6 +163,9 @@
   @media (max-width: 600px){ .only-m{display:block} .only-d{display:none} }
   .fs-only{display:none}
   html.fs-ok .fs-only{display:list-item}
+  /* Gegner des aktuellen Spieltags in der Tabelle: Name in Vereinsblau */
+  .tcard tr.opp td:nth-child(2) .t-name{color:var(--logo-blue)}
+  :where(html.dark) .tcard tr.opp td:nth-child(2) .t-name{color:#5fb2ea}
   .lv-l{display:none}   /* überall die kurze Form „(x/y Spiele)“ */
   .tbl-head strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   @media (min-width: 601px){   /* Desktop: Titel optisch mittig im Tabellenkopf */
@@ -1161,9 +1164,20 @@ function miniTable(team, defFull){
       <tbody>${body}</tbody></table></div></div>`;
 }
 /* Tabellenzeilen: verkürzt (Plätze 1–3, …, eigenes Team, …) oder vollständig */
+/* Gegner des aktuellen Spieltags eines Teams (erster Turniertag, der noch nicht vorbei ist) */
+function curOpps(team){
+  const ms = MATCHES.filter(m => m.d && m.teams.includes(team));
+  const days = [...new Set(ms.map(m => m.d))].sort();
+  const now = new Date();
+  const day = days.find(d => { const e = new Date(d + "T06:00:00"); e.setDate(e.getDate() + 1); return now < e; });
+  if(!day) return [];
+  return ms.filter(m => m.d === day).map(m => m.h === "NTSV 7. D" ? m.a : m.h);
+}
 function tableRows(tb, team, full){
   const idx = tb.rows.findIndex(r => rowTeam(r[1]) === team);
-  const row = r => `<tr class="${rowTeam(r[1]) ? "hl hl-" + rowTeam(r[1]) + (+r[0] === 1 ? " hl-top" : "") : ""}">${r.map((c, i) => `<td>${i === 1 ? fmtTeam(String(c)) : esc(String(c))}</td>`).join("")}</tr>`;
+  const opps = curOpps(team);
+  const isOpp = name => opps.some(o => name === o || name.startsWith(o + " ("));
+  const row = r => `<tr class="${rowTeam(r[1]) ? "hl hl-" + rowTeam(r[1]) + (+r[0] === 1 ? " hl-top" : "") : isOpp(String(r[1])) ? "opp" : ""}">${r.map((c, i) => `<td>${i === 1 ? fmtTeam(String(c)) : esc(String(c))}</td>`).join("")}</tr>`;
   let body = tb.rows.slice(0, 3).map(row).join("");
   if(idx > 3) body += `<tr class="t-gap"><td><span class="gap-dots">⋮</span></td><td colspan="8"></td></tr>`;
   if(idx >= 3) body += row(tb.rows[idx]);

@@ -738,7 +738,7 @@ const MATCHES = [
 
   // ---- 7. D Weiß (JH 04) – HYPOTHETISCH: noch nicht angesetzt, abgeleitet aus „jeder gegen jeden“
   //      (8 verbleibende Gegner, zu je 4 Spielen auf 2 Spieltage verteilt; Zuordnung/Heim-Gast offen)
-  { d:null, t:null, grp:5, hyp:true, nr:"JH04-h01", h:"NTSV 7. D", a:"Hetlingen 1.D", teams:["n5"], score:null },
+  { d:null, t:null, grp:6, hyp:true, nr:"JH04-h01", h:"NTSV 7. D", a:"Hetlingen 1.D", teams:["n5"], score:null },
   { d:null, t:null, grp:6, hyp:true, nr:"JH04-h05", h:"NTSV 7. D", a:"Eimsbüttel 8.D", teams:["n5"], score:null },
   { d:null, t:null, grp:6, hyp:true, nr:"JH04-h07", h:"NTSV 7. D", a:"TuS Osdorf 1.D", teams:["n5"], score:null },
   { d:null, t:null, grp:6, hyp:true, nr:"JH04-h08", h:"NTSV 7. D", a:"Sternschanze 2.D", teams:["n5"], score:null }
@@ -753,7 +753,8 @@ const TURNIERBEGINN = {
   "2026-11-22": "16:30",
   "2026-11-28": "15:15",
   "2026-11-29": "14:00",
-  "2026-12-12": "13:00"
+  "2026-12-12": "13:00",
+  "2027-01-09": "11:30"
 };
 
 /* Halle, Treffpunkt-Zeit und Ende je Spieltag (Quelle: SpielerPlus).
@@ -765,7 +766,8 @@ const SPIELTAGE = {
   "2026-11-22": { treffen:"15:45", ende:"17:45", ort:"Rissen",        fahrt:30, halle:"Sporthalle Vosshagen", adresse:"Voßhagen 15, 22559 Hamburg" },
   "2026-11-28": { treffen:"14:30", ende:"17:00", ort:"Altona",        fahrt:15, halle:"Sporthalle Eckernförder Straße", adresse:"Eckernförder Str. 70, 22769 Hamburg" },
   "2026-11-29": { treffen:"13:15", ende:"16:00", ort:"Pinneberg",     fahrt:20, halle:"JCS-Halle", adresse:"Horn 5, 25421 Pinneberg" },
-  "2026-12-12": { treffen:"12:15", ende:"15:00", ort:"Barmstedt",     fahrt:30, halle:"Sporthalle Heederbrook", adresse:"Heederbrook 10A, 25355 Barmstedt" }
+  "2026-12-12": { treffen:"12:15", ende:"15:00", ort:"Barmstedt",     fahrt:30, halle:"Sporthalle Heederbrook", adresse:"Heederbrook 10A, 25355 Barmstedt" },
+  "2027-01-09": { treffen:"10:45", ende:"13:15", ort:"Eimsbüttel",   fahrt:15, halle:"Sporthalle Rellinger Straße (Eingang Kieler Str. 128)", adresse:"Rellinger Str. 13-15, 20257 Hamburg" }
 };
 /* Sammelpunkt-Symbol (grünes Quadrat, Pfeile zur Mitte) für den Treffzeitpunkt */
 const ICON_TREFFEN = '<svg class="ico-treffen" role="img" aria-label="Treffen" viewBox="0 0 24 24"><title>Treffen</title><g stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85"><path d="M2.5 2.5L7.5 7.5M7.5 3.8v3.7H3.8"/><path d="M21.5 2.5l-5 5M16.5 3.8v3.7h3.7"/><path d="M2.5 21.5l5-5M3.8 16.5h3.7v3.7"/><path d="M21.5 21.5l-5-5M20.2 16.5h-3.7v3.7"/></g><circle cx="12" cy="12" r="2.3" fill="currentColor" opacity=".85"/></svg>';

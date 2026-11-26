@@ -25,9 +25,15 @@ jobs:
           T="${{ github.event.inputs.team }}"; [ "$T" = "beide" -o -z "$T" ] && T="n4 n5"
           A=""; [ "${{ github.event_name }}" = "schedule" ] && A="--scheduled"
           python3 tools/fetch_fd.py $T $A | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Neue Ansetzungen (nur beim Abruf über den Button)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python3 tools/ansetzungen.py | tee -a "$GITHUB_STEP_SUMMARY"
+          git diff --quiet -- index.html || node tools/mkics.js
       - name: Speichern
         run: |
-          git diff --quiet && exit 0
+          git add -A index.html cal checks
+          git diff --cached --quiet && exit 0
           git config user.name "fussball.de-Abruf"; git config user.email "actions@github.com"
-          git commit -qam "Tabellen/Ergebnisse von fussball.de ($(TZ=Europe/Berlin date '+%d.%m. %H:%M'))"
+          git commit -qm "Tabellen/Ergebnisse von fussball.de ($(TZ=Europe/Berlin date '+%d.%m. %H:%M'))"
           for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
